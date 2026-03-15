@@ -11,7 +11,7 @@ import (
 // Deduplicated, reaches around 240. Discovery doc, deduplicated, reaches around 300. And yet both have services the other doesnt.
 // This would fill the gap to be as comprehensive as possible. Combined and deduplicated, you reach ~380 hostnames.
 
-var apiListGithub = "https://raw.githubusercontent.com/googleapis/googleapis/refs/heads/master/api-index-v1.json"
+var apiListGithub = "https://raw.githubusercontent.com/googleapis/googleapis/256b575f6915282b20795c13414b21f2c0af65db/api-index-v1.json"
 
 type GapisApiItem struct {
 	Description string `json:"description"`
