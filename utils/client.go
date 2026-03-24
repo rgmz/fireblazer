@@ -71,30 +71,65 @@ func ReqWithBackoff(req *http.Request, client *http.Client) (*http.Response, err
 	return nil, err
 }
 
+var (
+	h3Mutex   sync.Mutex
+	sharedUDP *net.UDPConn
+	h3ConnMap = make(map[string]*http3.ClientConn)
+)
+
+func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, hostname string, useActualResolvedName bool) (*http3.ClientConn, error) {
+	h3Mutex.Lock()
+	defer h3Mutex.Unlock()
+
+	var destAddr string
+	if useActualResolvedName {
+		destAddr = hostname + ":443"
+	} else {
+		destAddr = "googleapis.com:443"
+	}
+
+	if conn, ok := h3ConnMap[destAddr]; ok {
+		return conn, nil
+	}
+
+	if sharedUDP == nil {
+		resolvedHost, err := net.ResolveUDPAddr("udp", "0.0.0.0:0")
+		if err != nil {
+			log.Println("Failed to resolve local address & port for binding. Try running as admin.")
+		}
+		host, err := net.ListenUDP("udp", resolvedHost)
+		if err != nil {
+			return nil, err
+		}
+		sharedUDP = host
+	}
+
+	resolvedRemote, err := net.ResolveUDPAddr("udp", destAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	dialer, err := quic.DialEarly(ctx, sharedUDP, resolvedRemote, customTransport.TLSClientConfig, customTransport.QUICConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	conn := customTransport.NewClientConn(dialer)
+
+	<-dialer.HandshakeComplete()
+
+	h3ConnMap[destAddr] = conn
+	return conn, nil
+}
+
 // For handling errors with a retry for the connection stream itself - otherwise i'd be limited to retrying the domain name resolution / dial
 func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response, error) {
 	hostname := req.URL.Hostname()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	resolvedHost, err := net.ResolveUDPAddr("udp", "0.0.0.0:0")
-	if err != nil {
-		log.Println("Failed to resolve local address & port for binding. Try running as admin.")
-	}
-	host, _ := net.ListenUDP("udp", resolvedHost)
-
-	resolvedRemote, err := net.ResolveUDPAddr("udp", "googleapis.com:443")
-	if err != nil {
-		if useActualResolvedName {
-			log.Printf("Failed to resolve host %s - ensure you're connected to the internet & can resolve domain names.", hostname)
-		} else {
-			log.Println("Failed to resolve googleapis.com - falling back to proper execution..")
-		}
-	}
-
 	customTransport := GetClient().Transport.(*http3.Transport)
-
-	dialer, err := quic.DialEarly(ctx, host, resolvedRemote, customTransport.TLSClientConfig, customTransport.QUICConfig) // No protocol, raw quic. Maybe later. Like way later.
+	conn, err := getSharedH3Conn(ctx, customTransport, hostname, useActualResolvedName)
 	if err != nil {
 		if useActualResolvedName {
 			log.Printf("Couldn't dial service %v even when resolving with the proper domain.", hostname)
@@ -106,16 +141,26 @@ func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response
 		}
 	}
 
-	conn := customTransport.NewClientConn(dialer)
-	conn.Conn().HandshakeComplete()
-
 	stream, err := conn.OpenRequestStream(ctx)
-	stream.SendRequestHeader(&req)
-
 	if err != nil {
-		log.Printf("Failed to open request stream at raddr %v", resolvedRemote)
+		h3Mutex.Lock()
+		var destAddr string
+		if useActualResolvedName {
+			destAddr = hostname + ":443"
+		} else {
+			destAddr = "googleapis.com:443"
+		}
+		delete(h3ConnMap, destAddr)
+		h3Mutex.Unlock()
+		return ReqHeaderOnly(req, useActualResolvedName)
 	}
 
+	err = stream.SendRequestHeader(&req)
+	if err != nil {
+		log.Printf("Failed to send request header to stream %v", err)
+	}
+
+	stream.SetDeadline(time.Now().Add(3 * time.Second))
 	resp, err := stream.ReadResponse()
 	if err != nil {
 		log.Printf("Failed to read response from stream %v - %v", stream, err)

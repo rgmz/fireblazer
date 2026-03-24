@@ -8,6 +8,7 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	utils "github.com/bedros-p/fireblazer/utils"
@@ -37,14 +38,6 @@ type Service struct {
 	DiscoveryUrl string
 }
 
-var discoverySourcesFailedMsg string = `
-A number of endpoint sources failed.
-If there's a consistently failing source and the following domains aren't blocked, raise an issue at https://github.com/bedros-p/fireblazer
-
-- www.googleapis.com
-- raw.githubusercontent.com
-`
-
 func main() {
 	flag.Parse()
 
@@ -58,75 +51,21 @@ func main() {
 		"storage",
 	}
 
-	//  Those don't work / hang the program
-	blacklisted := []string{
-		"poly",
-		"lifesciences",
-	}
-
-	discoverySourcesLoaded := make(chan struct{})
+	//  those don't work / hang the program - all that hang are deprecated anyways, so it's blank for now
+	blacklisted := []string{}
 
 	gapiServices := make([]Service, 0)
-	serviceDetailMap := make(map[string]APIDetails)
 
-	discoveryFailed := 0
-	go func() {
-		var err error
-		discoveryEndpoints, err := utils.GetDiscoveryEndpoints()
+	for _, raw := range utils.GoogleApiList {
+		hostname := strings.Split(raw, "/")[0]
+		cleanName := strings.Split(hostname, ".")[0]
+		discoveryUrl := "https://" + hostname + "/$discovery/rest"
 
-		if err != nil {
-			if isInteractive || *outputFormat == "text" {
-				log.Printf("Failed to get discovery endpoints: %v", err)
-				discoveryFailed++
-			}
-			if *outputFormat == "json" || *outputFormat == "yaml" {
-				// TODO: JSON and YAML format error handling
-			}
-		}
-
-		for _, endpoint := range discoveryEndpoints {
-
-			gapiServices = append(gapiServices, Service{
-				CleanName:    endpoint.Name,
-				DiscoveryUrl: endpoint.DiscoveryRestUrl,
-			})
-
-			serviceDetailMap[endpoint.Name] = APIDetails{
-				Description: endpoint.Description,
-				Title:       endpoint.Title,
-			}
-		}
-
-		gapiEndpoints, err := utils.GetEndpointsFromGapis()
-		if err != nil {
-			if isInteractive || *outputFormat == "text" {
-				log.Printf("Failed to get supplementary endpoints from Github: %v", err)
-				discoveryFailed++
-			} else if discoveryFailed > 0 {
-				// TODO: Local-first approach for endpoints
-				log.Fatal("Both primary and supplementary endpoint retrieval failed, terminating.")
-			}
-		}
-
-		for _, endpoint := range gapiEndpoints {
-			cleanName := strings.Split(endpoint.Host, ".")[0]
-
-			discoveryUrl := "https://" + endpoint.Host + "/$discovery/rest"
-
-			if serviceDetailMap[cleanName].Title == "" {
-				serviceDetailMap[cleanName] = APIDetails{
-					Description: endpoint.Description,
-					Title:       endpoint.Title,
-				}
-
-				gapiServices = append(gapiServices, Service{
-					CleanName:    cleanName,
-					DiscoveryUrl: discoveryUrl,
-				})
-			}
-		}
-		close(discoverySourcesLoaded)
-	}()
+		gapiServices = append(gapiServices, Service{
+			CleanName:    cleanName,
+			DiscoveryUrl: discoveryUrl,
+		})
+	}
 
 	if *key == "" {
 		*key = flag.Arg(0)
@@ -153,16 +92,10 @@ func main() {
 		}
 	}
 
-	// Need to wait for the discovery services to load before proceeding w the scan
-	<-discoverySourcesLoaded
-
 	scanPin := pin.New("Scanning...")
 
 	if isInteractive || *outputFormat == "text" {
-		log.Printf("Successfully retrieved %d discovery endpoints - %d endpoint sources failed.", len(gapiServices), discoveryFailed)
-		if discoveryFailed > 0 { // TODO: Local-first approach for endpoints
-			log.Println(discoverySourcesFailedMsg)
-		}
+		log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
 	}
 
 	if isInteractive {
@@ -175,6 +108,7 @@ func main() {
 		timeElapsed  int64
 	}
 
+	var maxTimeMutex sync.Mutex
 	maxTime := &ElapsedCombo{
 		serviceClean: "",
 		timeElapsed:  0,
@@ -185,9 +119,11 @@ func main() {
 
 	rem := len(gapiServices)
 
+	var foundMutex sync.Mutex
 	foundServices := make([]string, 0)
 	foundCount := 0 // idw to repeatedly check the length of foundServices
 
+	var failMutex sync.Mutex
 	failCount := 0
 
 	for _, item := range gapiServices {
@@ -202,26 +138,36 @@ func main() {
 			}
 
 			if valid, err := utils.TestKeyServicePair(*key, item.DiscoveryUrl, *referrer); valid {
+				foundMutex.Lock()
 				foundCount++
 				foundServices = append(foundServices, item.CleanName)
+				foundMutex.Unlock()
 			} else if err != nil {
 				log.Printf("Error testing discovery endpoint %s: %v", item, err)
+				failMutex.Lock()
 				failCount++
+				failMutex.Unlock()
 			}
 
 			if *timingEnabled {
-				start = time.Now()
 				elapsed := time.Since(start).Milliseconds()
+				maxTimeMutex.Lock()
 				if elapsed > maxTime.timeElapsed {
 					maxTime = &ElapsedCombo{
 						serviceClean: item.CleanName,
 						timeElapsed:  elapsed,
 					}
 				}
+				maxTimeMutex.Unlock()
 			}
 
-			rem--
-			go scanPin.UpdateMessage(fmt.Sprintf("Service count - %d in scope. Scanning %d more... %v", foundCount, rem, item.CleanName))
+			foundMutex.Lock()
+			currentRem := rem - 1
+			rem = currentRem
+			currentFound := foundCount
+			foundMutex.Unlock()
+
+			go scanPin.UpdateMessage(fmt.Sprintf("Service count - %d in scope. Scanning %d more... %v", currentFound, currentRem, item.CleanName))
 			return nil
 		})
 	}
@@ -234,9 +180,10 @@ func main() {
 	for _, service := range foundServices {
 		if slices.Contains(falsePos, service) {
 			// Commented out - I only need to have them here as a reminder, dw, just so i know i should work on those.
-			// log.Printf(" - %s (false positive)\n\t - %s - %s", service, serviceDetailMap[service].Description, serviceDetailMap[service].Title)
+			// log.Printf(" - %s.googleapis.com (false positive)", service)
+			// Problem is, those services hang entirely
 		} else {
-			log.Printf(" - %s.googleapis.com / %s \n\t - %s", service, serviceDetailMap[service].Title, serviceDetailMap[service].Description)
+			log.Printf(" - %s.googleapis.com", service)
 		}
 	}
 
