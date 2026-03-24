@@ -32,7 +32,7 @@ func TestKeyServicePair(apiKey string, service string, referrer string) (bool, e
 		req.Header.Add("Referer", referrer)
 	}
 
-	headRequest, err := ReqHeaderOnly(*req, false)
+	headRequest, err := ReqHeaderOnly(*req, apiKey, false)
 
 	if err != nil {
 		log.Printf("Failed to make HEAD request (with X-HTTP-Method-Override: GET): %v", err)
@@ -106,6 +106,7 @@ type ElapsedCombo struct {
 }
 
 type ScanUpdate struct {
+	Key           string
 	CurrentFound  int
 	CurrentRem    int
 	ItemCleanName string
@@ -174,6 +175,7 @@ func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted
 			if updateCh != nil {
 				select {
 				case updateCh <- ScanUpdate{
+					Key:           apiKey,
 					CurrentFound:  currentFound,
 					CurrentRem:    currentRem,
 					ItemCleanName: item.CleanName,
@@ -186,9 +188,6 @@ func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted
 	}
 
 	scanGroup.Wait()
-	if updateCh != nil {
-		close(updateCh)
-	}
 
 	return foundServices, failCount, maxTime
 }

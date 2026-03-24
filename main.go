@@ -7,6 +7,7 @@ import (
 	"log"
 	"slices"
 	"strings"
+	"sync"
 
 	utils "github.com/bedros-p/fireblazer/utils"
 
@@ -29,72 +30,38 @@ type APIDetails struct {
 	Title       string
 }
 
-func processKey(k string, gapiServices []utils.Service, blacklisted []string, falsePos []string) {
+type KeyResult struct {
+	Key           string
+	Valid         bool
+	InvalidReason error
+	FoundServices []string
+	FailCount     int
+	MaxTime       *utils.ElapsedCombo
+}
+
+func processKey(apiKey string, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate) KeyResult {
+	res := KeyResult{Key: apiKey}
 	if *dangerouslySkipVerification {
 		if isInteractive || *outputFormat == "text" {
-			log.Println("Skipping API key verification.")
+			log.Printf("[%s] Skipping API key verification.\n", apiKey)
 		}
-	} else if valid, err := utils.TestKeyValidity(k); !valid {
-		if err != nil {
-			log.Printf("Error testing API key validity for %s: %v\n. Ensure that you can connect to https://generativelanguage.googleapis.com as it's used for checking key validity. To skip primary validation (at risk of invalid results), use the -dangerouslySkipVerification flag.", k, err)
-			return
-		}
-
-		log.Printf("Invalid API key: %s\n", k)
-		log.Println("If you're sure the key is valid, use the -dangerouslySkipVerification flag [fireblazer -dangerouslySkipVerification AIza-KeYHere]")
-		return
+		res.Valid = true
+	} else if valid, err := utils.TestKeyValidity(apiKey); !valid {
+		res.Valid = false
+		res.InvalidReason = err
+		return res
 	} else {
 		if isInteractive || *outputFormat == "text" {
-			log.Println("Valid API key, proceeding.")
+			log.Printf("[%s] Valid API key, proceeding.\n", apiKey)
 		}
+		res.Valid = true
 	}
 
-	var scanPin *pin.Pin
-	var cancel context.CancelFunc
-	var updateCh chan utils.ScanUpdate
-	var updateDone chan struct{}
-
-	if isInteractive {
-		scanPin = pin.New("Scanning...")
-		cancel = scanPin.Start(context.Background())
-		defer cancel()
-
-		updateCh = make(chan utils.ScanUpdate, *workerCount)
-		updateDone = make(chan struct{})
-
-		go func() {
-			for update := range updateCh {
-				scanPin.UpdateMessage(fmt.Sprintf("Service count - %d in scope. Scanning %d more... %v", update.CurrentFound, update.CurrentRem, update.ItemCleanName))
-			}
-			close(updateDone)
-		}()
-	}
-
-	foundServices, failCount, maxTime := utils.ScanServices(k, *referrer, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
-
-	if isInteractive {
-		<-updateDone
-		scanPin.Stop(fmt.Sprintf("Scan complete! Identified %d services available in the project.", len(foundServices)))
-	} else {
-		log.Printf("Scan complete! Identified %d services available in the project.", len(foundServices))
-	}
-
-	log.Println("APIs available to this API key:")
-
-	for _, service := range foundServices {
-		if slices.Contains(falsePos, service) {
-			// Commented out - I only need to have them here as a reminder, dw, just so i know i should work on those.
-			// log.Printf(" - %s.googleapis.com (false positive)", service)
-		} else {
-			log.Printf(" - %s.googleapis.com", service)
-		}
-	}
-
-	log.Printf("All discovery endpoint tests completed with %d failures.", failCount)
-
-	if *timingEnabled {
-		log.Printf("Longest running service - %v\n\n\n", maxTime)
-	}
+	foundServices, failCount, maxTime := utils.ScanServices(apiKey, *referrer, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
+	res.FoundServices = foundServices
+	res.FailCount = failCount
+	res.MaxTime = maxTime
+	return res
 }
 
 func main() {
@@ -133,18 +100,96 @@ func main() {
 	keys = append(keys, flag.Args()...)
 
 	if len(keys) == 0 {
-		log.Fatal("You must provide at least one API key. You can pass it as a named flag or as positional arguments. Usage samples: \n - \"fireblazer AIza-key1 AIza-key2\" \n - \"fireblazer -apiKey AIza-key\". \nTerminating.")
+		log.Fatal("You must provide at least one API key. You can pass it as a named flag or as positional arguments. Usage samples: \n - \"fireblazer AIza-key1 AIza-key2\" \n - \"fireblazer --apiKey=AIza-key\". \nTerminating.")
 	}
 
 	if isInteractive || *outputFormat == "text" {
 		log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
 	}
 
-	for _, k := range keys {
-		if len(keys) > 1 {
-			fmt.Printf("\n---%s---\n", k)
+	var scanPin *pin.Pin
+	var cancel context.CancelFunc
+	var updateCh chan utils.ScanUpdate
+	var updateDone chan struct{}
+
+	if isInteractive {
+		scanPin = pin.New("Scanning...")
+		cancel = scanPin.Start(context.Background())
+		defer cancel()
+
+		updateCh = make(chan utils.ScanUpdate, *workerCount*len(keys))
+		updateDone = make(chan struct{})
+
+		go func() {
+			totalRemMap := make(map[string]int)
+			totalFoundMap := make(map[string]int)
+
+			for update := range updateCh {
+				totalRemMap[update.Key] = update.CurrentRem
+				totalFoundMap[update.Key] = update.CurrentFound
+
+				totalRem := 0
+				totalFound := 0
+				for _, rem := range totalRemMap {
+					totalRem += rem
+				}
+				for _, f := range totalFoundMap {
+					totalFound += f
+				}
+
+				scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %v", len(keys), totalFound, totalRem, update.ItemCleanName))
+			}
+			close(updateDone)
+		}()
+	}
+
+	var wg sync.WaitGroup
+	results := make([]KeyResult, len(keys))
+
+	for i, k := range keys {
+		wg.Add(1)
+		go func(i int, apiKey string) {
+			defer wg.Done()
+			results[i] = processKey(apiKey, gapiServices, blacklisted, falsePos, updateCh)
+		}(i, k)
+	}
+
+	wg.Wait()
+
+	if isInteractive {
+		if updateCh != nil {
+			close(updateCh)
 		}
-		processKey(k, gapiServices, blacklisted, falsePos)
+		<-updateDone
+		scanPin.Stop("Scan complete!")
+	} else if *outputFormat == "text" {
+		log.Println("Scan complete!")
+	}
+
+	for _, res := range results {
+		if len(keys) > 1 {
+			fmt.Printf("\n---%s---\n", res.Key)
+		}
+		if !res.Valid {
+			log.Printf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.", res.Key, res.InvalidReason)
+			continue
+		}
+
+		log.Println("APIs available to this API key:")
+
+		for _, service := range res.FoundServices {
+			if slices.Contains(falsePos, service) {
+				// log.Printf(" - %s.googleapis.com (false positive)", service)
+			} else {
+				log.Printf(" - %s.googleapis.com", service)
+			}
+		}
+
+		log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)
+
+		if *timingEnabled {
+			log.Printf("Longest running service - %v\n\n\n", res.MaxTime)
+		}
 	}
 
 	utils.KeyLogFile.Close()

@@ -72,12 +72,12 @@ func ReqWithBackoff(req *http.Request, client *http.Client) (*http.Response, err
 }
 
 var (
-	h3Mutex   sync.Mutex
-	sharedUDP *net.UDPConn
-	h3ConnMap = make(map[string]*http3.ClientConn)
+	h3Mutex          sync.Mutex
+	sharedTransports = make(map[string]*quic.Transport)
+	h3ConnMap        = make(map[string]*http3.ClientConn)
 )
 
-func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, hostname string, useActualResolvedName bool) (*http3.ClientConn, error) {
+func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, hostname string, apiKey string, useActualResolvedName bool) (*http3.ClientConn, error) {
 	h3Mutex.Lock()
 	defer h3Mutex.Unlock()
 
@@ -88,11 +88,21 @@ func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, host
 		destAddr = "googleapis.com:443"
 	}
 
-	if conn, ok := h3ConnMap[destAddr]; ok {
+	connKey := apiKey + "|" + destAddr
+
+	if conn, ok := h3ConnMap[connKey]; ok {
 		return conn, nil
 	}
 
-	if sharedUDP == nil {
+	resolvedRemote, err := net.ResolveUDPAddr("udp", destAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	raddrStr := resolvedRemote.IP.String()
+
+	tr, ok := sharedTransports[raddrStr]
+	if !ok {
 		resolvedHost, err := net.ResolveUDPAddr("udp", "0.0.0.0:0")
 		if err != nil {
 			log.Println("Failed to resolve local address & port for binding. Try running as admin.")
@@ -101,15 +111,13 @@ func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, host
 		if err != nil {
 			return nil, err
 		}
-		sharedUDP = host
+		tr = &quic.Transport{
+			Conn: host,
+		}
+		sharedTransports[raddrStr] = tr
 	}
 
-	resolvedRemote, err := net.ResolveUDPAddr("udp", destAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	dialer, err := quic.DialEarly(ctx, sharedUDP, resolvedRemote, customTransport.TLSClientConfig, customTransport.QUICConfig)
+	dialer, err := tr.DialEarly(ctx, resolvedRemote, customTransport.TLSClientConfig, customTransport.QUICConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -118,18 +126,18 @@ func getSharedH3Conn(ctx context.Context, customTransport *http3.Transport, host
 
 	<-dialer.HandshakeComplete()
 
-	h3ConnMap[destAddr] = conn
+	h3ConnMap[connKey] = conn
 	return conn, nil
 }
 
 // For handling errors with a retry for the connection stream itself - otherwise i'd be limited to retrying the domain name resolution / dial
-func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response, error) {
+func ReqHeaderOnly(req http.Request, apiKey string, useActualResolvedName bool) (*http.Response, error) {
 	hostname := req.URL.Hostname()
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	customTransport := GetClient().Transport.(*http3.Transport)
-	conn, err := getSharedH3Conn(ctx, customTransport, hostname, useActualResolvedName)
+	conn, err := getSharedH3Conn(ctx, customTransport, hostname, apiKey, useActualResolvedName)
 	if err != nil {
 		if useActualResolvedName {
 			log.Printf("Couldn't dial service %v even when resolving with the proper domain.", hostname)
@@ -137,7 +145,7 @@ func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response
 		} else {
 			log.Printf("Failed to dial service %v resolved from googleapis.com", hostname)
 			log.Println("Retrying with proper raddr")
-			return ReqHeaderOnly(req, true)
+			return ReqHeaderOnly(req, apiKey, true)
 		}
 	}
 
@@ -150,9 +158,15 @@ func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response
 		} else {
 			destAddr = "googleapis.com:443"
 		}
-		delete(h3ConnMap, destAddr)
+		connKey := apiKey + "|" + destAddr
+		delete(h3ConnMap, connKey)
 		h3Mutex.Unlock()
-		return ReqHeaderOnly(req, useActualResolvedName)
+
+		if !useActualResolvedName {
+			log.Printf("Failed to open stream to service %v via googleapis.com. Retrying with proper raddr", hostname)
+			return ReqHeaderOnly(req, apiKey, true)
+		}
+		return nil, err
 	}
 
 	err = stream.SendRequestHeader(&req)
@@ -160,9 +174,13 @@ func ReqHeaderOnly(req http.Request, useActualResolvedName bool) (*http.Response
 		log.Printf("Failed to send request header to stream %v", err)
 	}
 
-	stream.SetDeadline(time.Now().Add(3 * time.Second))
+	stream.SetDeadline(time.Now().Add(10 * time.Second))
 	resp, err := stream.ReadResponse()
 	if err != nil {
+		if !useActualResolvedName {
+			log.Printf("Failed to read response from stream %v - %v. Retrying with proper raddr.", stream, err)
+			return ReqHeaderOnly(req, apiKey, true)
+		}
 		log.Printf("Failed to read response from stream %v - %v", stream, err)
 		return nil, err
 	}
