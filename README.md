@@ -50,19 +50,20 @@ Enjoy the API key escalation!
 
 ## Roadmap / Plans
 ### Major Features
+- Batch key checker option for multiple keys
 - Support multiple output formats (YAML, JSON, Plain text & fancy cli outputs \[spinners\]) (Partial implementation)
 - Show which services require OAuth & which require Service Accounts to prevent the pentester from wasting time
 - Suggested actions & quick execs (firebase bucket perm testing)
-- Include project ID in the output. Can be useful for some services.
 - Support other parameters for origin restrictions on keys (only referrer is supported atm)
+- Include project ID in the output. Can be useful for some services.
+- Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
 
 ### Patches
-- Use a file containing the endpoints while waiting for the up-to-date stuff to load in from the two sources (GoogleAPIs Github & GoogleAPIs Discovery service). Compare content-length with a HEAD and if there's a change get the new one. Or if you want to contribute do it your way idk just make it good 
-- Add special detection methods for the (filtered) false positives (refer to false positives from main.go) - priority would be the GCS API.
+- Add special detection methods for the (filtered out) false positives (refer to false positives from main.go) - priority would be the GCS API.
 - First request should be used for validating the key instead of having an alternate request for it (can possibly be bundled with the first discovery request, or launched during the scan and cancelling when invalid)
 
 #### Bugs 
-- Every now and then, a network black hole would occur. A retry pool is still necessary for unstable connections, even with all the help this program already gets from using HTTP3.
+- :3
 
 ## NOT AN EXPLOIT
 

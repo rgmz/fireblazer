@@ -181,7 +181,6 @@ func main() {
 		if slices.Contains(falsePos, service) {
 			// Commented out - I only need to have them here as a reminder, dw, just so i know i should work on those.
 			// log.Printf(" - %s.googleapis.com (false positive)", service)
-			// Problem is, those services hang entirely
 		} else {
 			log.Printf(" - %s.googleapis.com", service)
 		}
