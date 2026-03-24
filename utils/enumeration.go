@@ -46,6 +46,8 @@ func TestKeyServicePair(apiKey string, service string, referrer string) (bool, e
 }
 
 // WIP - just need to figure out how to use this damn thing
+// I was hoping to be able to multipart it and send multiple services with one big payload. But I might just remove this. Http3 lets me send the data in one big stream, there's no need for this anymore.
+// Still, it has potential for other uses if I keep digging.
 func MultipartAllDiscoveries(apiKey string, cleannames []string) (map[string]bool, error) {
 	var buf bytes.Buffer
 

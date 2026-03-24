@@ -26,7 +26,7 @@ var GetClient = sync.OnceValue(func() *http.Client {
 		Transport: &http3.Transport{
 			EnableDatagrams: true,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
+				// InsecureSkipVerify: true,
 				// KeyLogWriter:       KeyLogFile,
 				ServerName: "googleapis.com",
 				NextProtos: []string{http3.NextProtoH3},
