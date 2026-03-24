@@ -9,6 +9,11 @@ import (
 	"net/http"
 	"net/textproto"
 	"net/url"
+	"slices"
+	"sync"
+	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func TestKeyServicePair(apiKey string, service string, referrer string) (bool, error) {
@@ -88,4 +93,102 @@ func MultipartAllDiscoveries(apiKey string, cleannames []string) (map[string]boo
 	log.Printf(string(bodyContent))
 
 	return nil, nil
+}
+
+type Service struct {
+	CleanName    string
+	DiscoveryUrl string
+}
+
+type ElapsedCombo struct {
+	ServiceClean string
+	TimeElapsed  int64
+}
+
+type ScanUpdate struct {
+	CurrentFound  int
+	CurrentRem    int
+	ItemCleanName string
+}
+
+func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate) ([]string, int, *ElapsedCombo) {
+	var maxTimeMutex sync.Mutex
+	maxTime := &ElapsedCombo{
+		ServiceClean: "",
+		TimeElapsed:  0,
+	}
+
+	var scanGroup errgroup.Group
+	scanGroup.SetLimit(workerCount)
+
+	rem := len(gapiServices)
+
+	var foundMutex sync.Mutex
+	foundServices := make([]string, 0)
+	foundCount := 0
+
+	var failMutex sync.Mutex
+	failCount := 0
+
+	for _, item := range gapiServices {
+		if slices.Contains(slices.Concat(blacklisted, falsePos), item.CleanName) {
+			continue
+		}
+
+		scanGroup.Go(func() error {
+			var start time.Time
+			if timingEnabled {
+				start = time.Now()
+			}
+
+			if valid, err := TestKeyServicePair(apiKey, item.DiscoveryUrl, ref); valid {
+				foundMutex.Lock()
+				foundCount++
+				foundServices = append(foundServices, item.CleanName)
+				foundMutex.Unlock()
+			} else if err != nil {
+				log.Printf("Error testing discovery endpoint %s: %v", item.CleanName, err)
+				failMutex.Lock()
+				failCount++
+				failMutex.Unlock()
+			}
+
+			if timingEnabled {
+				elapsed := time.Since(start).Milliseconds()
+				maxTimeMutex.Lock()
+				if elapsed > maxTime.TimeElapsed {
+					maxTime = &ElapsedCombo{
+						ServiceClean: item.CleanName,
+						TimeElapsed:  elapsed,
+					}
+				}
+				maxTimeMutex.Unlock()
+			}
+
+			foundMutex.Lock()
+			currentRem := rem - 1
+			rem = currentRem
+			currentFound := foundCount
+			foundMutex.Unlock()
+
+			if updateCh != nil {
+				select {
+				case updateCh <- ScanUpdate{
+					CurrentFound:  currentFound,
+					CurrentRem:    currentRem,
+					ItemCleanName: item.CleanName,
+				}:
+				default:
+				}
+			}
+			return nil
+		})
+	}
+
+	scanGroup.Wait()
+	if updateCh != nil {
+		close(updateCh)
+	}
+
+	return foundServices, failCount, maxTime
 }

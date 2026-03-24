@@ -8,13 +8,10 @@ import (
 	"os"
 	"slices"
 	"strings"
-	"sync"
-	"time"
 
 	utils "github.com/bedros-p/fireblazer/utils"
 
 	"github.com/yarlson/pin"
-	"golang.org/x/sync/errgroup"
 )
 
 var key = flag.String("apiKey", "", "API key to scan. Can also be your first positional arg.")
@@ -33,11 +30,6 @@ type APIDetails struct {
 	Title       string
 }
 
-type Service struct {
-	CleanName    string
-	DiscoveryUrl string
-}
-
 func main() {
 	flag.Parse()
 
@@ -54,14 +46,14 @@ func main() {
 	//  those don't work / hang the program - all that hang are deprecated anyways, so it's blank for now
 	blacklisted := []string{}
 
-	gapiServices := make([]Service, 0)
+	gapiServices := make([]utils.Service, 0)
 
 	for _, raw := range utils.GoogleApiList {
 		hostname := strings.Split(raw, "/")[0]
 		cleanName := strings.Split(hostname, ".")[0]
 		discoveryUrl := "https://" + hostname + "/$discovery/rest"
 
-		gapiServices = append(gapiServices, Service{
+		gapiServices = append(gapiServices, utils.Service{
 			CleanName:    cleanName,
 			DiscoveryUrl: discoveryUrl,
 		})
@@ -84,7 +76,7 @@ func main() {
 
 		log.Println("Invalid API key.")
 		log.Println("If you're sure the key is valid, use the --dangerouslySkipVerification flag [fireblazer --dangerouslySkipVerification AIza-KeYHere]")
-		log.Println("And submit an issue at https://github.com/bedros-p/fireblazer - include this error message:\n%v\n----", err)
+		log.Printf("And submit an issue at https://github.com/bedros-p/fireblazer - include this error message:\n%v\n----", err)
 		os.Exit(-1)
 	} else {
 		if isInteractive || *outputFormat == "text" {
@@ -92,89 +84,40 @@ func main() {
 		}
 	}
 
-	scanPin := pin.New("Scanning...")
-
 	if isInteractive || *outputFormat == "text" {
 		log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
 	}
 
+	var scanPin *pin.Pin
+	var cancel context.CancelFunc
+	var updateCh chan utils.ScanUpdate
+	var updateDone chan struct{}
+
 	if isInteractive {
-		cancel := scanPin.Start(context.Background())
+		scanPin = pin.New("Scanning...")
+		cancel = scanPin.Start(context.Background())
 		defer cancel()
-	}
 
-	type ElapsedCombo struct {
-		serviceClean string
-		timeElapsed  int64
-	}
+		updateCh = make(chan utils.ScanUpdate, *workerCount)
+		updateDone = make(chan struct{})
 
-	var maxTimeMutex sync.Mutex
-	maxTime := &ElapsedCombo{
-		serviceClean: "",
-		timeElapsed:  0,
-	}
-
-	var scanGroup errgroup.Group
-	scanGroup.SetLimit(*workerCount)
-
-	rem := len(gapiServices)
-
-	var foundMutex sync.Mutex
-	foundServices := make([]string, 0)
-	foundCount := 0 // idw to repeatedly check the length of foundServices
-
-	var failMutex sync.Mutex
-	failCount := 0
-
-	for _, item := range gapiServices {
-		if slices.Contains(slices.Concat(blacklisted, falsePos), item.CleanName) {
-			continue
-		}
-
-		scanGroup.Go(func() error {
-			var start time.Time
-			if *timingEnabled {
-				start = time.Now() // i doubt that this is an expensive operation in ANY way. Still.
+		go func() {
+			for update := range updateCh {
+				scanPin.UpdateMessage(fmt.Sprintf("Service count - %d in scope. Scanning %d more... %v", update.CurrentFound, update.CurrentRem, update.ItemCleanName))
 			}
-
-			if valid, err := utils.TestKeyServicePair(*key, item.DiscoveryUrl, *referrer); valid {
-				foundMutex.Lock()
-				foundCount++
-				foundServices = append(foundServices, item.CleanName)
-				foundMutex.Unlock()
-			} else if err != nil {
-				log.Printf("Error testing discovery endpoint %s: %v", item, err)
-				failMutex.Lock()
-				failCount++
-				failMutex.Unlock()
-			}
-
-			if *timingEnabled {
-				elapsed := time.Since(start).Milliseconds()
-				maxTimeMutex.Lock()
-				if elapsed > maxTime.timeElapsed {
-					maxTime = &ElapsedCombo{
-						serviceClean: item.CleanName,
-						timeElapsed:  elapsed,
-					}
-				}
-				maxTimeMutex.Unlock()
-			}
-
-			foundMutex.Lock()
-			currentRem := rem - 1
-			rem = currentRem
-			currentFound := foundCount
-			foundMutex.Unlock()
-
-			go scanPin.UpdateMessage(fmt.Sprintf("Service count - %d in scope. Scanning %d more... %v", currentFound, currentRem, item.CleanName))
-			return nil
-		})
+			close(updateDone)
+		}()
 	}
 
-	scanGroup.Wait()
+	foundServices, failCount, maxTime := utils.ScanServices(*key, *referrer, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
 
-	scanPin.Stop(fmt.Sprintf("Scan complete! Identified %d services available in the project.", foundCount))
+	if isInteractive {
+		<-updateDone
+		scanPin.Stop(fmt.Sprintf("Scan complete! Identified %d services available in the project.", len(foundServices)))
+	} else {
+		log.Printf("Scan complete! Identified %d services available in the project.", len(foundServices))
+	}
+
 	log.Println("APIs available to this API key:")
 
 	for _, service := range foundServices {
@@ -193,5 +136,4 @@ func main() {
 	if *timingEnabled {
 		log.Printf("Longest running service - %v\n\n\n", maxTime)
 	}
-
 }
