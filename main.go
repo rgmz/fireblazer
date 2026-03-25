@@ -39,25 +39,57 @@ type KeyResult struct {
 	MaxTime       *utils.ElapsedCombo
 }
 
-func processKey(apiKey string, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate) KeyResult {
-	res := KeyResult{Key: apiKey}
+func parseTargetKey(raw string, globalRef string) utils.TargetKey {
+	tk := utils.TargetKey{
+		Raw:      raw,
+		Key:      raw,
+		Referrer: globalRef,
+	}
+
+	if strings.HasPrefix(raw, "xios:") {
+		parts := strings.SplitN(raw, ":", 3)
+		if len(parts) >= 3 {
+			tk.Key = parts[1]
+			tk.IosBundleId = parts[2]
+			tk.Referrer = ""
+		}
+	} else if strings.HasPrefix(raw, "xandroid:") {
+		parts := strings.SplitN(raw, ":", 4)
+		if len(parts) >= 4 {
+			tk.Key = parts[1]
+			tk.AndroidPkg = parts[2]
+			tk.AndroidCert = parts[3]
+			tk.Referrer = ""
+		}
+	} else if strings.HasPrefix(raw, "xref:") {
+		parts := strings.SplitN(raw, ":", 3)
+		if len(parts) >= 3 {
+			tk.Key = parts[1]
+			tk.Referrer = parts[2]
+		}
+	}
+	return tk
+}
+
+func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate) KeyResult {
+	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
 		if isInteractive || *outputFormat == "text" {
-			log.Printf("[%s] Skipping API key verification.\n", apiKey)
+			log.Printf("[%s] Skipping API key verification.\n", target.Raw)
 		}
 		res.Valid = true
-	} else if valid, err := utils.TestKeyValidity(apiKey); !valid {
+	} else if valid, err := utils.TestKeyValidity(target.Key); !valid {
 		res.Valid = false
 		res.InvalidReason = err
 		return res
 	} else {
 		if isInteractive || *outputFormat == "text" {
-			log.Printf("[%s] Valid API key, proceeding.\n", apiKey)
+			log.Printf("[%s] Valid API key, proceeding.\n", target.Raw)
 		}
 		res.Valid = true
 	}
 
-	foundServices, failCount, maxTime := utils.ScanServices(apiKey, *referrer, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
+	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
 	res.FoundServices = foundServices
 	res.FailCount = failCount
 	res.MaxTime = maxTime
@@ -148,9 +180,10 @@ func main() {
 
 	for i, k := range keys {
 		wg.Add(1)
-		go func(i int, apiKey string) {
+		go func(i int, rawKey string) {
 			defer wg.Done()
-			results[i] = processKey(apiKey, gapiServices, blacklisted, falsePos, updateCh)
+			target := parseTargetKey(rawKey, *referrer)
+			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh)
 		}(i, k)
 	}
 

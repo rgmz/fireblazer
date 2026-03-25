@@ -16,23 +16,41 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func TestKeyServicePair(apiKey string, service string, referrer string) (bool, error) {
+type TargetKey struct {
+	Raw         string
+	Key         string
+	Referrer    string
+	IosBundleId string
+	AndroidPkg  string
+	AndroidCert string
+}
+
+func TestKeyServicePair(target TargetKey, service string) (bool, error) {
 
 	host, _ := url.Parse(service)
 	hostname := host.Hostname()
 
-	authenticatedDiscovery := AppendAPIKeyToURL(service, apiKey)
+	authenticatedDiscovery := AppendAPIKeyToURL(service, target.Key)
 	// sharedClient := GetClient()
 
 	// TODO : Move all error reqs to a retry pool to be executed after the initial batch with exponential+jitter
 	req, _ := http.NewRequest("HEAD", authenticatedDiscovery, nil)
 	req.Header.Add("Host", hostname)
 	req.Header.Add("X-HTTP-Method-Override", "GET") // Documented in https://docs.cloud.google.com/apis/docs/system-parameters - otherwise, it 404s :)
-	if referrer != "" {
-		req.Header.Add("Referer", referrer)
+	if target.Referrer != "" {
+		req.Header.Add("Referer", target.Referrer)
+	}
+	if target.IosBundleId != "" {
+		req.Header.Add("X-Ios-Bundle-Identifier", target.IosBundleId)
+	}
+	if target.AndroidPkg != "" {
+		req.Header.Add("X-Android-Package", target.AndroidPkg)
+	}
+	if target.AndroidCert != "" {
+		req.Header.Add("X-Android-Cert", target.AndroidCert)
 	}
 
-	headRequest, err := ReqHeaderOnly(*req, apiKey, false)
+	headRequest, err := ReqHeaderOnly(*req, target.Raw, false)
 
 	if err != nil {
 		log.Printf("Failed to make HEAD request (with X-HTTP-Method-Override: GET): %v", err)
@@ -112,7 +130,7 @@ type ScanUpdate struct {
 	ItemCleanName string
 }
 
-func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate) ([]string, int, *ElapsedCombo) {
+func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate) ([]string, int, *ElapsedCombo) {
 	var maxTimeMutex sync.Mutex
 	maxTime := &ElapsedCombo{
 		ServiceClean: "",
@@ -142,7 +160,7 @@ func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted
 				start = time.Now()
 			}
 
-			if valid, err := TestKeyServicePair(apiKey, item.DiscoveryUrl, ref); valid {
+			if valid, err := TestKeyServicePair(target, item.DiscoveryUrl); valid {
 				foundMutex.Lock()
 				foundCount++
 				foundServices = append(foundServices, item.CleanName)
@@ -175,7 +193,7 @@ func ScanServices(apiKey string, ref string, gapiServices []Service, blacklisted
 			if updateCh != nil {
 				select {
 				case updateCh <- ScanUpdate{
-					Key:           apiKey,
+					Key:           target.Raw,
 					CurrentFound:  currentFound,
 					CurrentRem:    currentRem,
 					ItemCleanName: item.CleanName,

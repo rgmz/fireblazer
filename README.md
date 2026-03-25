@@ -44,17 +44,30 @@ Output:
 2026/01/11 21:18:41 All discovery endpoint tests completed with 0 failures.
 ```
 
+Batch usage is supported through positional arguments. If you are testing multiple keys, this is highly recommended. I've had a speed up of roughly ~18x when verifying 100 keys.
+It starts to struggle around the 300 mark, so be careful with your quantity.
+
+`fireblazer AIzaSyC334f24LundukeS8uSkjWoke18 AIzaSyC334fSkafGr4h5ke485Sk25okt12` - chain it as much as you want. I don't recommend chaining more than 100 at a time - your mileage may vary.
+
+If you have keys that are origin restricted (like to an Android app, iOS app, or website), you can pass it through like so:
+
+- `xref:KEY:example.com` - Sets the `Referer` header.
+- `xios:KEY:com.example.app` - Sets the `X-Ios-Bundle-Identifier` header.
+- `xandroid:KEY:com.example.app:CERT` - Sets the `X-Android-Package` and `X-Android-Cert` headers. Make sure to strip the colons from the cert!
+
+Example: `fireblazer xios:AIzaSyC334f24...:com.google.gemini xref:AIzaSy...:gemini.google.com`
+
+I went with this format as it works in regular and batch mode. Also, if you're unsure about whether or not it's restricted, if it's information you have, no harm in including it.
+
 The program also checks the validity of the API key. If you're confident it's valid / want to save .2 seconds on the ~5 second scan, use --dangerouslySkipVerification. It's not really for saving time, but in case the primary verification method is broken.
 
 Enjoy the API key escalation!
 
 ## Roadmap / Plans
 ### Major Features
-- Batch key checker option for multiple keys
 - Support multiple output formats (YAML, JSON, Plain text & fancy cli outputs \[spinners\]) (Partial implementation)
 - Show which services require OAuth & which require Service Accounts to prevent the pentester from wasting time
 - Suggested actions & quick execs (firebase bucket perm testing)
-- Support other parameters for origin restrictions on keys (only referrer is supported atm)
 - Include project ID in the output. Can be useful for some services.
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
 
