@@ -126,13 +126,7 @@ func main() {
 	for _, raw := range utils.GoogleApiList {
 		hostname := strings.Split(raw, "/")[0]
 		cleanName := strings.Split(hostname, ".")[0]
-		var discoveryUrl string
-		if cleanName == "drive" { // HOTFIX! WILL INVESTIGATE PROPERLY RN!
-			discoveryUrl = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
-		} else {
-			discoveryUrl = "https://" + hostname + "/$discovery/rest"
-
-		}
+		discoveryUrl := "https://" + hostname + "/$discovery/rest"
 
 		gapiServices = append(gapiServices, utils.Service{
 			CleanName:    cleanName,
