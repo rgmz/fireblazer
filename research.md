@@ -27,10 +27,80 @@ If identitytoolkit / identitytoolkit.googleapis.com is supported - https://www.g
 }
 ```
 
+https://identitytoolkit.googleapis.com/v1/projects?key=
+^ alias ? says it's legacy in the docs.
+
+### Identitytoolkit Response Schema
+https://identitytoolkit.googleapis.com/$discovery/rest
+```json
+ "IdentitytoolkitRelyingpartyGetProjectConfigResponse": {
+  "id": "IdentitytoolkitRelyingpartyGetProjectConfigResponse",
+  "description": "Response of getting the project configuration.",
+  "type": "object",
+  "properties": {
+    "useEmailSending": {
+      "description": "Whether to use email sending provided by Firebear.",
+      "type": "boolean"
+    },
+    "changeEmailTemplate": {
+      "$ref": "EmailTemplate",
+      "description": "Change email template."
+    },
+    "projectId": {
+      "type": "string",
+      "description": "Project ID of the relying party."
+    },
+    "resetPasswordTemplate": {
+      "$ref": "EmailTemplate",
+      "description": "Reset password email template."
+    },
+    "authorizedDomains": {
+      "type": "array",
+      "description": "Authorized domains.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "legacyResetPasswordTemplate": {
+      "$ref": "EmailTemplate",
+      "description": "Legacy reset password email template."
+    },
+    "dynamicLinksDomain": {
+      "type": "string"
+    },
+    "verifyEmailTemplate": {
+      "$ref": "EmailTemplate",
+      "description": "Verify email template."
+    },
+    "enableAnonymousUser": {
+      "description": "Whether anonymous user is enabled.",
+      "type": "boolean"
+    },
+    "apiKey": {
+      "description": "Browser API key, needed when making http request to Apiary.",
+      "type": "string"
+    },
+    "idpConfig": {
+      "items": {
+        "$ref": "IdpConfig"
+      },
+      "type": "array",
+      "description": "OAuth2 provider configuration."
+    },
+    "allowPasswordUser": {
+      "description": "Whether to allow password user sign in or sign up.",
+      "type": "boolean"
+    }
+  }
+}
+```
+
+### Uses
 Could be used for extracting API key - project link regardless. If the key has access to the endpoint, we get the project id. If it doesn't... we get the project id anyways! I was looking for an endpoint that is always guaranteed to return the project id.
 
 Other approaches rely on just error codes, could fail if the api key DOES have access to the method. Even Google Private APIs / -pa.googleapis would fail to give the project ID if the site you're testing is owned by google. Though... Most of those have referrer restrictions so it might still give it. Either way, in this case, both the error code and response include it, so it's perfect. No edge cases as far as I know ((?)).
 
+### Responses & err codes
 ```json
 {
   "error": {
@@ -66,6 +136,7 @@ Other approaches rely on just error codes, could fail if the api key DOES have a
 }
 ```
 
+## Thoughts...
 This also means the key has  "https://www.googleapis.com/auth/cloud-platform" as a scope (most keys do though)
 
 IAM Permission endpoint seems to be all over the place though. Look for RPC endpoint that can be standard.

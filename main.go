@@ -25,6 +25,9 @@ var outputDetails = flag.String("outputDetails", "full", "[WIP] Comma delimited 
 var isInteractive = *outputFormat == "interactive" || *outputFormat == ""
 var timingEnabled = flag.Bool("findSlowService", false, "[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.")
 
+var scanPin = pin.New("Initializing...")
+var cancel = scanPin.Start(context.Background())
+
 type APIDetails struct {
 	Description string
 	Title       string
@@ -32,6 +35,7 @@ type APIDetails struct {
 
 type KeyResult struct {
 	Key           string
+	ProjectId     string
 	Valid         bool
 	InvalidReason error
 	FoundServices []string
@@ -74,17 +78,22 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate) KeyResult {
 	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
-		if isInteractive || *outputFormat == "text" {
-			log.Printf("[%s] Skipping API key verification.\n", target.Raw)
+		if isInteractive {
+			scanPin.UpdateMessage(fmt.Sprintf("[%s] Skipping API key verification.", target.Raw))
 		}
 		res.Valid = true
-	} else if valid, err := utils.TestKeyValidity(target.Key); !valid {
+	} else if valid, projectDetails, err := utils.TestKeyValidity(target.Key); !valid {
 		res.Valid = false
 		res.InvalidReason = err
 		return res
 	} else {
-		if isInteractive || *outputFormat == "text" {
-			log.Printf("[%s] Valid API key, proceeding.\n", target.Raw)
+		res.ProjectId = projectDetails.ProjectId
+		if isInteractive {
+			// there's probably a better way to make a separate display, but regular logs overlap on the same line.
+			scanPin.Stop(fmt.Sprintf("[%s] Valid API key, proceeding.", target.Raw))
+			scanPin.Start(context.Background())
+		} else if *outputFormat == "text" {
+			log.Printf("[%s] is a valid API key.", target.Raw)
 		}
 		res.Valid = true
 	}
@@ -139,14 +148,10 @@ func main() {
 		log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
 	}
 
-	var scanPin *pin.Pin
-	var cancel context.CancelFunc
 	var updateCh chan utils.ScanUpdate
 	var updateDone chan struct{}
 
 	if isInteractive {
-		scanPin = pin.New("Scanning...")
-		cancel = scanPin.Start(context.Background())
 		defer cancel()
 
 		updateCh = make(chan utils.ScanUpdate, *workerCount*len(keys))
@@ -208,7 +213,7 @@ func main() {
 			continue
 		}
 
-		log.Println("APIs available to this API key:")
+		log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
 
 		for _, service := range res.FoundServices {
 			if slices.Contains(falsePos, service) {

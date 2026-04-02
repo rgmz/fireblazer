@@ -27,21 +27,16 @@ Example usage & output\
 
 Output:
 ```log
-2026/01/11 21:18:35 Valid API key, proceeding.
-2026/01/11 21:18:36 Successfully retrieved 376 discovery endpoints - 0 endpoint sources failed.
-✓ Scan complete! Identified 5 services available in the project.
-2026/01/11 21:18:41 APIs available to this API key:
-2026/01/11 21:18:41  - cloudprofiler.googleapis.com / Cloud Profiler API 
-	- Manages continuous profiling information.
-2026/01/11 21:18:41  - bigtableadmin.googleapis.com / Cloud Bigtable Admin API 
-	- Administer your Cloud Bigtable tables and instances.
-2026/01/11 21:18:41  - container.googleapis.com / Kubernetes Engine API 
-	- Builds and manages container-based applications, powered by the open source Kubernetes technology.
-2026/01/11 21:18:41  - cloudfunctions.googleapis.com / Cloud Functions API 
-	- Manages lightweight user-provided functions executed in response to events.
-2026/01/11 21:18:41  - cloudscheduler.googleapis.com / Cloud Scheduler API 
-	- Creates and manages jobs run on a regular recurring schedule.
-2026/01/11 21:18:41 All discovery endpoint tests completed with 0 failures.
+2026/04/02 20:33:16 Successfully loaded 501 discovery endpoints from hardcoded list.
+✓ [AIzaSyC334f24LundukeS8uSkjWoke18] Valid API key, proceeding.
+✓ Scan complete!
+2026/04/02 20:33:20 APIs available to this API key with project ID 30507080705752:
+2026/04/02 20:33:20  - cloudasset.googleapis.com
+2026/04/02 20:33:20  - datacatalog.googleapis.com
+2026/04/02 20:33:20  - containeranalysis.googleapis.com
+2026/04/02 20:33:20  - datastore.googleapis.com
+2026/04/02 20:33:20  - dataform.googleapis.com
+2026/04/02 20:33:20  - container.googleapis.com
 ```
 
 Batch usage is supported through positional arguments. If you are testing multiple keys, this is highly recommended. I've had a speed up of roughly ~18x when verifying 100 keys.
@@ -69,15 +64,15 @@ Enjoy the API key escalation!
 - Show which services require OAuth & which require Service Accounts to prevent the pentester from wasting time
 - ^ Related, IAM testing on all endpoints through /iam/testPermissions would result in an even greater reduction in time necessary.
 - Suggested actions & quick execs (firebase bucket perm testing)
-- Include project ID in the output. Can be useful for some services.
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
 
 ### Patches
 - Add special detection methods for the (filtered out) false positives (refer to false positives from main.go) - priority would be the GCS API.
-- First request should be used for validating the key instead of having an alternate request for it (can possibly be bundled with the first discovery request, or launched during the scan and cancelling when invalid)
+- Timestamps to be disabled by default
+- Sort keys by service count
 
 #### Bugs 
-- :3
+- The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
 
 ## NOT AN EXPLOIT
 
