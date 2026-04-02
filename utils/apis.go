@@ -194,7 +194,7 @@ var GoogleApiList = []string{
 	"domains.googleapis.com/$discovery/rest",
 	"doubleclickbidmanager.googleapis.com/$discovery/rest",
 	"doubleclicksearch.googleapis.com/$discovery/rest",
-	"drive.googleapis.com/$discovery/rest",
+	"www.googleapis.com/discovery/v1/apis/drive/v3/rest",
 	"driveactivity.googleapis.com/$discovery/rest",
 	"drivelabels.googleapis.com/$discovery/rest",
 	"earthengine.googleapis.com/$discovery/rest",
