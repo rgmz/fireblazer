@@ -18,6 +18,7 @@ var key = flag.String("apiKey", "", "API key to scan. Can also be your first pos
 var referrer = flag.String("referrer", "", "Set the referrer (Referer:) header for when an API key is restricted to a website.")
 var dangerouslySkipVerification = flag.Bool("dangerouslySkipVerification", false, "Skip API key verification")
 var workerCount = flag.Int("workerCount", 170, "Set the amount of worker threads to spawn for executing the requests")
+var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to test against. Bypasses the full scan.")
 
 // interactive|text|json|yaml
 var outputFormat = flag.String("outputFormat", "interactive", "[WIP] Output format (interactive|text|json|yaml)")
@@ -75,7 +76,7 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 	return tk
 }
 
-func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate) KeyResult {
+func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate, useGet bool) KeyResult {
 	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
 		if isInteractive {
@@ -98,7 +99,7 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 		res.Valid = true
 	}
 
-	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh)
+	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh, useGet)
 	res.FoundServices = foundServices
 	res.FailCount = failCount
 	res.MaxTime = maxTime
@@ -123,15 +124,29 @@ func main() {
 
 	gapiServices := make([]utils.Service, 0)
 
-	for _, raw := range utils.GoogleApiList {
-		hostname := strings.Split(raw, "/")[0]
+	if *targetApi != "" {
+		hostname := strings.Split(*targetApi, "/")[0]
 		cleanName := strings.Split(hostname, ".")[0]
-		discoveryUrl := "https://" + hostname + "/$discovery/rest"
+		discoveryUrl := *targetApi
+		if !strings.HasPrefix(discoveryUrl, "http") {
+			discoveryUrl = "https://" + discoveryUrl
+		}
 
 		gapiServices = append(gapiServices, utils.Service{
 			CleanName:    cleanName,
 			DiscoveryUrl: discoveryUrl,
 		})
+	} else {
+		for _, raw := range utils.GoogleApiList {
+			hostname := strings.Split(raw, "/")[0]
+			cleanName := strings.Split(hostname, ".")[0]
+			discoveryUrl := "https://" + hostname + "/$discovery/rest"
+
+			gapiServices = append(gapiServices, utils.Service{
+				CleanName:    cleanName,
+				DiscoveryUrl: discoveryUrl,
+			})
+		}
 	}
 
 	keys := []string{}
@@ -145,7 +160,11 @@ func main() {
 	}
 
 	if isInteractive || *outputFormat == "text" {
-		log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
+		if *targetApi != "" {
+			log.Printf("Using single target API: %s", *targetApi)
+		} else {
+			log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
+		}
 	}
 
 	var updateCh chan utils.ScanUpdate
@@ -188,7 +207,7 @@ func main() {
 		go func(i int, rawKey string) {
 			defer wg.Done()
 			target := parseTargetKey(rawKey, *referrer)
-			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh)
+			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh, *targetApi != "")
 		}(i, k)
 	}
 
@@ -204,7 +223,20 @@ func main() {
 		log.Println("Scan complete!")
 	}
 
+	if *targetApi != "" {
+		fmt.Printf("\nTARGET: %s\n", *targetApi)
+	}
+
 	for _, res := range results {
+		if *targetApi != "" {
+			status := "❌"
+			if len(res.FoundServices) > 0 {
+				status = "✅"
+			}
+			fmt.Printf("%s : %s\n", res.Key, status)
+			continue
+		}
+
 		if len(keys) > 1 {
 			fmt.Printf("\n---%s---\n", res.Key)
 		}

@@ -54,6 +54,11 @@ Example: `fireblazer xios:AIzaSyC334f24...:com.google.gemini xref:AIzaSy...:gemi
 
 I went with this format as it works in regular and batch mode. Also, if you're unsure about whether or not it's restricted, if it's information you have, no harm in including it.
 
+You can also specify a single API endpoint to send a GET request against, with the --targetApi command
+`fireblazer --targetApi=www.googleapis.com/discovery/v1/apis/drive/v3/rest AIzaSyD...`
+
+Useful for when you only care about checking a batch of keys with an http3 stream, it'll be faster than making another script. Less errors, more reliable results, faster overall :)
+
 The program also checks the validity of the API key. If you're confident it's valid / want to save .2 seconds on the ~5 second scan, use --dangerouslySkipVerification. It's not really for saving time, but in case the primary verification method is broken.
 
 Enjoy the API key escalation!

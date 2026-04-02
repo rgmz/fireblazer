@@ -25,7 +25,7 @@ type TargetKey struct {
 	AndroidCert string
 }
 
-func TestKeyServicePair(target TargetKey, service string) (bool, error) {
+func TestKeyServicePair(target TargetKey, service string, useGet bool) (bool, error) {
 
 	host, _ := url.Parse(service)
 	hostname := host.Hostname()
@@ -34,9 +34,17 @@ func TestKeyServicePair(target TargetKey, service string) (bool, error) {
 	// sharedClient := GetClient()
 
 	// TODO : Move all error reqs to a retry pool to be executed after the initial batch with exponential+jitter
-	req, _ := http.NewRequest("HEAD", authenticatedDiscovery, nil)
+	method := "HEAD"
+	if useGet {
+		method = "GET"
+	}
+
+	req, _ := http.NewRequest(method, authenticatedDiscovery, nil)
 	req.Header.Add("Host", hostname)
-	req.Header.Add("X-HTTP-Method-Override", "GET") // Documented in https://docs.cloud.google.com/apis/docs/system-parameters - otherwise, it 404s :)
+	if !useGet {
+		req.Header.Add("X-HTTP-Method-Override", "GET") // Documented in https://docs.cloud.google.com/apis/docs/system-parameters - otherwise, it 404s :)
+	}
+
 	if target.Referrer != "" {
 		req.Header.Add("Referer", target.Referrer)
 	}
@@ -53,17 +61,11 @@ func TestKeyServicePair(target TargetKey, service string) (bool, error) {
 	headRequest, err := ReqHeaderOnly(*req, target.Raw, false)
 
 	if err != nil {
-		log.Printf("Failed to make HEAD request (with X-HTTP-Method-Override: GET): %v", err)
+		log.Printf("Failed to make request to %s: %v", service, err)
 		return false, err
 	}
 
 	headRequest.Body.Close()
-
-	if headRequest.StatusCode == 404 {
-		// Nothing is unusual with this - i think theres only one that returns 404 when there really isnt a discovery doc.
-		// For the ones without a discovery doc, I'll work on contextless GETs. later.
-		// TODO: Contextless GET edgecases for non-discoverable services
-	}
 
 	return headRequest.StatusCode == 200, nil
 }
@@ -130,7 +132,7 @@ type ScanUpdate struct {
 	ItemCleanName string
 }
 
-func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate) ([]string, int, *ElapsedCombo) {
+func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate, useGet bool) ([]string, int, *ElapsedCombo) {
 	var maxTimeMutex sync.Mutex
 	maxTime := &ElapsedCombo{
 		ServiceClean: "",
@@ -160,7 +162,7 @@ func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string
 				start = time.Now()
 			}
 
-			if valid, err := TestKeyServicePair(target, item.DiscoveryUrl); valid {
+			if valid, err := TestKeyServicePair(target, item.DiscoveryUrl, useGet); valid {
 				foundMutex.Lock()
 				foundCount++
 				foundServices = append(foundServices, item.CleanName)
