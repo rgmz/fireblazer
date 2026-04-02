@@ -67,6 +67,7 @@ Enjoy the API key escalation!
 ### Major Features
 - Support multiple output formats (YAML, JSON, Plain text & fancy cli outputs \[spinners\]) (Partial implementation)
 - Show which services require OAuth & which require Service Accounts to prevent the pentester from wasting time
+- ^ Related, IAM testing on all endpoints through /iam/testPermissions would result in an even greater reduction in time necessary.
 - Suggested actions & quick execs (firebase bucket perm testing)
 - Include project ID in the output. Can be useful for some services.
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
