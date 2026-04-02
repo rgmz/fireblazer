@@ -194,7 +194,7 @@ var GoogleApiList = []string{
 	"domains.googleapis.com/$discovery/rest",
 	"doubleclickbidmanager.googleapis.com/$discovery/rest",
 	"doubleclicksearch.googleapis.com/$discovery/rest",
-	"www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+	"drive.googleapis.com/$discovery/rest", // doesn't get picked up, uses alternative in main go
 	"driveactivity.googleapis.com/$discovery/rest",
 	"drivelabels.googleapis.com/$discovery/rest",
 	"earthengine.googleapis.com/$discovery/rest",
