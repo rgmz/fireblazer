@@ -344,3 +344,428 @@ When I checked it against my own project id and key, for a project that does not
 I don't have a billing account on GCP. If I did, my research would be greatly accelerated. Such is life. Maybe if my recent bugs pay out I might invest a good bit into my cybersec research. But if I get even more tea it would be just as good at helping me out in cybersec... too many options...
 
 -----
+
+## Enumerating .sandbox.google.com
+
+Sandbox domains that exist report proper CSP headers.
+If it doesn't exist, you don't get CSP headers. Can be used to validate the existence of .sandbox.google.com domains from source scans.
+
+## Oauth
+
+I still need a way to check the API key against an API. I'm also unaware of any GoogleAPIs / services that show `This API does not support API keys` for some endpoints while allowing it for others...
+
+Actually, I've been looking for a commoon method for checking auth for so long, like a healthcheck, that I never checked the discovery doc. It seems the ones that require OAuth have a *top level* `auth` field. If I use the &fileds=auth I can get it to error out on those that don't have it, letting me keep using HEAD.
+
+`https://bigquery.googleapis.com/$discovery/rest?key=AIzaSyD_CiIzuQlBIp_zXoQIecOI2s802lDkaGs&fields=auth`
+
+### Top level auth
+
+- admin.googleapis.com
+- androidpublisher.googleapis.com
+- androidenterprise.googleapis.com
+- customsearch.googleapis.com
+- calendar-json.googleapis.com
+- bigquery.googleapis.com
+- civicinfo.googleapis.com
+- analytics.googleapis.com
+- cloudkms.googleapis.com
+- adsense.googleapis.com
+- books.googleapis.com
+- games.googleapis.com
+- blogger.googleapis.com
+- gmail.googleapis.com
+- classroom.googleapis.com
+- cloudresourcemanager.googleapis.com
+- dataflow.googleapis.com
+- discovery.googleapis.com
+- doubleclicksearch.googleapis.com
+- dfareporting.googleapis.com
+- groupsmigration.googleapis.com
+- people.googleapis.com
+- pubsub.googleapis.com
+- siteverification.googleapis.com
+- shoppingcontent.googleapis.com
+- tasks.googleapis.com
+- tagmanager.googleapis.com
+- ml.googleapis.com
+- webfonts.googleapis.com
+- reseller.googleapis.com
+- youtube.googleapis.com
+- sqladmin.googleapis.com
+- toolresults.googleapis.com
+
+There's no way that's everything? I know for a fact serviceusage exists in apis.go and also requires auth.
+https://serviceusage.googleapis.com/$discovery/rest?fields=auth <- returns an error for some reason?? `"Error expanding 'fields' parameter. Cannot find matching fields for path 'auth'."`
+
+I've just ran a normal scan with contents instead
+
+APIs with top-level auth field. It shouldn't mean that it's not accessible at all. Lots of keys are granted these perms. I've called Servicemanagement from many API keys! This is just for prioritizing on quick runs.
+These APIs explicitly define their authentication requirements in the discovery document
+  - accessapproval.googleapis.com
+  - accesscontextmanager.googleapis.com
+  - addressvalidation.googleapis.com
+  - adexchangebuyer.googleapis.com
+  - admob.googleapis.com
+  - adsdatahub.googleapis.com
+  - adsense.googleapis.com
+  - adsenseplatform.googleapis.com
+  - advisorynotifications.googleapis.com
+  - aiplatform.googleapis.com
+  - airquality.googleapis.com
+  - alertcenter.googleapis.com
+  - alloydb.googleapis.com
+  - analytics.googleapis.com
+  - analyticsadmin.googleapis.com
+  - analyticsdata.googleapis.com
+  - analyticshub.googleapis.com
+  - androidenterprise.googleapis.com
+  - androidmanagement.googleapis.com
+  - androidpublisher.googleapis.com
+  - apigateway.googleapis.com
+  - apigee.googleapis.com
+  - apigeeregistry.googleapis.com
+  - apihub.googleapis.com
+  - apikeys.googleapis.com
+  - apim.googleapis.com
+  - appengine.googleapis.com
+  - apphub.googleapis.com
+  - areainsights.googleapis.com
+  - artifactregistry.googleapis.com
+  - assuredworkloads.googleapis.com
+  - auditmanager.googleapis.com
+  - authorizedbuyersmarketplace.googleapis.com
+  - automl.googleapis.com
+  - backupdr.googleapis.com
+  - batch.googleapis.com
+  - beyondcorp.googleapis.com
+  - biglake.googleapis.com
+  - bigquery.googleapis.com
+  - bigqueryconnection.googleapis.com
+  - bigquerydatapolicy.googleapis.com
+  - bigquerydatatransfer.googleapis.com
+  - bigquerymigration.googleapis.com
+  - bigqueryreservation.googleapis.com
+  - bigtable.googleapis.com
+  - bigtableadmin.googleapis.com
+  - billingbudgets.googleapis.com
+  - binaryauthorization.googleapis.com
+  - blockchainnodeengine.googleapis.com
+  - blogger.googleapis.com
+  - books.googleapis.com
+  - calendar-json.googleapis.com
+  - capacityplanner.googleapis.com
+  - certificatemanager.googleapis.com
+  - chat.googleapis.com
+  - chromemanagement.googleapis.com
+  - chromepolicy.googleapis.com
+  - chromewebstore.googleapis.com
+  - cloudasset.googleapis.com
+  - cloudbilling.googleapis.com
+  - cloudbuild.googleapis.com
+  - cloudchannel.googleapis.com
+  - cloudcommerceprocurement.googleapis.com
+  - cloudcontrolspartner.googleapis.com
+  - clouddeploy.googleapis.com
+  - clouderrorreporting.googleapis.com
+  - cloudfunctions.googleapis.com
+  - cloudidentity.googleapis.com
+  - cloudkms.googleapis.com
+  - cloudlocationfinder.googleapis.com
+  - cloudquotas.googleapis.com
+  - cloudresourcemanager.googleapis.com
+  - cloudscheduler.googleapis.com
+  - cloudsearch.googleapis.com
+  - cloudshell.googleapis.com
+  - cloudsupport.googleapis.com
+  - cloudtasks.googleapis.com
+  - cloudtrace.googleapis.com
+  - composer.googleapis.com
+  - config.googleapis.com
+  - connectors.googleapis.com
+  - contactcenteraiplatform.googleapis.com
+  - contactcenterinsights.googleapis.com
+  - container.googleapis.com
+  - containeranalysis.googleapis.com
+  - contentwarehouse.googleapis.com
+  - css.googleapis.com
+  - datacatalog.googleapis.com
+  - dataflow.googleapis.com
+  - dataform.googleapis.com
+  - datalabeling.googleapis.com
+  - datalineage.googleapis.com
+  - datamanager.googleapis.com
+  - datamigration.googleapis.com
+  - datapipelines.googleapis.com
+  - dataplex.googleapis.com
+  - dataportability.googleapis.com
+  - dataproc.googleapis.com
+  - datastore.googleapis.com
+  - datastream.googleapis.com
+  - deploymentmanager.googleapis.com
+  - designcenter.googleapis.com
+  - developerconnect.googleapis.com
+  - dfareporting.googleapis.com
+  - dialogflow.googleapis.com
+  - discoveryengine.googleapis.com
+  - displayvideo.googleapis.com
+  - dlp.googleapis.com
+  - dns.googleapis.com
+  - docs.googleapis.com
+  - documentai.googleapis.com
+  - domains.googleapis.com
+  - doubleclickbidmanager.googleapis.com
+  - doubleclicksearch.googleapis.com
+  - driveactivity.googleapis.com
+  - drivelabels.googleapis.com
+  - earthengine.googleapis.com
+  - enterprisepurchasing.googleapis.com
+  - essentialcontacts.googleapis.com
+  - eventarc.googleapis.com
+  - factchecktools.googleapis.com
+  - fcm.googleapis.com
+  - fcmdata.googleapis.com
+  - file.googleapis.com
+  - firebase.googleapis.com
+  - firebaseappcheck.googleapis.com
+  - firebaseappdistribution.googleapis.com
+  - firebaseapphosting.googleapis.com
+  - firebasedatabase.googleapis.com
+  - firebasedataconnect.googleapis.com
+  - firebasedynamiclinks.googleapis.com
+  - firebasehosting.googleapis.com
+  - firebaseml.googleapis.com
+  - firebaseremoteconfig.googleapis.com
+  - firebaserules.googleapis.com
+  - firebasestorage.googleapis.com
+  - firebasevertexai.googleapis.com
+  - firestore.googleapis.com
+  - forms.googleapis.com
+  - games.googleapis.com
+  - geminicloudassist.googleapis.com
+  - gkebackup.googleapis.com
+  - gkehub.googleapis.com
+  - gkeonprem.googleapis.com
+  - gmail.googleapis.com
+  - gmailpostmastertools.googleapis.com
+  - googleads.googleapis.com
+  - groupsmigration.googleapis.com
+  - groupssettings.googleapis.com
+  - homegraph.googleapis.com
+  - iam.googleapis.com
+  - iamcredentials.googleapis.com
+  - iap.googleapis.com
+  - identitytoolkit.googleapis.com
+  - ids.googleapis.com
+  - indexing.googleapis.com
+  - integrations.googleapis.com
+  - jobs.googleapis.com
+  - jules.googleapis.com
+  - keep.googleapis.com
+  - kmsinventory.googleapis.com
+  - language.googleapis.com
+  - licensing.googleapis.com
+  - localservices.googleapis.com
+  - logging.googleapis.com
+  - looker.googleapis.com
+  - lustre.googleapis.com
+  - managedflink.googleapis.com
+  - managedkafka.googleapis.com
+  - manufacturers.googleapis.com
+  - marketingplatformadmin.googleapis.com
+  - meet.googleapis.com
+  - memcache.googleapis.com
+  - merchantapi.googleapis.com
+  - metastore.googleapis.com
+  - migrate.googleapis.com
+  - migrationcenter.googleapis.com
+  - modelarmor.googleapis.com
+  - monitoring.googleapis.com
+  - netapp.googleapis.com
+  - networkconnectivity.googleapis.com
+  - networkmanagement.googleapis.com
+  - networksecurity.googleapis.com
+  - notebooks.googleapis.com
+  - observability.googleapis.com
+  - ondemandscanning.googleapis.com
+  - optimization.googleapis.com
+  - oracledatabase.googleapis.com
+  - orgpolicy.googleapis.com
+  - oslogin.googleapis.com
+  - parallelstore.googleapis.com
+  - parametermanager.googleapis.com
+  - paymentsresellersubscription.googleapis.com
+  - people.googleapis.com
+  - photoslibrary.googleapis.com
+  - places.googleapis.com
+  - playcustomapp.googleapis.com
+  - playdeveloperreporting.googleapis.com
+  - playintegrity.googleapis.com
+  - policysimulator.googleapis.com
+  - policytroubleshooter.googleapis.com
+  - pollen.googleapis.com
+  - privateca.googleapis.com
+  - privilegedaccessmanager.googleapis.com
+  - prod-tt-sasportal.googleapis.com
+  - publicca.googleapis.com
+  - pubsublite.googleapis.com
+  - rapidmigrationassessment.googleapis.com
+  - realtimebidding.googleapis.com
+  - recaptchaenterprise.googleapis.com
+  - recommendationengine.googleapis.com
+  - recommender.googleapis.com
+  - redis.googleapis.com
+  - remotebuildexecution.googleapis.com
+  - reseller.googleapis.com
+  - retail.googleapis.com
+  - run.googleapis.com
+  - runtimeconfig.googleapis.com
+  - saasservicemgmt.googleapis.com
+  - sasportal.googleapis.com
+  - script.googleapis.com
+  - searchads360.googleapis.com
+  - searchconsole.googleapis.com
+  - secretmanager.googleapis.com
+  - securesourcemanager.googleapis.com
+  - securitycenter.googleapis.com
+  - securityposture.googleapis.com
+  - serviceconsumermanagement.googleapis.com
+  - servicecontrol.googleapis.com
+  - servicedirectory.googleapis.com
+  - servicehealth.googleapis.com
+  - servicemanagement.googleapis.com
+  - servicenetworking.googleapis.com
+  - serviceusage.googleapis.com
+  - sheets.googleapis.com
+  - siteverification.googleapis.com
+  - slides.googleapis.com
+  - smartdevicemanagement.googleapis.com
+  - spanner.googleapis.com
+  - speech.googleapis.com
+  - sqladmin.googleapis.com
+  - storage.googleapis.com
+  - storagebatchoperations.googleapis.com
+  - storageinsights.googleapis.com
+  - storagetransfer.googleapis.com
+  - streetviewpublish.googleapis.com
+  - tagmanager.googleapis.com
+  - tasks.googleapis.com
+  - texttospeech.googleapis.com
+  - tpu.googleapis.com
+  - transcoder.googleapis.com
+  - translate.googleapis.com
+  - translationhub.googleapis.com
+  - vault.googleapis.com
+  - vectorsearch.googleapis.com
+  - verifiedaccess.googleapis.com
+  - videointelligence.googleapis.com
+  - vision.googleapis.com
+  - vmmigration.googleapis.com
+  - vmwareengine.googleapis.com
+  - vpcaccess.googleapis.com
+  - walletobjects.googleapis.com
+  - weather.googleapis.com
+  - webrisk.googleapis.com
+  - websecurityscanner.googleapis.com
+  - workflowexecutions.googleapis.com
+  - workflows.googleapis.com
+  - workloadmanager.googleapis.com
+  - workstations.googleapis.com
+  - youtube.googleapis.com
+  - youtubeanalytics.googleapis.com
+  - youtubereporting.googleapis.com
+
+No top level auth field
+  - abusiveexperiencereport.googleapis.com
+  - acceleratedmobilepageurl.googleapis.com
+  - adexperiencereport.googleapis.com
+  - admanager.googleapis.com
+  - admin.googleapis.com
+  - androiddeviceprovisioning.googleapis.com
+  - androidovertheair.googleapis.com
+  - businessprofileperformance.googleapis.com
+  - checks.googleapis.com
+  - civicinfo.googleapis.com
+  - customsearch.googleapis.com
+  - digitalassetlinks.googleapis.com
+  - discovery.googleapis.com
+  - firebaseinappmessaging.googleapis.com
+  - generativelanguage.googleapis.com
+  - kgsearch.googleapis.com
+  - listallowedkids.googleapis.com
+  - mapsbooking.googleapis.com
+  - mybusinessaccountmanagement.googleapis.com
+  - mybusinessbusinessinformation.googleapis.com
+  - mybusinesslodging.googleapis.com
+  - mybusinessnotifications.googleapis.com
+  - mybusinessplaceactions.googleapis.com
+  - mybusinessqanda.googleapis.com
+  - mybusinessverifications.googleapis.com
+  - partnerdev-mapsbooking.googleapis.com
+  - photospicker.googleapis.com
+  - playgrouping.googleapis.com
+  - readerrevenuesubscriptionlinking.googleapis.com
+  - regionlookup.googleapis.com
+  - safebrowsing.googleapis.com
+  - securetoken.googleapis.com
+  - sts.googleapis.com
+  - travelimpactmodel.googleapis.com
+  - versionhistory.googleapis.com
+  - webfonts.googleapis.com
+
+I need to find a way to see which methods API keys are allowed to call without being bound to a service account. I know for a fact I can call servicemanagement with an API key, but not perform all actions.
+
+Speaking of servicemanagement:
+
+```json
+"AuthenticationRule": {
+  "id": "AuthenticationRule",
+  "description": "Authentication rules for the service. By default, if a method has any authentication requirements, every request must include a valid credential matching one of the requirements. It's an error to include more than one kind of credential in a single request. If a method doesn't have any auth requirements, request credentials will be ignored.",
+  "type": "object",
+  "properties": {
+    "selector": {
+      "description": "Selects the methods to which this rule applies. Refer to selector for syntax details.",
+      "type": "string"
+    },
+    "oauth": {
+      "description": "The requirements for OAuth credentials.",
+      "$ref": "OAuthRequirements"
+    },
+    "allowWithoutCredential": {
+      "description": "If true, the service accepts API keys without any other credential. This flag only applies to HTTP and gRPC requests.",
+      "type": "boolean"
+    },
+    "requirements": {
+      "description": "Requirements for additional authentication providers.",
+      "type": "array",
+      "items": {
+        "$ref": "AuthRequirement"
+      }
+    }
+  }
+}
+```
+Servicemanagement API can give all this.
+
+```json
+    "UsageRule": {
+      "id": "UsageRule",
+      "description": "Usage configuration rules for the service.",
+      "type": "object",
+      "properties": {
+        "selector": {
+          "description": "Selects the methods to which this rule applies. Use '*' to indicate all methods in all APIs. Refer to selector for syntax details.",
+          "type": "string"
+        },
+        "allowUnregisteredCalls": {
+          "description": "Use this rule to configure unregistered calls for the service. Unregistered calls are calls that do not contain consumer project identity. (Example: calls that do not contain an API key). WARNING: By default, API methods do not allow unregistered calls, and each method call must be identified by a consumer project identity.",
+          "type": "boolean"
+        },
+        "skipServiceControl": {
+          "description": "If true, the selected method should skip service control and the control plane features, such as quota and billing, will not be available. This flag is used by Google Cloud Endpoints to bypass checks for internal methods, such as service health check methods.",
+          "type": "boolean"
+        }
+      }
+    }
+```
+
+I'll do a deeper dive on it in a bit - https://servicemanagement.googleapis.com/$discovery/rest - I also have a feeling I can get a nice bug from servicemanagement.
