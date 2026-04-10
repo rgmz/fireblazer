@@ -77,6 +77,7 @@ Enjoy the API key escalation!
 - Sort keys by service count
 
 #### Bugs 
+- If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue !
 - The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
 
 ## NOT AN EXPLOIT
