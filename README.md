@@ -78,6 +78,7 @@ Enjoy the API key escalation!
 
 #### Bugs 
 - If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue !
+- Bug may cause fireblazer to break on batch keys due to my faulty implementation of yarlson/pin. SImply running it again may erase your race condition.
 - The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
 
 ## NOT AN EXPLOIT
