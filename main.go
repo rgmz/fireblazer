@@ -91,8 +91,10 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 		res.ProjectId = projectDetails.ProjectId
 		if isInteractive {
 			// there's probably a better way to make a separate display, but regular logs overlap on the same line.
+			if !scanPin.IsRunning() {
+				scanPin.Start(context.Background())
+			}
 			scanPin.Stop(fmt.Sprintf("[%s] Valid API key, proceeding.", target.Raw))
-			scanPin.Start(context.Background())
 		} else if *outputFormat == "text" {
 			log.Printf("[%s] is a valid API key.", target.Raw)
 		}
