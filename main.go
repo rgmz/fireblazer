@@ -23,11 +23,11 @@ var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to
 // interactive|text|json|yaml
 var outputFormat = flag.String("outputFormat", "interactive", "[WIP] Output format (interactive|text|json|yaml)")
 var outputDetails = flag.String("outputDetails", "full", "[WIP] Comma delimited list of what to include in the details (description|title|name). Comma delimited.")
-var isInteractive = *outputFormat == "interactive" || *outputFormat == ""
 var timingEnabled = flag.Bool("findSlowService", false, "[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.")
+var isInteractive = false
 
 var scanPin = pin.New("Initializing...")
-var cancel = scanPin.Start(context.Background())
+var cancel context.CancelFunc
 
 type APIDetails struct {
 	Description string
@@ -111,9 +111,14 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 func main() {
 	flag.Parse()
 
+	isInteractive = *outputFormat == "interactive" || *outputFormat == ""
 	// utils.MultipartAllDiscoveries(*key, []string{"generativelanguage.googleapis.com", "discovery.googleapis.com"})
 	// return
 
+	if isInteractive {
+		cancel = scanPin.Start(context.Background())
+	}
+	println("isinteractive", isInteractive)
 	falsePos := []string{
 		"digitalassetlinks",
 		"oauth2",

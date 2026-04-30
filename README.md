@@ -80,6 +80,7 @@ Enjoy the API key escalation!
 - If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue !
 - Bug may cause fireblazer to break on batch keys due to my faulty implementation of yarlson/pin. SImply running it again may erase your race condition.
 - The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
+- Fix Workspace suite detection. Currently it checks workspace stuff but the real path is elsewhere. Drive and such. But last I remember, most of the code relies on the /$discovery/rest format. Should decouple that logic.
 
 ## NOT AN EXPLOIT
 
