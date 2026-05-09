@@ -70,6 +70,7 @@ Enjoy the API key escalation!
 - ^ Related, IAM testing on all endpoints through /iam/testPermissions would result in an even greater reduction in time necessary.
 - Suggested actions & quick execs (firebase bucket perm testing)
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
+- Add Brand Identity retrieval thru clientauthconfig.googleapis.com w the key from https://console.cloud.google.com (upon running into this and looking into it further, turns out its been reported as a vulnerability and marked as wontfix - https://feed.bugs.xdavidhu.me/bugs/0009 )
 
 ### Patches
 - Add special detection methods for the (filtered out) false positives (refer to false positives from main.go) - priority would be the GCS API.
@@ -77,7 +78,7 @@ Enjoy the API key escalation!
 - Sort keys by service count
 
 #### Bugs 
-- If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue !
+- If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue... but can't reproduce since? If anyone can repro pls file an issue!
 - Bug may cause fireblazer to break on batch keys due to my faulty implementation of yarlson/pin. SImply running it again may erase your race condition.
 - The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
 - Fix Workspace suite detection. Currently it checks workspace stuff but the real path is elsewhere. Drive and such. But last I remember, most of the code relies on the /$discovery/rest format. Should decouple that logic.

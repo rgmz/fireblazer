@@ -112,13 +112,16 @@ func main() {
 	flag.Parse()
 
 	isInteractive = *outputFormat == "interactive" || *outputFormat == ""
+	if !*timingEnabled {
+		log.SetFlags(0)
+	}
 	// utils.MultipartAllDiscoveries(*key, []string{"generativelanguage.googleapis.com", "discovery.googleapis.com"})
 	// return
 
 	if isInteractive {
 		cancel = scanPin.Start(context.Background())
 	}
-	println("isinteractive", isInteractive)
+
 	falsePos := []string{
 		"digitalassetlinks",
 		"oauth2",
