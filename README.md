@@ -50,7 +50,10 @@ You can also specify a single API endpoint to send a GET request against, with t
 
 Useful for when you only care about checking a batch of keys with an http3 stream, it'll be faster than making another script. Less errors, more reliable results, faster overall :)
 
-The program also checks the validity of the API key. If you're confident it's valid / want to save .2 seconds on the ~5 second scan, use --dangerouslySkipVerification. It's not really for saving time, but in case the primary verification method is broken.
+The program also checks the validity of the API key. If you're confident it's valid / want to save .2 seconds on the ~5 second scan, use --dangerouslySkipVerification. It's not really for saving time, but in case the primary verification method is broken. Please file an issue or mention me on Twitter if that's the case.
+
+You can also change the output format using the `--outputFormat` flag. The available options are `interactive`, `text`, `json`, and `yaml`. This is especially useful for integrating Fireblazer into automated pipelines.
+Example: `fireblazer --outputFormat=json AIzaSy...`
 
 Enjoy the API key escalation!
 
@@ -80,14 +83,11 @@ The base is entirely handwritten by me. I may use AI for code cleanup, but other
 
 ### Patches
 - Add special detection methods for the (filtered out) false positives (refer to false positives from main.go) - priority would be the GCS API.
-- Timestamps to be disabled by default
 - Sort keys by service count
 - Investigate multipart batch calls. The performance gain would be minimal, but it's interesting. I scrapped that a while back as http3 allows sending it all as "one request" (stream) anyways, but it would be interesting if we can minimize any HTTP overhead, no matter how slim HTTP3 is. Just an experiment. Some thoughts in Notes.
 
 #### Bugs 
 - If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue... but can't reproduce since? If anyone can repro pls file an issue!
-- Bug may cause fireblazer to break on batch keys due to my faulty implementation of yarlson/pin. SImply running it again may erase your race condition.
-- The remaining counter tends to be unstable as new keys are added to the scan (looks very jittery). Simple fix.
 - Fix Workspace suite detection. Currently it checks workspace stuff but the real path is elsewhere. Drive and such. But last I remember, most of the code relies on the /$discovery/rest format. Should decouple that logic.
 
 ## NOT AN EXPLOIT
