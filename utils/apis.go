@@ -374,7 +374,7 @@ var GoogleApiList = []string{
 	"playdeveloperreporting.googleapis.com/$discovery/rest",
 	"playgrouping.googleapis.com/$discovery/rest",
 	"playintegrity.googleapis.com/$discovery/rest",
-	"www.googleapis.com/discovery/v1/apis/plus/v1/rest",
+	// "www.googleapis.com/discovery/v1/apis/plus/v1/rest", // DEPRECATED / FALSE POS - This service was kille dmany many years ago.
 	// "plusdomains.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	// "plushangouts.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"policyanalyzer.googleapis.com/$discovery/rest",

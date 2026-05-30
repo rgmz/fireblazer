@@ -27,6 +27,7 @@ var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to
 var outputFormat = flag.String("outputFormat", "interactive", "Output format (interactive|text|json|yaml)")
 var outputDetails = flag.String("outputDetails", "name", "Comma delimited list of what to include in the details (description|title|name).")
 var timingEnabled = flag.Bool("findSlowService", false, "[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.")
+var blaze = flag.Bool("blaze", false, "Enable additional aggressive recon checks (e.g., Brand Identity)")
 var isInteractive = false
 
 var scanPin = pin.New("Initializing...")
@@ -45,6 +46,7 @@ type KeyResult struct {
 	FoundServices []string
 	FailCount     int
 	MaxTime       *utils.ElapsedCombo
+	Brand         map[string]interface{}
 }
 
 func parseTargetKey(raw string, globalRef string) utils.TargetKey {
@@ -119,13 +121,14 @@ type ServiceDetail struct {
 }
 
 type StructuredOutput struct {
-	Key            string          `json:"key" yaml:"key"`
-	Valid          bool            `json:"valid" yaml:"valid"`
-	InvalidReason  string          `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
-	ProjectId      string          `json:"project_id,omitempty" yaml:"project_id,omitempty"`
-	Services       []string        `json:"services" yaml:"services"`
-	ServiceDetails []ServiceDetail `json:"service_details,omitempty" yaml:"service_details,omitempty"`
-	FailCount      int             `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
+	Key            string                 `json:"key" yaml:"key"`
+	Valid          bool                   `json:"valid" yaml:"valid"`
+	InvalidReason  string                 `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
+	ProjectId      string                 `json:"project_id,omitempty" yaml:"project_id,omitempty"`
+	Brand          map[string]interface{} `json:"brand,omitempty" yaml:"brand,omitempty"`
+	Services       []string               `json:"services" yaml:"services"`
+	ServiceDetails []ServiceDetail        `json:"service_details,omitempty" yaml:"service_details,omitempty"`
+	FailCount      int                    `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
 }
 
 func main() {
@@ -289,7 +292,15 @@ func main() {
 		go func(i int, rawKey string) {
 			defer wg.Done()
 			target := parseTargetKey(rawKey, *referrer)
-			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh, logCh, *targetApi != "")
+			res := processKey(target, gapiServices, blacklisted, falsePos, updateCh, logCh, *targetApi != "")
+			
+			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
+				brand, err := utils.GetBrandIdentity(res.ProjectId)
+				if err == nil && brand != nil {
+					res.Brand = brand
+				}
+			}
+			results[i] = res
 		}(i, k)
 	}
 
@@ -318,6 +329,7 @@ func main() {
 				Key:       res.Key,
 				Valid:     res.Valid,
 				ProjectId: res.ProjectId,
+				Brand:     res.Brand,
 				FailCount: res.FailCount,
 				Services:  []string{},
 			}
@@ -399,7 +411,20 @@ func main() {
 				continue
 			}
 
-			log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
+			if res.Brand != nil {
+				log.Printf("\nOAuth Client Screen Details")
+				if displayName, ok := res.Brand["displayName"]; ok && displayName != "" {
+					log.Printf(" - App Name: %v", displayName)
+				}
+				if supportEmail, ok := res.Brand["supportEmail"]; ok && supportEmail != "" {
+					log.Printf(" - Project Admin / Support Email: %v", supportEmail)
+				}
+				if homePageUrl, ok := res.Brand["homePageUrl"]; ok && homePageUrl != "" {
+					log.Printf(" - Homepage: %v", homePageUrl)
+				}
+			}
+
+			log.Printf("\nAPIs available to this API key with project ID %s:", res.ProjectId)
 
 			for _, service := range res.FoundServices {
 				if slices.Contains(falsePos, service) {

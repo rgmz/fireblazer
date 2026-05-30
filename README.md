@@ -78,7 +78,6 @@ The base is entirely handwritten by me. I may use AI for code cleanup, but other
 - ^ Related, IAM testing on all endpoints through /iam/testPermissions would result in an even greater reduction in time necessary.
 - Suggested actions & quick execs (firebase bucket perm testing)
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
-- Add Brand Identity retrieval thru clientauthconfig.googleapis.com w the key from https://console.cloud.google.com (upon running into this and looking into it further, turns out its been reported as a vulnerability and marked as wontfix - https://feed.bugs.xdavidhu.me/bugs/0009 )
 - Minor, but a tuning mode to identify the ideal worker count for future runs on the machine it's on.
 
 ### Patches
@@ -102,11 +101,11 @@ Or, they can return zero errors of use and make it silently fail, making life he
 
 ### Additional recon [WIP]
 
-Entirely WIP, just here to solidify the roadmap so I'd finally do it today. If this is still not implemented by the time you're reading this, pester me on Twitter @ https://x.com/bedros_p
+Mostly WIP, just here to solidify the roadmap so I'd finally do it today. If this is still not implemented by the time you're reading this, pester me on Twitter @ https://x.com/bedros_p
 
 When enumerating a single key in interactive mode, it runs some additional, non-state-altering recon in its newest version, extending beyond mere API key + service pairing. This means that not all discovered services are particularly reachable by the API key, but exist merely for enumerating a projects infrastructure. These are listed in a separate segment. If it can be found through other means, Google VRP does not accept it as a concern. If it's not a risk on it's own, it's not a risk till a chain can be proven. In this case, all the chains are customer-specific, and I have not found anything that leads me to believe this relies on misconfigurations on Googles end. None of this is really a risk.
 
-- [WIP, not impld] Brand lookup for OAuth screen (previously reported, marked as wontfix - https://feed.bugs.xdavidhu.me/bugs/0009 )
+- Brand lookup for OAuth screen (previously reported, marked as wontfix - https://feed.bugs.xdavidhu.me/bugs/0009 )
 - [WIP, not impld] Check for service account existence based on well-known formats. For some specific services, enabling it causes the creation of a service account which we can check the existence of. The key cannot hit those services, it is only useful for recon on the project as a whole. This method is useful for target scoping, but poses absolutely zero threat to any customer. Thinking it's a problem is like saying "we can tell you use Spring Boot based on these error responses", but even less useful.
 
 You can enable these checks for all scans if you like it with the -blaze flag.
