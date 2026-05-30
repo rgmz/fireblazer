@@ -148,6 +148,14 @@ func main() {
 	if *targetApi != "" {
 		hostname := strings.Split(*targetApi, "/")[0]
 		cleanName := strings.Split(hostname, ".")[0]
+
+		if cleanName == "www" {
+			parts := strings.Split(*targetApi, "/")
+			if len(parts) >= 5 && parts[1] == "discovery" {
+				cleanName = parts[4]
+			}
+		}
+
 		discoveryUrl := *targetApi
 		if !strings.HasPrefix(discoveryUrl, "http") {
 			discoveryUrl = "https://" + discoveryUrl
@@ -161,7 +169,15 @@ func main() {
 		for _, raw := range utils.GoogleApiList {
 			hostname := strings.Split(raw, "/")[0]
 			cleanName := strings.Split(hostname, ".")[0]
-			discoveryUrl := "https://" + hostname + "/$discovery/rest"
+
+			if cleanName == "www" {
+				parts := strings.Split(raw, "/")
+				if len(parts) >= 5 && parts[1] == "discovery" {
+					cleanName = parts[4]
+				}
+			}
+
+			discoveryUrl := "https://" + raw
 
 			gapiServices = append(gapiServices, utils.Service{
 				CleanName:    cleanName,

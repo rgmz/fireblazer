@@ -8,7 +8,7 @@ var GoogleApiList = []string{
 	"actions.googleapis.com/$discovery/rest",
 	"addressvalidation.googleapis.com/$discovery/rest",
 	"adexchangebuyer.googleapis.com/$discovery/rest",
-	"adexchangeseller.googleapis.com/$discovery/rest",
+	// "adexchangeseller.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"adexperiencereport.googleapis.com/$discovery/rest",
 	"admanager.googleapis.com/$discovery/rest",
 	"admin.googleapis.com/$discovery/rest",
@@ -32,11 +32,11 @@ var GoogleApiList = []string{
 	"androidmanagement.googleapis.com/$discovery/rest",
 	"androidovertheair.googleapis.com/$discovery/rest",
 	"androidpublisher.googleapis.com/$discovery/rest",
-	"anthos.googleapis.com/$discovery/rest",
-	"anthosaudit.googleapis.com/$discovery/rest",
-	"anthosconfigmanagement.googleapis.com/$discovery/rest",
-	"anthosgke.googleapis.com/$discovery/rest",
-	"anthosidentityservice.googleapis.com/$discovery/rest",
+	// "anthos.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "anthosaudit.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "anthosconfigmanagement.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "anthosgke.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "anthosidentityservice.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"anthospolicycontroller.googleapis.com/$discovery/rest",
 	"apigateway.googleapis.com/$discovery/rest",
 	"apigee.googleapis.com/$discovery/rest",
@@ -45,14 +45,14 @@ var GoogleApiList = []string{
 	"apihub.googleapis.com/$discovery/rest",
 	"apikeys.googleapis.com/$discovery/rest",
 	"apim.googleapis.com/$discovery/rest",
-	"appdevelopmentexperience.googleapis.com/$discovery/rest",
+	// "appdevelopmentexperience.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"appengine.googleapis.com/$discovery/rest",
-	"appengineflex.googleapis.com/$discovery/rest",
-	"appenginereporting.googleapis.com/$discovery/rest",
+	// "appengineflex.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "appenginereporting.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"apphub.googleapis.com/$discovery/rest",
 	"appoptimize.googleapis.com/$discovery/rest",
-	"appsmarket-component.googleapis.com/$discovery/rest",
-	"appsmarket.googleapis.com/$discovery/rest",
+	// "appsmarket-component.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	"appsmarket.googleapis.com/$discovery/rest?version=v2",
 	"apptopology.googleapis.com/$discovery/rest",
 	"arcore.googleapis.com/$discovery/rest",
 	"arcorecloudanchor.googleapis.com/$discovery/rest",
@@ -65,7 +65,7 @@ var GoogleApiList = []string{
 	"authorizedbuyersmarketplace.googleapis.com/$discovery/rest",
 	"automl.googleapis.com/$discovery/rest",
 	"automotivemaps.googleapis.com/$discovery/rest",
-	"autoscaling.googleapis.com/$discovery/rest",
+	// "autoscaling.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"backupdr.googleapis.com/$discovery/rest",
 	"baremetalsolution.googleapis.com/$discovery/rest",
 	"batch.googleapis.com/$discovery/rest",
@@ -78,18 +78,18 @@ var GoogleApiList = []string{
 	"bigquerymigration.googleapis.com/$discovery/rest",
 	"bigqueryreservation.googleapis.com/$discovery/rest",
 	"bigquerystorage.googleapis.com/$discovery/rest",
-	"bigqueryunified.googleapis.com/$discovery/rest",
+	// "bigqueryunified.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"bigtable.googleapis.com/$discovery/rest",
 	"bigtableadmin.googleapis.com/$discovery/rest",
 	"bigtabletableadmin.googleapis.com/$discovery/rest",
 	"billingbudgets.googleapis.com/$discovery/rest",
 	"binaryauthorization.googleapis.com/$discovery/rest",
-	"blockchain.googleapis.com/$discovery/rest",
+	// "blockchain.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"blockchainnodeengine.googleapis.com/$discovery/rest",
 	"blogger.googleapis.com/$discovery/rest",
 	"books.googleapis.com/$discovery/rest",
 	"businessprofileperformance.googleapis.com/$discovery/rest",
-	"caldav.googleapis.com/$discovery/rest",
+	// "caldav.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"calendar-json.googleapis.com/$discovery/rest",
 	"capacityplanner.googleapis.com/$discovery/rest",
 	"carddav.googleapis.com/$discovery/rest",
@@ -99,15 +99,15 @@ var GoogleApiList = []string{
 	"chromedevicetoken.googleapis.com/$discovery/rest",
 	"chromemanagement.googleapis.com/$discovery/rest",
 	"chromepolicy.googleapis.com/$discovery/rest",
-	"chromeuxreport.googleapis.com/$discovery/rest",
+	"chromeuxreport.googleapis.com/$discovery/rest?version=v1",
 	"chromewebstore.googleapis.com/$discovery/rest",
-	"chronicle.googleapis.com/$discovery/rest",
+	// "chronicle.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"civicinfo.googleapis.com/$discovery/rest",
 	"classroom.googleapis.com/$discovery/rest",
 	"cloud.googleapis.com/$discovery/rest",
 	"cloudaicompanion.googleapis.com/$discovery/rest",
 	"cloudapiregistry.googleapis.com/$discovery/rest",
-	"cloudapis.googleapis.com/$discovery/rest",
+	// "cloudapis.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"cloudasset.googleapis.com/$discovery/rest",
 	"cloudbilling.googleapis.com/$discovery/rest",
 	"cloudbuild.googleapis.com/$discovery/rest",
@@ -120,7 +120,7 @@ var GoogleApiList = []string{
 	"cloudfunctions.googleapis.com/$discovery/rest",
 	"cloudidentity.googleapis.com/$discovery/rest",
 	"cloudkms.googleapis.com/$discovery/rest",
-	"cloudlatencytest.googleapis.com/$discovery/rest",
+	// "cloudlatencytest.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"cloudlocationfinder.googleapis.com/$discovery/rest",
 	"cloudoptimization.googleapis.com/$discovery/rest",
 	"cloudprivatecatalog.googleapis.com/$discovery/rest",
@@ -136,7 +136,7 @@ var GoogleApiList = []string{
 	"cloudtrace.googleapis.com/$discovery/rest",
 	"cloudvideosearch.googleapis.com/$discovery/rest",
 	"composer.googleapis.com/$discovery/rest",
-	"compute.googleapis.com/$discovery/rest",
+	"www.googleapis.com/discovery/v1/apis/compute/v1/rest",
 	"confidentialcomputing.googleapis.com/$discovery/rest",
 	"config.googleapis.com/$discovery/rest",
 	"configdelivery.googleapis.com/$discovery/rest",
@@ -148,13 +148,13 @@ var GoogleApiList = []string{
 	"container.googleapis.com/$discovery/rest",
 	"containeranalysis.googleapis.com/$discovery/rest",
 	"containerfilesystem.googleapis.com/$discovery/rest",
-	"containerregistry.googleapis.com/$discovery/rest",
-	"containerscanning.googleapis.com/$discovery/rest",
+	// "containerregistry.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "containerscanning.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"containersecurity.googleapis.com/$discovery/rest",
 	// "containerthreatdetection.googleapis.com/$discovery/rest",
 	"contentwarehouse.googleapis.com/$discovery/rest",
 	"contrails.googleapis.com/$discovery/rest",
-	"copresence.googleapis.com/$discovery/rest",
+	// "copresence.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"css.googleapis.com/$discovery/rest",
 	"customsearch.googleapis.com/$discovery/rest",
 	"datacatalog.googleapis.com/$discovery/rest",
@@ -182,11 +182,11 @@ var GoogleApiList = []string{
 	"dfareporting.googleapis.com/$discovery/rest",
 	"dialogflow.googleapis.com/$discovery/rest",
 	"digitalassetlinks.googleapis.com/$discovery/rest",
-	"directions-backend.googleapis.com/$discovery/rest",
+	// "directions-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"discovery.googleapis.com/$discovery/rest",
 	"discoveryengine.googleapis.com/$discovery/rest",
 	"displayvideo.googleapis.com/$discovery/rest",
-	"distance-matrix-backend.googleapis.com/$discovery/rest",
+	// "distance-matrix-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"dlp.googleapis.com/$discovery/rest",
 	"dns.googleapis.com/$discovery/rest",
 	"docs.googleapis.com/$discovery/rest",
@@ -194,14 +194,14 @@ var GoogleApiList = []string{
 	"domains.googleapis.com/$discovery/rest",
 	"doubleclickbidmanager.googleapis.com/$discovery/rest",
 	"doubleclicksearch.googleapis.com/$discovery/rest",
-	"drive.googleapis.com/$discovery/rest", // <-- BROKEN
+	"www.googleapis.com/discovery/v1/apis/drive/v3/rest", // <-- BROKEN
 	"driveactivity.googleapis.com/$discovery/rest",
 	"drivelabels.googleapis.com/$discovery/rest",
 	"earthengine.googleapis.com/$discovery/rest",
-	"edgecache.googleapis.com/$discovery/rest",
+	// "edgecache.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"edgecontainer.googleapis.com/$discovery/rest",
 	"edgenetwork.googleapis.com/$discovery/rest",
-	"elevation-backend.googleapis.com/$discovery/rest",
+	// "elevation-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"embeddedassistant.googleapis.com/$discovery/rest",
 	// "endpoints.googleapis.com/$discovery/rest",
 	"enterpriseknowledgegraph.googleapis.com/$discovery/rest",
@@ -236,12 +236,12 @@ var GoogleApiList = []string{
 	"firebasevertexai.googleapis.com/$discovery/rest",
 	"firestore.googleapis.com/$discovery/rest",
 	"firestorekeyvisualizer.googleapis.com/$discovery/rest",
-	"firewallinsights.googleapis.com/$discovery/rest",
-	"fitness.googleapis.com/$discovery/rest",
+	// "firewallinsights.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	"fitness.googleapis.com/$discovery/rest?version=v1",
 	"forms.googleapis.com/$discovery/rest",
 	"games.googleapis.com/$discovery/rest",
 	"gamesconfiguration.googleapis.com/$discovery/rest",
-	"gamesmanagement.googleapis.com/$discovery/rest",
+	"gamesmanagement.googleapis.com/$discovery/rest?version=v1management",
 	"gdchardwaremanagement.googleapis.com/$discovery/rest",
 	"gdmscience.googleapis.com/$discovery/rest",
 	"geminicloudassist.googleapis.com/$discovery/rest",
@@ -249,12 +249,12 @@ var GoogleApiList = []string{
 	"geminidataanalytics.googleapis.com/$discovery/rest",
 	"generativelanguage.googleapis.com/$discovery/rest",
 	"geocoding-backend.googleapis.com/$discovery/rest",
-	"geolocation.googleapis.com/$discovery/rest",
+	// "geolocation.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"gkebackup.googleapis.com/$discovery/rest",
 	"gkeconnect.googleapis.com/$discovery/rest",
-	"gkedataplanev2.googleapis.com/$discovery/rest",
+	// "gkedataplanev2.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"gkehub.googleapis.com/$discovery/rest",
-	"gkemulticloud.googleapis.com/$discovery/rest",
+	// "gkemulticloud.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"gkeonprem.googleapis.com/$discovery/rest",
 	"gkerecommender.googleapis.com/$discovery/rest",
 	"gmail.googleapis.com/$discovery/rest",
@@ -299,14 +299,14 @@ var GoogleApiList = []string{
 	"manufacturers.googleapis.com/$discovery/rest",
 	"mapmanagement.googleapis.com/$discovery/rest",
 	"maps-android-backend.googleapis.com/$discovery/rest",
-	"maps-backend.googleapis.com/$discovery/rest",
-	"maps-embed-backend.googleapis.com/$discovery/rest",
-	"maps-ios-backend.googleapis.com/$discovery/rest",
-	"mapsandroid.googleapis.com/$discovery/rest",
+	// "maps-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "maps-embed-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "maps-ios-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "mapsandroid.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"mapsbooking.googleapis.com/$discovery/rest",
-	"mapsfleetrouting.googleapis.com/$discovery/rest",
+	// "mapsfleetrouting.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"mapsgrounding.googleapis.com/$discovery/rest",
-	"mapsios.googleapis.com/$discovery/rest",
+	// "mapsios.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"mapsplatformdatasets.googleapis.com/$discovery/rest",
 	"mapstools.googleapis.com/$discovery/rest",
 	"marketingplatformadmin.googleapis.com/$discovery/rest",
@@ -314,22 +314,22 @@ var GoogleApiList = []string{
 	"memcache.googleapis.com/$discovery/rest",
 	"memorystore.googleapis.com/$discovery/rest",
 	"merchantapi.googleapis.com/$discovery/rest",
-	"mesh.googleapis.com/$discovery/rest",
+	// "mesh.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"meshconfig.googleapis.com/$discovery/rest",
-	"meshtelemetry.googleapis.com/$discovery/rest",
+	// "meshtelemetry.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"metastore.googleapis.com/$discovery/rest",
 	"microservices.googleapis.com/$discovery/rest",
 	"migrate.googleapis.com/$discovery/rest",
 	"migrationcenter.googleapis.com/$discovery/rest",
 	"ml.googleapis.com/$discovery/rest",
 	"mlkit.googleapis.com/$discovery/rest",
-	"mobilecrashreporting.googleapis.com/$discovery/rest",
+	// "mobilecrashreporting.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"modelarmor.googleapis.com/$discovery/rest",
 	"monitoring.googleapis.com/$discovery/rest",
 	"moviesanywhere.googleapis.com/$discovery/rest",
-	"multiclusteringress.googleapis.com/$discovery/rest",
-	"multiclustermetering.googleapis.com/$discovery/rest",
-	"multiclusterservicediscovery.googleapis.com/$discovery/rest",
+	// "multiclusteringress.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "multiclustermetering.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "multiclusterservicediscovery.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"mybusinessaccountmanagement.googleapis.com/$discovery/rest",
 	"mybusinessbusinessinformation.googleapis.com/$discovery/rest",
 	"mybusinesslodging.googleapis.com/$discovery/rest",
@@ -337,17 +337,17 @@ var GoogleApiList = []string{
 	"mybusinessplaceactions.googleapis.com/$discovery/rest",
 	"mybusinessqanda.googleapis.com/$discovery/rest",
 	"mybusinessverifications.googleapis.com/$discovery/rest",
-	"navigationsdk.googleapis.com/$discovery/rest",
+	// "navigationsdk.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"netapp.googleapis.com/$discovery/rest",
-	"networkactions.googleapis.com/$discovery/rest",
+	// "networkactions.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"networkconnectivity.googleapis.com/$discovery/rest",
 	"networkmanagement.googleapis.com/$discovery/rest",
 	"networksecurity.googleapis.com/$discovery/rest",
 	"networkservices.googleapis.com/$discovery/rest",
-	"networksubscriptions.googleapis.com/$discovery/rest",
-	"networktopology.googleapis.com/$discovery/rest",
+	// "networksubscriptions.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "networktopology.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"notebooks.googleapis.com/$discovery/rest",
-	"notebooksecurityscanner.googleapis.com/$discovery/rest",
+	// "notebooksecurityscanner.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"observability.googleapis.com/$discovery/rest",
 	"ondemandscanning.googleapis.com/$discovery/rest",
 	"opsconfigmonitoring.googleapis.com/$discovery/rest",
@@ -356,27 +356,27 @@ var GoogleApiList = []string{
 	"orgpolicy.googleapis.com/$discovery/rest",
 	"osconfig.googleapis.com/$discovery/rest",
 	"oslogin.googleapis.com/$discovery/rest",
-	"pagespeedonline.googleapis.com/$discovery/rest",
+	"pagespeedonline.googleapis.com/$discovery/rest?version=v5",
 	"parallelstore.googleapis.com/$discovery/rest",
 	"parametermanager.googleapis.com/$discovery/rest",
 	"partnerdev-mapsbooking.googleapis.com/$discovery/rest",
-	"partners-json.googleapis.com/$discovery/rest",
+	// "partners-json.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"paymentsresellersubscription.googleapis.com/$discovery/rest",
 	"people.googleapis.com/$discovery/rest",
 	"performanceparameters.googleapis.com/$discovery/rest",
 	"photoslibrary.googleapis.com/$discovery/rest",
 	"photospicker.googleapis.com/$discovery/rest",
-	"picker.googleapis.com/$discovery/rest",
+	// "picker.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"places-backend.googleapis.com/$discovery/rest",
 	"places.googleapis.com/$discovery/rest",
-	"placewidgets.googleapis.com/$discovery/rest",
+	// "placewidgets.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"playcustomapp.googleapis.com/$discovery/rest",
 	"playdeveloperreporting.googleapis.com/$discovery/rest",
 	"playgrouping.googleapis.com/$discovery/rest",
 	"playintegrity.googleapis.com/$discovery/rest",
-	"plus.googleapis.com/$discovery/rest",
-	"plusdomains.googleapis.com/$discovery/rest",
-	"plushangouts.googleapis.com/$discovery/rest",
+	"www.googleapis.com/discovery/v1/apis/plus/v1/rest",
+	// "plusdomains.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "plushangouts.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"policyanalyzer.googleapis.com/$discovery/rest",
 	"policyremediator.googleapis.com/$discovery/rest",
 	"policyremediatormanager.googleapis.com/$discovery/rest",
@@ -388,14 +388,14 @@ var GoogleApiList = []string{
 	"privateca.googleapis.com/$discovery/rest",
 	"privilegedaccessmanager.googleapis.com/$discovery/rest",
 	"prod-tt-sasportal.googleapis.com/$discovery/rest",
-	"programmablesearchelement.googleapis.com/$discovery/rest",
+	// "programmablesearchelement.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"progressiverollout.googleapis.com/$discovery/rest",
 	"publicca.googleapis.com/$discovery/rest",
 	"pubsub.googleapis.com/$discovery/rest",
 	"pubsublite.googleapis.com/$discovery/rest",
 	"rapidmigrationassessment.googleapis.com/$discovery/rest",
 	"readerrevenuesubscriptionlinking.googleapis.com/$discovery/rest",
-	"realtime.googleapis.com/$discovery/rest",
+	// "realtime.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"realtimebidding.googleapis.com/$discovery/rest",
 	"recaptchaenterprise.googleapis.com/$discovery/rest",
 	"recommendationengine.googleapis.com/$discovery/rest",
@@ -406,17 +406,17 @@ var GoogleApiList = []string{
 	"replicapool.googleapis.com/$discovery/rest",
 	"replicapoolupdater.googleapis.com/$discovery/rest",
 	"reseller.googleapis.com/$discovery/rest",
-	"resourceviews.googleapis.com/$discovery/rest",
+	// "resourceviews.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"retail.googleapis.com/$discovery/rest",
 	"risc.googleapis.com/$discovery/rest",
 	"roads.googleapis.com/$discovery/rest",
 	"routeoptimization.googleapis.com/$discovery/rest",
 	"routes.googleapis.com/$discovery/rest",
 	"run.googleapis.com/$discovery/rest",
-	"runapps.googleapis.com/$discovery/rest",
+	// "runapps.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"runtimeconfig.googleapis.com/$discovery/rest",
 	"saasservicemgmt.googleapis.com/$discovery/rest",
-	"safebrowsing-json.googleapis.com/$discovery/rest",
+	// "safebrowsing-json.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"safebrowsing.googleapis.com/$discovery/rest",
 	"salesforceshopping.googleapis.com/$discovery/rest",
 	"sasportal.googleapis.com/$discovery/rest",
@@ -448,11 +448,11 @@ var GoogleApiList = []string{
 	"speech.googleapis.com/$discovery/rest",
 	"sql-component.googleapis.com/$discovery/rest",
 	"sqladmin.googleapis.com/$discovery/rest",
-	"stackdriver.googleapis.com/$discovery/rest",
-	"static-maps-backend.googleapis.com/$discovery/rest",
-	"stitch.googleapis.com/$discovery/rest",
+	"stackdriver.googleapis.com/$discovery/rest?version=v1beta3",
+	// "static-maps-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "stitch.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"storage-api.googleapis.com/$discovery/rest",
-	"storage-component.googleapis.com/$discovery/rest",
+	// "storage-component.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"storage.googleapis.com/$discovery/rest",
 	"storagebatchoperations.googleapis.com/$discovery/rest",
 	"storageinsights.googleapis.com/$discovery/rest",
@@ -462,15 +462,15 @@ var GoogleApiList = []string{
 	"streetviewpublish.googleapis.com/$discovery/rest",
 	"sts.googleapis.com/$discovery/rest",
 	"subscribewithgoogle.googleapis.com/$discovery/rest",
-	"subscribewithgoogledeveloper.googleapis.com/$discovery/rest",
+	// "subscribewithgoogledeveloper.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"tagmanager.googleapis.com/$discovery/rest",
 	"tasks.googleapis.com/$discovery/rest",
 	"telemetry.googleapis.com/$discovery/rest",
 	"testing.googleapis.com/$discovery/rest",
 	"texttospeech.googleapis.com/$discovery/rest",
 	"tile.googleapis.com/$discovery/rest",
-	"timeseriesinsights.googleapis.com/$discovery/rest",
-	"timezone-backend.googleapis.com/$discovery/rest",
+	// "timeseriesinsights.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
+	// "timezone-backend.googleapis.com/$discovery/rest", // DEPRECATED / 404 HTML
 	"toolresults.googleapis.com/$discovery/rest",
 	"tpu.googleapis.com/$discovery/rest",
 	"trafficdirector.googleapis.com/$discovery/rest",

@@ -88,7 +88,6 @@ The base is entirely handwritten by me. I may use AI for code cleanup, but other
 
 #### Bugs 
 - If identitytoolkit is enabled but not configured, fireblazer will break on validity checking - "400, configuration not found". Critical issue... but can't reproduce since? If anyone can repro pls file an issue!
-- Fix Workspace suite detection. Currently it checks workspace stuff but the real path is elsewhere. Drive and such. But last I remember, most of the code relies on the /$discovery/rest format. Should decouple that logic.
 
 ## NOT AN EXPLOIT
 
