@@ -76,25 +76,24 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 	return tk
 }
 
-func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate, useGet bool) KeyResult {
+func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate, logCh chan string, useGet bool) KeyResult {
 	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
-		if isInteractive {
-			scanPin.UpdateMessage(fmt.Sprintf("[%s] Skipping API key verification.", target.Raw))
+		if isInteractive && logCh != nil {
+			logCh <- fmt.Sprintf("[%s] Skipping API key verification.", target.Raw)
 		}
 		res.Valid = true
 	} else if valid, projectDetails, err := utils.TestKeyValidity(target.Key); !valid {
 		res.Valid = false
 		res.InvalidReason = err
+		if updateCh != nil {
+			updateCh <- utils.ScanUpdate{Key: target.Raw, CurrentRem: 0, CurrentFound: 0, ItemCleanName: "[INVALID]"}
+		}
 		return res
 	} else {
 		res.ProjectId = projectDetails.ProjectId
-		if isInteractive {
-			// there's probably a better way to make a separate display, but regular logs overlap on the same line.
-			if !scanPin.IsRunning() {
-				scanPin.Start(context.Background())
-			}
-			scanPin.Stop(fmt.Sprintf("[%s] Valid API key, proceeding.", target.Raw))
+		if isInteractive && logCh != nil {
+			logCh <- fmt.Sprintf("[%s] Valid API key, proceeding.", target.Raw)
 		} else if *outputFormat == "text" {
 			log.Printf("[%s] is a valid API key.", target.Raw)
 		}
@@ -178,32 +177,52 @@ func main() {
 	}
 
 	var updateCh chan utils.ScanUpdate
+	var logCh chan string
 	var updateDone chan struct{}
 
 	if isInteractive {
 		defer cancel()
 
 		updateCh = make(chan utils.ScanUpdate, *workerCount*len(keys))
+		logCh = make(chan string, len(keys)*3)
 		updateDone = make(chan struct{})
 
 		go func() {
 			totalRemMap := make(map[string]int)
 			totalFoundMap := make(map[string]int)
 
-			for update := range updateCh {
-				totalRemMap[update.Key] = update.CurrentRem
-				totalFoundMap[update.Key] = update.CurrentFound
+			for _, k := range keys {
+				tk := parseTargetKey(k, *referrer)
+				totalRemMap[tk.Raw] = len(gapiServices)
+			}
 
-				totalRem := 0
-				totalFound := 0
-				for _, rem := range totalRemMap {
-					totalRem += rem
-				}
-				for _, f := range totalFoundMap {
-					totalFound += f
-				}
+			for updateCh != nil || logCh != nil {
+				select {
+				case update, ok := <-updateCh:
+					if !ok {
+						updateCh = nil
+						continue
+					}
+					totalRemMap[update.Key] = update.CurrentRem
+					totalFoundMap[update.Key] = update.CurrentFound
 
-				scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %v", len(keys), totalFound, totalRem, update.ItemCleanName))
+					totalRem := 0
+					totalFound := 0
+					for _, rem := range totalRemMap {
+						totalRem += rem
+					}
+					for _, f := range totalFoundMap {
+						totalFound += f
+					}
+
+					scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, update.ItemCleanName))
+				case msg, ok := <-logCh:
+					if !ok {
+						logCh = nil
+						continue
+					}
+					fmt.Printf("\x1b[2K\r%s\n", msg)
+				}
 			}
 			close(updateDone)
 		}()
@@ -217,7 +236,7 @@ func main() {
 		go func(i int, rawKey string) {
 			defer wg.Done()
 			target := parseTargetKey(rawKey, *referrer)
-			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh, *targetApi != "")
+			results[i] = processKey(target, gapiServices, blacklisted, falsePos, updateCh, logCh, *targetApi != "")
 		}(i, k)
 	}
 
@@ -226,6 +245,9 @@ func main() {
 	if isInteractive {
 		if updateCh != nil {
 			close(updateCh)
+		}
+		if logCh != nil {
+			close(logCh)
 		}
 		<-updateDone
 		scanPin.Stop("Scan complete!")
