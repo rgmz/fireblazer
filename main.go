@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -12,6 +13,8 @@ import (
 	utils "github.com/bedros-p/fireblazer/utils"
 
 	"github.com/yarlson/pin"
+
+	"gopkg.in/yaml.v3"
 )
 
 var key = flag.String("apiKey", "", "API key to scan. Can also be your first positional arg.")
@@ -21,7 +24,7 @@ var workerCount = flag.Int("workerCount", 170, "Set the amount of worker threads
 var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to test against. Bypasses the full scan.")
 
 // interactive|text|json|yaml
-var outputFormat = flag.String("outputFormat", "interactive", "[WIP] Output format (interactive|text|json|yaml)")
+var outputFormat = flag.String("outputFormat", "interactive", "Output format (interactive|text|json|yaml)")
 var outputDetails = flag.String("outputDetails", "full", "[WIP] Comma delimited list of what to include in the details (description|title|name). Comma delimited.")
 var timingEnabled = flag.Bool("findSlowService", false, "[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.")
 var isInteractive = false
@@ -105,6 +108,15 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 	res.FailCount = failCount
 	res.MaxTime = maxTime
 	return res
+}
+
+type StructuredOutput struct {
+	Key           string   `json:"key" yaml:"key"`
+	Valid         bool     `json:"valid" yaml:"valid"`
+	InvalidReason string   `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
+	ProjectId     string   `json:"project_id,omitempty" yaml:"project_id,omitempty"`
+	Services      []string `json:"services" yaml:"services"`
+	FailCount     int      `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
 }
 
 func main() {
@@ -255,42 +267,92 @@ func main() {
 		log.Println("Scan complete!")
 	}
 
-	if *targetApi != "" {
-		fmt.Printf("\nTARGET: %s\n", *targetApi)
-	}
+	if *outputFormat == "json" || *outputFormat == "yaml" {
+		// I really need to see if i could clean up my output format logic :/
 
-	for _, res := range results {
+		var structuredResults []StructuredOutput
+
+		for _, res := range results {
+			out := StructuredOutput{
+				Key:       res.Key,
+				Valid:     res.Valid,
+				ProjectId: res.ProjectId,
+				FailCount: res.FailCount,
+				Services:  []string{},
+			}
+
+			if !res.Valid && res.InvalidReason != nil {
+				out.InvalidReason = res.InvalidReason.Error()
+			}
+
+			for _, service := range res.FoundServices {
+				// I'll move the fp blacklisting higher later. fp removal was only meant to be temporary ! 
+				// i havent removed it from apis.go directly because being able to keep track in main.go is much cleaner
+				// but I still need this program to work well as a library, it's not fair to shift that to the dev
+				if !slices.Contains(falsePos, service) {
+					out.Services = append(out.Services, service+".googleapis.com")
+				}
+			}
+
+			structuredResults = append(structuredResults, out)
+		}
+
+		if *outputFormat == "json" {
+			jsonData, err := json.Marshal(structuredResults)
+
+			if err != nil {
+				log.Fatalf("Error marshaling JSON: %v", err)
+			}
+
+			fmt.Println(string(jsonData))
+		} else {
+			yamlData, err := yaml.Marshal(structuredResults)
+
+			if err != nil {
+				log.Fatalf("Error marshaling YAML: %v", err)
+			}
+
+			fmt.Println(string(yamlData))
+		}
+	} else {
+
 		if *targetApi != "" {
-			status := "❌"
-			if len(res.FoundServices) > 0 {
-				status = "✅"
+			fmt.Printf("\nTARGET: %s\n", *targetApi)
+		}
+
+		for _, res := range results {
+			if *targetApi != "" {
+				status := "❌"
+				if len(res.FoundServices) > 0 {
+					status = "✅"
+				}
+				fmt.Printf("%s : %s\n", res.Key, status)
+				continue
 			}
-			fmt.Printf("%s : %s\n", res.Key, status)
-			continue
-		}
 
-		if len(keys) > 1 {
-			fmt.Printf("\n---%s---\n", res.Key)
-		}
-		if !res.Valid {
-			log.Printf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.", res.Key, res.InvalidReason)
-			continue
-		}
-
-		log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
-
-		for _, service := range res.FoundServices {
-			if slices.Contains(falsePos, service) {
-				// log.Printf(" - %s.googleapis.com (false positive)", service)
-			} else {
-				log.Printf(" - %s.googleapis.com", service)
+			if len(keys) > 1 {
+				fmt.Printf("\n---%s---\n", res.Key)
 			}
-		}
+			if !res.Valid {
+				log.Printf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.", res.Key, res.InvalidReason)
+				continue
+			}
 
-		log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)
+			log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
 
-		if *timingEnabled {
-			log.Printf("Longest running service - %v\n\n\n", res.MaxTime)
+			for _, service := range res.FoundServices {
+				if slices.Contains(falsePos, service) {
+					// log.Printf(" - %s.googleapis.com (false positive)", service)
+				} else {
+					log.Printf(" - %s.googleapis.com", service)
+				}
+			}
+
+			log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)
+
+			if *timingEnabled {
+				log.Printf("Longest running service - %v\n\n\n", res.MaxTime)
+			}
 		}
 	}
 
