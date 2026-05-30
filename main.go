@@ -110,17 +110,42 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 	return res
 }
 
+// not too sure how to handle this in the schema without bloating it up, but here's what i think
+// might just have some utility `fireblazer describe`. I lowk want to make a sep tool for quick single service surface mapping, it might work better there.
+type ServiceDetail struct {
+	Name        string `json:"name" yaml:"name"`
+	Title       string `json:"title,omitempty" yaml:"title,omitempty"`
+	Description string `json:"description,omitempty" yaml:"description,omitempty"`
+}
+
 type StructuredOutput struct {
-	Key           string   `json:"key" yaml:"key"`
-	Valid         bool     `json:"valid" yaml:"valid"`
-	InvalidReason string   `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
-	ProjectId     string   `json:"project_id,omitempty" yaml:"project_id,omitempty"`
-	Services      []string `json:"services" yaml:"services"`
-	FailCount     int      `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
+	Key            string          `json:"key" yaml:"key"`
+	Valid          bool            `json:"valid" yaml:"valid"`
+	InvalidReason  string          `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
+	ProjectId      string          `json:"project_id,omitempty" yaml:"project_id,omitempty"`
+	Services       []string        `json:"services" yaml:"services"`
+	ServiceDetails []ServiceDetail `json:"service_details,omitempty" yaml:"service_details,omitempty"`
+	FailCount      int             `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
 }
 
 func main() {
 	flag.Parse()
+
+	detailsMode := *outputDetails
+	showTitle := false
+	showDesc := false
+
+	for _, p := range strings.Split(detailsMode, ",") {
+		p = strings.TrimSpace(p)
+		if p == "full" {
+			showTitle = true
+			showDesc = true
+		} else if p == "title" {
+			showTitle = true
+		} else if p == "description" {
+			showDesc = true
+		}
+	}
 
 	isInteractive = *outputFormat == "interactive" || *outputFormat == ""
 	if !*timingEnabled {
@@ -301,10 +326,33 @@ func main() {
 				out.InvalidReason = res.InvalidReason.Error()
 			}
 			// TODO: MOVE FALSE POSITIVE DETECTION HIGHER UP
+			var sDetails []ServiceDetail
+
 			for _, service := range res.FoundServices {
 				if !slices.Contains(falsePos, service) {
-					out.Services = append(out.Services, service+".googleapis.com")
+					serviceName := service + ".googleapis.com"
+					out.Services = append(out.Services, serviceName)
+
+					if showTitle || showDesc {
+						meta, hasMeta := utils.ApiMetadata[service]
+						detail := ServiceDetail{Name: serviceName}
+
+						if hasMeta {
+							if showTitle {
+								detail.Title = meta.Title
+							}
+							if showDesc {
+								detail.Description = meta.Summary
+							}
+						}
+
+						sDetails = append(sDetails, detail)
+					}
 				}
+			}
+
+			if len(sDetails) > 0 {
+				out.ServiceDetails = sDetails
 			}
 
 			structuredResults = append(structuredResults, out)
@@ -353,11 +401,6 @@ func main() {
 
 			log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
 
-			detailsMode := *outputDetails
-			showFull := strings.Contains(detailsMode, "full")
-			showTitle := showFull || strings.Contains(detailsMode, "title")
-			showDesc := showFull || strings.Contains(detailsMode, "description")
-
 			for _, service := range res.FoundServices {
 				if slices.Contains(falsePos, service) {
 					continue
@@ -366,8 +409,8 @@ func main() {
 				baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
 				meta, hasMeta := utils.ApiMetadata[service]
 
-				if hasMeta && (showTitle || showDesc) {
-					details := ""
+				details := ""
+				if hasMeta {
 					if showTitle && meta.Title != "" {
 						details += meta.Title
 					}
@@ -377,12 +420,12 @@ func main() {
 						}
 						details += meta.Summary
 					}
-					if details != "" {
-						log.Printf("%s\n   ^-- %s", baseMsg, details)
-						continue
-					}
 				}
-				log.Printf(baseMsg)
+				if details != "" {
+					log.Printf("%s\n   ^-- %s", baseMsg, details)
+				} else {
+					log.Printf(baseMsg)
+				}
 			}
 
 			log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)
