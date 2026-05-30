@@ -5,3 +5,5 @@ fireblazer
 *.py
 research
 maintenance
+temp_out.txt
+test_keys.txt

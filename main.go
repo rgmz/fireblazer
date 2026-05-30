@@ -47,6 +47,7 @@ type KeyResult struct {
 	FailCount     int
 	MaxTime       *utils.ElapsedCombo
 	Brand         map[string]interface{}
+	P4SAServices  []string
 }
 
 func parseTargetKey(raw string, globalRef string) utils.TargetKey {
@@ -128,6 +129,7 @@ type StructuredOutput struct {
 	Brand          map[string]interface{} `json:"brand,omitempty" yaml:"brand,omitempty"`
 	Services       []string               `json:"services" yaml:"services"`
 	ServiceDetails []ServiceDetail        `json:"service_details,omitempty" yaml:"service_details,omitempty"`
+	P4SAServices   []string               `json:"inferred_services,omitempty" yaml:"inferred_services,omitempty"`
 	FailCount      int                    `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
 }
 
@@ -293,11 +295,16 @@ func main() {
 			defer wg.Done()
 			target := parseTargetKey(rawKey, *referrer)
 			res := processKey(target, gapiServices, blacklisted, falsePos, updateCh, logCh, *targetApi != "")
-			
+
 			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
 				brand, err := utils.GetBrandIdentity(res.ProjectId)
 				if err == nil && brand != nil {
 					res.Brand = brand
+				}
+
+				saServices, err := utils.EnumerateServiceAccounts(res.ProjectId, *workerCount)
+				if err == nil && len(saServices) > 0 {
+					res.P4SAServices = saServices
 				}
 			}
 			results[i] = res
@@ -326,12 +333,13 @@ func main() {
 
 		for _, res := range results {
 			out := StructuredOutput{
-				Key:       res.Key,
-				Valid:     res.Valid,
-				ProjectId: res.ProjectId,
-				Brand:     res.Brand,
-				FailCount: res.FailCount,
-				Services:  []string{},
+				Key:          res.Key,
+				Valid:        res.Valid,
+				ProjectId:    res.ProjectId,
+				Brand:        res.Brand,
+				FailCount:    res.FailCount,
+				Services:     []string{},
+				P4SAServices: res.P4SAServices,
 			}
 
 			if !res.Valid && res.InvalidReason != nil {
@@ -451,6 +459,14 @@ func main() {
 				} else {
 					log.Printf(baseMsg)
 				}
+			}
+
+			if len(res.P4SAServices) > 0 {
+				log.Printf("\n[Additional Recon] Inferred Services via Service Accounts:")
+				for _, saSvc := range res.P4SAServices {
+					log.Printf(" - %s", saSvc)
+				}
+				log.Printf("")
 			}
 
 			log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)

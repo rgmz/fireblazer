@@ -99,16 +99,35 @@ Google cloud will warn you - restrict your keys. IT even has a big yellow warnin
 This can't be avoided by any reasonable measure - if Discovery URLs didn't check for key validity, one could easily test each service with one of the actual endpoints. We do, after all, have a list of all the actual endpoints in a service. It would still show whether or not the API key is used in that project, regardless of an invalid payload to the endpoint. Checking if the endpoint payload is valid before checking for the API key is not possible, as most services tie the project data into different responses, and the project ID is inferred from the API key. It would require each service to have a rewrite of checks.\
 Or, they can return zero errors of use and make it silently fail, making life hell for the people that actually want to develop with GCP, in an attempt to safeguard information that doesn't pose much of a security risk. The real security risk is entirely dependent on how securely the project is set up. Just additional safeguarding that ruins DX for something that wouldn't be the root problem anyways.
 
-### Additional recon [WIP]
+### Additional recon
 
 Mostly WIP, just here to solidify the roadmap so I'd finally do it today. If this is still not implemented by the time you're reading this, pester me on Twitter @ https://x.com/bedros_p
 
 When enumerating a single key in interactive mode, it runs some additional, non-state-altering recon in its newest version, extending beyond mere API key + service pairing. This means that not all discovered services are particularly reachable by the API key, but exist merely for enumerating a projects infrastructure. These are listed in a separate segment. If it can be found through other means, Google VRP does not accept it as a concern. If it's not a risk on it's own, it's not a risk till a chain can be proven. In this case, all the chains are customer-specific, and I have not found anything that leads me to believe this relies on misconfigurations on Googles end. None of this is really a risk.
 
 - Brand lookup for OAuth screen (previously reported, marked as wontfix - https://feed.bugs.xdavidhu.me/bugs/0009 )
-- [WIP, not impld] Check for service account existence based on well-known formats. For some specific services, enabling it causes the creation of a service account which we can check the existence of. The key cannot hit those services, it is only useful for recon on the project as a whole. This method is useful for target scoping, but poses absolutely zero threat to any customer. Thinking it's a problem is like saying "we can tell you use Spring Boot based on these error responses", but even less useful.
+- Check for service account existence based on well-known formats. For some specific services, enabling it causes the creation of a service account which we can check the existence of. 
 
-You can enable these checks for all scans if you like it with the -blaze flag.
+The key cannot(?) hit those services, it is only useful for recon on the project as a whole. This method is useful for target scoping, but poses absolutely zero threat to any customer. Thinking it's a problem is like saying "we can tell you use Spring Boot based on these error responses", but even less useful.
+
+You can enable these checks for those scans if you like it with the -blaze flag.
+
+### Fiery Blaze [WIP - NOT IMPLEMENTED]
+> We can't stop here, this is bat country!
+
+It can do more. This project was originally made for Firebase enumeration. You can have "post-exploitation" steps to dig deeper into any Firebase matches, but this causes real API requests that actually read and all. If you'd like to be caught here in a fiery blaze, use --batcountry.
+
+- Starting from your identitytoolkit response + the blazing...
+- If it can find an appspot.com / firebase.app / web.app / run.app mention in there, it can use the project name. It's pretty easy after that for Firebase. But a good amount of stuff don't use proj name.
+- Else... I gotta find other service escalation paths. There are plenty of paths one could take, I'm not sure which one to add first though.
+- Firebase RTDB
+- Firebase Remote Config
+- Firebase config retrieval
+- Everything it cacn hit in firebase, it will. 
+
+!! It's way more aggressive. It is also highly experimental. In this specific commit, it is NOT IMPLEMENTED !!
+
+Why "bat country"? Imagine the sky is suddenly filled with massive, swooping, and screeching bats and flying manta rays. Well, this is what this mode is like. It issues requests like crazy and actually interacts with the project functionality with the API key. All the other functionality in this project uses stuff that isn't too related to the API key or is generally stealthier. This will hit Firebase and AppEngine directly. You will be caught in a fiery blaze by Fireblazer. This (along with the project name) is totally, definitely, absolutely 10000% not a reference to the song, Bat Country. Believe me pls. Pester me on Twitter if you want this done faster. Or submit a PR.
 
 ## Notes 
 
