@@ -25,7 +25,7 @@ var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to
 
 // interactive|text|json|yaml
 var outputFormat = flag.String("outputFormat", "interactive", "Output format (interactive|text|json|yaml)")
-var outputDetails = flag.String("outputDetails", "full", "[WIP] Comma delimited list of what to include in the details (description|title|name). Comma delimited.")
+var outputDetails = flag.String("outputDetails", "name", "Comma delimited list of what to include in the details (description|title|name).")
 var timingEnabled = flag.Bool("findSlowService", false, "[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.")
 var isInteractive = false
 
@@ -300,11 +300,8 @@ func main() {
 			if !res.Valid && res.InvalidReason != nil {
 				out.InvalidReason = res.InvalidReason.Error()
 			}
-
+			// TODO: MOVE FALSE POSITIVE DETECTION HIGHER UP
 			for _, service := range res.FoundServices {
-				// I'll move the fp blacklisting higher later. fp removal was only meant to be temporary ! 
-				// i havent removed it from apis.go directly because being able to keep track in main.go is much cleaner
-				// but I still need this program to work well as a library, it's not fair to shift that to the dev
 				if !slices.Contains(falsePos, service) {
 					out.Services = append(out.Services, service+".googleapis.com")
 				}
@@ -356,12 +353,36 @@ func main() {
 
 			log.Printf("APIs available to this API key with project ID %s:", res.ProjectId)
 
+			detailsMode := *outputDetails
+			showFull := strings.Contains(detailsMode, "full")
+			showTitle := showFull || strings.Contains(detailsMode, "title")
+			showDesc := showFull || strings.Contains(detailsMode, "description")
+
 			for _, service := range res.FoundServices {
 				if slices.Contains(falsePos, service) {
-					// log.Printf(" - %s.googleapis.com (false positive)", service)
-				} else {
-					log.Printf(" - %s.googleapis.com", service)
+					continue
 				}
+
+				baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
+				meta, hasMeta := utils.ApiMetadata[service]
+
+				if hasMeta && (showTitle || showDesc) {
+					details := ""
+					if showTitle && meta.Title != "" {
+						details += meta.Title
+					}
+					if showDesc && meta.Summary != "" {
+						if details != "" {
+							details += " - "
+						}
+						details += meta.Summary
+					}
+					if details != "" {
+						log.Printf("%s\n   ^-- %s", baseMsg, details)
+						continue
+					}
+				}
+				log.Printf(baseMsg)
 			}
 
 			log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)

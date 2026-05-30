@@ -1,7 +1,7 @@
 # Fireblazer
 
 Extract all services used by a Google Cloud Platform project with a regular API key like "AIza...".\
-Good for expanding your scope from a mere Firebase key to every service that may be unprotected.
+Good for expanding your scope from a mere Firebase key to every service that may be unprotected. Supports enumeration against 440 Google Cloud services.
 
 This program does not take rely on any vulnerabilities\*. It is an INSPECTION UTILITY, *not an exploit*. Pentesters and bug hunters are the intended users. More in the "NOT AN EXPLOIT" section.
 
@@ -18,7 +18,7 @@ Example usage & output\
 
 Output:
 ```log
-2026/04/02 20:33:16 Successfully loaded 501 discovery endpoints from hardcoded list.
+2026/04/02 20:33:16 Successfully loaded 440 discovery endpoints from hardcoded list.
 ✓ [AIzaSyC334f24LundukeS8uSkjWoke18] Valid API key, proceeding.
 ✓ Scan complete!
 2026/04/02 20:33:20 APIs available to this API key with project ID 30507080705752:
