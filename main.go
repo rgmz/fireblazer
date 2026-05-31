@@ -22,15 +22,10 @@ import (
 // TODO: Optimize further
 // TODO: See if i can pre-process the JSON and bake the struct into the binary. Seems excess, but might work out
 // TODO: Firebase full enumeration
-// TODO: Blaze:
-//	 		blaze output messages
-//				flag to disable blaze entirely for individual scans
-//				clarify blaze usage better and more transparently
-//				clarification for dangerouslySkipVerification - this stops the -blaze from working !!
 
 var key = flag.String("apiKey", "", "API key to scan. Can also be your first positional arg.")
 var referrer = flag.String("referrer", "", "Set the referrer (Referer:) header for when an API key is restricted to a website.")
-var dangerouslySkipVerification = flag.Bool("dangerouslySkipVerification", false, "Skip API key verification")
+var dangerouslySkipVerification = flag.Bool("dangerouslySkipVerification", false, "Skip API key verification (Note: This stops Blaze mode from working since it requires a Project ID)")
 var workerCount = flag.Int("workerCount", 170, "Set the amount of worker threads to spawn for executing the requests")
 var targetApi = flag.String("targetApi", "", "A single API discovery endpoint to test against. Bypasses the full scan.")
 
@@ -116,7 +111,11 @@ func main() {
 
 	if isInteractive {
 		defer cancel()
-		updateCh, logCh, updateDone = startInteractiveDisplay(keys, len(gapiServices), *referrer)
+		totalServicesCount := len(gapiServices)
+		if *blaze {
+			totalServicesCount += lib.GetP4SACount()
+		}
+		updateCh, logCh, updateDone = startInteractiveDisplay(keys, totalServicesCount, *referrer)
 	}
 
 	var wg sync.WaitGroup
@@ -137,13 +136,13 @@ func main() {
 			}
 			res := utils.ProcessKey(target, gapiServices, updateCh, logCh, cfg)
 
-			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
+			if res.Valid && res.ProjectId != "" && *blaze {
 				brand, err := lib.GetBrandIdentity(res.ProjectId)
 				if err == nil && brand != nil {
 					res.Brand = brand
 				}
 
-				saServices, err := lib.EnumerateServiceAccounts(res.ProjectId, *workerCount)
+				saServices, err := lib.EnumerateServiceAccounts(res.ProjectId, *workerCount, updateCh, target.Raw)
 				if err == nil && len(saServices) > 0 {
 					res.P4SAServices = saServices
 				}
@@ -222,6 +221,7 @@ func startInteractiveDisplay(keys []string, totalServices int, globalReferrer st
 	go func() {
 		totalRem := totalServices * len(keys)
 		totalFound := 0
+		lastScan := ""
 
 		for updateCh != nil || logCh != nil {
 			select {
@@ -231,12 +231,21 @@ func startInteractiveDisplay(keys []string, totalServices int, globalReferrer st
 					continue
 				}
 
-				totalRem--
-				if update.WasFound {
-					totalFound++
+				if update.ItemCleanName == "[INVALID]" {
+					totalRem -= totalServices
+					lastScan = "Invalid Key Skipped"
+				} else if update.ItemCleanName == "[SKIP_BLAZE]" {
+					totalRem -= lib.GetP4SACount()
+					lastScan = "Blaze Skipped (No Project ID)"
+				} else {
+					totalRem--
+					if update.WasFound {
+						totalFound++
+					}
+					lastScan = update.ItemCleanName
 				}
 
-				scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, update.ItemCleanName))
+				scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, lastScan))
 			case msg, ok := <-logCh:
 				if !ok {
 					logCh = nil

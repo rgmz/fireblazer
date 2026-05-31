@@ -53,3 +53,7 @@ func init() {
 	ApiMetadata = make(map[string]ServiceMeta) // data/metadata.json
 	_ = json.Unmarshal(rawMetadata, &ApiMetadata)
 }
+
+func GetP4SACount() int {
+	return len(p4saProducts)
+}

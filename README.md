@@ -1,7 +1,7 @@
 # Fireblazer
 
-Extract all services used by a Google Cloud Platform project with a regular API key like "AIza...".\
-Good for expanding your scope from a mere Firebase key to every service that may be unprotected. Supports enumeration against 440 Google Cloud services.
+Extract all services used by a Google Cloud Platform project with a regular API key like "AIza..." in a matter of seconds.\
+Good for expanding your scope from a mere Firebase key to every service that may be unprotected. Supports enumeration against 436 Google Cloud services.
 
 This program does not take rely on any vulnerabilities\*. It is an INSPECTION UTILITY, *not an exploit*. Pentesters and bug hunters are the intended users. More in the "NOT AN EXPLOIT" section.
 
@@ -14,26 +14,68 @@ go install github.com/bedros-p/fireblazer@latest
 
 ## Usage
 Example usage & output\
-`fireblazer AIzaSyC334f24LundukeS8uSkjWoke18`
+Sample: `fireblazer -blaze AIzaSyB_MockKeyForReadmeExampleFireblaze`
 
-Output:
+(This output is a redacted, real example & it found 55 services and 9 service accounts in 7 seconds)
+
 ```log
-2026/04/02 20:33:16 Successfully loaded 440 discovery endpoints from hardcoded list.
-✓ [AIzaSyC334f24LundukeS8uSkjWoke18] Valid API key, proceeding.
+Successfully loaded 436 discovery endpoints from built-in program list.
+[AIzaSyB_MockKeyForReadmeExampleFireblaze] Valid API key, proceeding.
 ✓ Scan complete!
-2026/04/02 20:33:20 APIs available to this API key with project ID 30507080705752:
-2026/04/02 20:33:20  - cloudasset.googleapis.com
-2026/04/02 20:33:20  - datacatalog.googleapis.com
-2026/04/02 20:33:20  - containeranalysis.googleapis.com
-2026/04/02 20:33:20  - datastore.googleapis.com
-2026/04/02 20:33:20  - dataform.googleapis.com
-2026/04/02 20:33:20  - container.googleapis.com
+
+OAuth Client Screen Details
+ - App Name: Bat Country
+ - Project Admin / Support Email: m@shadows.com
+
+APIs available to this API key with project ID 30507080705752:
+ - datastore.googleapis.com
+ - cloudasset.googleapis.com
+ - datacatalog.googleapis.com
+ - dns.googleapis.com
+ - docs.googleapis.com
+ - containeranalysis.googleapis.com
+ - deploymentmanager.googleapis.com
+ - logging.googleapis.com
+ - iam.googleapis.com
+
+[Additional Recon] Inferred Services via Service Accounts:
+ - notebooks (Cloud AI Platform Notebooks VM Service Account)
+ - speech (Speech-to-Text Service Account)
+ - dataform (Dataform Service Account)
+ - cloudaicompanion (Gemini for Google Cloud Service Agent)
+
+All discovery endpoint tests completed with 0 failures.
 ```
+
+```log
+Usage of ./fireblazer:
+  -apiKey string
+    	API key to scan. Can also be your first positional arg.
+  -blaze
+    	Enable additional aggressive recon checks (e.g., Brand Identity)
+  -dangerouslySkipVerification
+    	Skip API key verification (Note: This stops Blaze mode from working since it requires a Project ID)
+  -findSlowService
+    	[DEBUG] Find which service took the longest to test + elapsed time. Use to file an issue for program hangs.
+  -outputDetails string
+    	Comma delimited list of what to include in the details (description|title|name). (default "name")
+  -outputFormat string
+    	Output format (interactive|text|json|yaml) (default "interactive")
+  -referrer string
+    	Set the referrer (Referer:) header for when an API key is restricted to a website.
+  -targetApi string
+    	A single API discovery endpoint to test against. Bypasses the full scan.
+  -workerCount int
+    	Set the amount of worker threads to spawn for executing the requests (default 170)
+```
+
+
+I highly recommend using the `-blaze` flag, it lets you know the support email on the OAuth screen for the project + existence of default service accounts on a project.
 
 Batch usage is supported through positional arguments. If you are testing multiple keys, this is highly recommended. I've had a speed up of roughly ~18x when verifying 100 keys.
 It starts to struggle around the 300 mark, so be careful with your quantity.
 
-`fireblazer AIzaSyC334f24LundukeS8uSkjWoke18 AIzaSyC334fSkafGr4h5ke485Sk25okt12` - chain it as much as you want. I don't recommend chaining more than 100 at a time - your mileage may vary.
+`fireblazer AIzaSyB_MockKeyForReadmeExampleFireblaze AIzaSyC_AnotherMockKeyForBatchScanExample` - chain it as much as you want. I don't recommend chaining more than 100 at a time - your mileage may vary.
 
 If you have keys that are origin restricted (like to an Android app, iOS app, or website), you can pass it through like so:
 
@@ -43,7 +85,7 @@ If you have keys that are origin restricted (like to an Android app, iOS app, or
 
 Example: `fireblazer xios:AIzaSyC334f24...:com.google.gemini xref:AIzaSy...:gemini.google.com`
 
-I went with this format as it works in regular and batch mode. Also, if you're unsure about whether or not it's restricted, if it's information you have, no harm in including it.
+I went with this format as it works in regular and batch mode. Also, if you're unsure about whether or not it's restricted, if the referrer is information you have, no harm in including it.
 
 You can also specify a single API endpoint to send a GET request against, with the --targetApi command
 `fireblazer --targetApi=www.googleapis.com/discovery/v1/apis/drive/v3/rest AIzaSyD...`
@@ -140,3 +182,8 @@ Back with HTTP2 when I was dealing with another bruteforce experiment, I would i
 Originally I was gonna write my own HTTP3 client that crafts the raw packets. Decided against it for the sake of getting this one thing done and winning against my attention span, but feel free to put up a PR if you find it brings better speeds!
 
 Enjoy using Fireblazer, and I hope it helps you with recon!
+
+## Acknowledgements
+
+- Thanks to xdavidhu for confirming the OAuth Client screen retrieval is safe to include by disclosing the report. It was a good green light that it's safe to include here.
+- Thanks to [@jthack](https://github.com/jthack) for all the great feedback!

@@ -10,9 +10,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-
-
-func EnumerateServiceAccounts(projectNum string, workerCount int) ([]string, error) {
+func EnumerateServiceAccounts(projectNum string, workerCount int, updateCh chan ScanUpdate, rawKey string) ([]string, error) {
 	var mu sync.Mutex
 	var foundProducts []string
 
@@ -50,13 +48,22 @@ func EnumerateServiceAccounts(projectNum string, workerCount int) ([]string, err
 					mu.Lock()
 					foundProducts = append(foundProducts, product)
 					mu.Unlock()
+					if updateCh != nil {
+						updateCh <- ScanUpdate{Key: rawKey, WasFound: true, ItemCleanName: product}
+					}
 					return nil
 				} else if statusCode == 502 || statusCode == 503 || statusCode == 429 {
 					time.Sleep(2 * time.Second) // a 429 should NEVER happen. I mean, NEVER. It's an unauthed resource. Still, I've dealt with too many edgecases with Drive, and want to ensure nothing like that happens again.
 					continue                    // never thought i'd need a retry...
 				} else {
+					if updateCh != nil {
+						updateCh <- ScanUpdate{Key: rawKey, WasFound: false, ItemCleanName: product}
+					}
 					return nil
 				}
+			}
+			if updateCh != nil {
+				updateCh <- ScanUpdate{Key: rawKey, WasFound: false, ItemCleanName: product}
 			}
 			return nil
 		})
