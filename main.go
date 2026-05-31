@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	utils "github.com/bedros-p/fireblazer/utils"
+	lib "github.com/bedros-p/fireblazer/lib"
 
 	"github.com/yarlson/pin"
 
@@ -56,13 +56,13 @@ type KeyResult struct {
 	InvalidReason error
 	FoundServices []string
 	FailCount     int
-	MaxTime       *utils.ElapsedCombo
+	MaxTime       *lib.ElapsedCombo
 	Brand         map[string]interface{}
 	P4SAServices  []string
 }
 
-func parseTargetKey(raw string, globalRef string) utils.TargetKey {
-	tk := utils.TargetKey{
+func parseTargetKey(raw string, globalRef string) lib.TargetKey {
+	tk := lib.TargetKey{
 		Raw:      raw,
 		Key:      raw,
 		Referrer: globalRef,
@@ -93,18 +93,18 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 	return tk
 }
 
-func processKey(target utils.TargetKey, gapiServices []utils.Service, updateCh chan utils.ScanUpdate, logCh chan string, useGet bool) KeyResult {
+func processKey(target lib.TargetKey, gapiServices []lib.Service, updateCh chan lib.ScanUpdate, logCh chan string, useGet bool) KeyResult {
 	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
 		if isInteractive && logCh != nil {
 			logCh <- fmt.Sprintf("[%s] Skipping API key verification.", target.Raw)
 		}
 		res.Valid = true
-	} else if valid, projectDetails, err := utils.TestKeyValidity(target.Key); !valid {
+	} else if valid, projectDetails, err := lib.TestKeyValidity(target.Key); !valid {
 		res.Valid = false
 		res.InvalidReason = err
 		if updateCh != nil {
-			updateCh <- utils.ScanUpdate{Key: target.Raw, WasFound: false, ItemCleanName: "[INVALID]"}
+			updateCh <- lib.ScanUpdate{Key: target.Raw, WasFound: false, ItemCleanName: "[INVALID]"}
 		}
 		return res
 	} else {
@@ -117,7 +117,7 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, updateCh c
 		res.Valid = true
 	}
 
-	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, *workerCount, *timingEnabled, updateCh, useGet)
+	foundServices, failCount, maxTime := lib.ScanServices(target, gapiServices, *workerCount, *timingEnabled, updateCh, useGet)
 	res.FoundServices = foundServices
 	res.FailCount = failCount
 	res.MaxTime = maxTime
@@ -203,7 +203,7 @@ func main() {
 		}
 	}
 
-	var updateCh chan utils.ScanUpdate
+	var updateCh chan lib.ScanUpdate
 	var logCh chan string
 	var updateDone chan struct{}
 
@@ -223,12 +223,12 @@ func main() {
 			res := processKey(target, gapiServices, updateCh, logCh, *targetApi != "")
 
 			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
-				brand, err := utils.GetBrandIdentity(res.ProjectId)
+				brand, err := lib.GetBrandIdentity(res.ProjectId)
 				if err == nil && brand != nil {
 					res.Brand = brand
 				}
 
-				saServices, err := utils.EnumerateServiceAccounts(res.ProjectId, *workerCount)
+				saServices, err := lib.EnumerateServiceAccounts(res.ProjectId, *workerCount)
 				if err == nil && len(saServices) > 0 {
 					res.P4SAServices = saServices
 				}
@@ -269,7 +269,7 @@ func main() {
 
 	fmt.Println(string(outputData))
 
-	utils.KeyLogFile.Close()
+	lib.KeyLogFile.Close()
 }
 
 func marshalStructured(results []KeyResult, showTitle bool, showDesc bool) []StructuredOutput {
@@ -296,7 +296,7 @@ func marshalStructured(results []KeyResult, showTitle bool, showDesc bool) []Str
 			out.Services = append(out.Services, serviceName)
 
 			if showTitle || showDesc {
-				meta, hasMeta := utils.ApiMetadata[service]
+				meta, hasMeta := lib.ApiMetadata[service]
 				detail := ServiceDetail{Name: serviceName}
 				if hasMeta {
 					if showTitle {
@@ -318,7 +318,7 @@ func marshalStructured(results []KeyResult, showTitle bool, showDesc bool) []Str
 		for _, saSvc := range res.P4SAServices {
 			detail := ServiceDetail{Name: saSvc}
 			if showTitle || showDesc {
-				if name, exists := utils.SANames[saSvc]; exists {
+				if name, exists := lib.SANames[saSvc]; exists {
 					detail.Title = name
 				}
 			}
@@ -376,7 +376,7 @@ func marshalText(results []KeyResult, keys []string, targetApi string, timingEna
 
 		for _, service := range res.FoundServices {
 			baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
-			meta, hasMeta := utils.ApiMetadata[service]
+			meta, hasMeta := lib.ApiMetadata[service]
 
 			details := ""
 			if hasMeta {
@@ -400,7 +400,7 @@ func marshalText(results []KeyResult, keys []string, targetApi string, timingEna
 		if len(res.P4SAServices) > 0 {
 			buf.WriteString("\n[Additional Recon] Inferred Services via Service Accounts:\n")
 			for _, saSvc := range res.P4SAServices {
-				if name, exists := utils.SANames[saSvc]; exists {
+				if name, exists := lib.SANames[saSvc]; exists {
 					buf.WriteString(fmt.Sprintf(" - %s (%s)\n", saSvc, name))
 				} else {
 					buf.WriteString(fmt.Sprintf(" - %s\n", saSvc))
@@ -419,8 +419,8 @@ func marshalText(results []KeyResult, keys []string, targetApi string, timingEna
 	return buf.Bytes()
 }
 
-func loadServices(targetApi string) []utils.Service {
-	var services []utils.Service
+func loadServices(targetApi string) []lib.Service {
+	var services []lib.Service
 
 	if targetApi != "" {
 		hostname := strings.Split(targetApi, "/")[0]
@@ -429,15 +429,15 @@ func loadServices(targetApi string) []utils.Service {
 		if !strings.HasPrefix(discoveryUrl, "http") {
 			discoveryUrl = "https://" + discoveryUrl
 		}
-		services = append(services, utils.Service{
+		services = append(services, lib.Service{
 			CleanName:    cleanName,
 			DiscoveryUrl: discoveryUrl,
 		})
 	} else {
-		for _, raw := range utils.GoogleApiList {
+		for _, raw := range lib.GoogleApiList {
 			hostname := strings.Split(raw, "/")[0]
 			cleanName := strings.Split(hostname, ".")[0]
-			services = append(services, utils.Service{
+			services = append(services, lib.Service{
 				CleanName:    cleanName,
 				DiscoveryUrl: "https://" + raw,
 			})
@@ -446,8 +446,8 @@ func loadServices(targetApi string) []utils.Service {
 	return services
 }
 
-func startInteractiveDisplay(keys []string, totalServices int, globalReferrer string) (chan utils.ScanUpdate, chan string, chan struct{}) {
-	updateCh := make(chan utils.ScanUpdate, *workerCount*len(keys))
+func startInteractiveDisplay(keys []string, totalServices int, globalReferrer string) (chan lib.ScanUpdate, chan string, chan struct{}) {
+	updateCh := make(chan lib.ScanUpdate, *workerCount*len(keys))
 	logCh := make(chan string, len(keys)*3)
 	updateDone := make(chan struct{})
 
