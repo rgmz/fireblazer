@@ -104,7 +104,7 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, updateCh c
 		res.Valid = false
 		res.InvalidReason = err
 		if updateCh != nil {
-			updateCh <- utils.ScanUpdate{Key: target.Raw, CurrentRem: 0, CurrentFound: 0, ItemCleanName: "[INVALID]"}
+			updateCh <- utils.ScanUpdate{Key: target.Raw, WasFound: false, ItemCleanName: "[INVALID]"}
 		}
 		return res
 	} else {
@@ -174,54 +174,22 @@ func main() {
 	if isInteractive {
 		cancel = scanPin.Start(context.Background())
 	}
-	gapiServices := make([]utils.Service, 0)
+	gapiServices := loadServices(*targetApi)
 
-	if *targetApi != "" {
-		hostname := strings.Split(*targetApi, "/")[0]
-		cleanName := strings.Split(hostname, ".")[0]
-
-		if cleanName == "www" { // yuck 1
-			parts := strings.Split(*targetApi, "/")
-			if len(parts) >= 5 && parts[1] == "discovery" {
-				cleanName = parts[4]
-			}
-		}
-
-		discoveryUrl := *targetApi
-		if !strings.HasPrefix(discoveryUrl, "http") {
-			discoveryUrl = "https://" + discoveryUrl
-		}
-
-		gapiServices = append(gapiServices, utils.Service{
-			CleanName:    cleanName,
-			DiscoveryUrl: discoveryUrl,
-		})
-	} else {
-		for _, raw := range utils.GoogleApiList {
-			hostname := strings.Split(raw, "/")[0]
-			cleanName := strings.Split(hostname, ".")[0]
-
-			if cleanName == "www" { // yuck 1 - i dont need to handle them differently now that i decoupled the discovery rest format from the code, left this in without realizing i can kill it too
-				parts := strings.Split(raw, "/")
-				if len(parts) >= 5 && parts[1] == "discovery" {
-					cleanName = parts[4]
-				}
-			}
-
-			discoveryUrl := "https://" + raw
-
-			gapiServices = append(gapiServices, utils.Service{
-				CleanName:    cleanName,
-				DiscoveryUrl: discoveryUrl,
-			})
-		}
+	rawKeys := []string{}
+	if *key != "" {
+		rawKeys = append(rawKeys, *key)
 	}
+	rawKeys = append(rawKeys, flag.Args()...)
 
 	keys := []string{}
-	if *key != "" {
-		keys = append(keys, *key)
+	seenKeys := make(map[string]bool)
+	for _, k := range rawKeys {
+		if !seenKeys[k] {
+			seenKeys[k] = true
+			keys = append(keys, k)
+		}
 	}
-	keys = append(keys, flag.Args()...)
 
 	if len(keys) == 0 {
 		log.Fatal("You must provide at least one API key. You can pass it as a named flag or as positional arguments. Usage samples: \n - \"fireblazer AIza-key1 AIza-key2\" \n - \"fireblazer --apiKey=AIza-key\". \nTerminating.")
@@ -239,54 +207,9 @@ func main() {
 	var logCh chan string
 	var updateDone chan struct{}
 
-	if isInteractive { // I feel this interactive display thing kinda deserves its own function because holy indents
+	if isInteractive {
 		defer cancel()
-
-		updateCh = make(chan utils.ScanUpdate, *workerCount*len(keys))
-		logCh = make(chan string, len(keys)*3)
-		updateDone = make(chan struct{})
-
-		go func() {
-			totalRemMap := make(map[string]int)
-			totalFoundMap := make(map[string]int)
-
-			for _, k := range keys {
-				tk := parseTargetKey(k, *referrer)
-				totalRemMap[tk.Raw] = len(gapiServices)
-			}
-
-			for updateCh != nil || logCh != nil {
-				select {
-				case update, ok := <-updateCh:
-					if !ok {
-						updateCh = nil
-						continue
-					}
-					totalRemMap[update.Key] = update.CurrentRem
-					totalFoundMap[update.Key] = update.CurrentFound
-
-					totalRem := 0
-					totalFound := 0
-					for _, rem := range totalRemMap {
-						totalRem += rem
-					}
-					for _, f := range totalFoundMap {
-						totalFound += f
-					}
-
-					// i feel i should handle more of the interactive segment here. like at the very least, the "remaining" section should be managed in main.go, i feel anyone looking at this would be confused
-
-					scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, update.ItemCleanName))
-				case msg, ok := <-logCh:
-					if !ok {
-						logCh = nil
-						continue
-					}
-					fmt.Printf("\x1b[2K\r%s\n", msg)
-				}
-			}
-			close(updateDone)
-		}()
+		updateCh, logCh, updateDone = startInteractiveDisplay(keys, len(gapiServices), *referrer)
 	}
 
 	var wg sync.WaitGroup
@@ -494,4 +417,68 @@ func marshalText(results []KeyResult, keys []string, targetApi string, timingEna
 	}
 
 	return buf.Bytes()
+}
+
+func loadServices(targetApi string) []utils.Service {
+	var services []utils.Service
+
+	if targetApi != "" {
+		hostname := strings.Split(targetApi, "/")[0]
+		cleanName := strings.Split(hostname, ".")[0]
+		discoveryUrl := targetApi
+		if !strings.HasPrefix(discoveryUrl, "http") {
+			discoveryUrl = "https://" + discoveryUrl
+		}
+		services = append(services, utils.Service{
+			CleanName:    cleanName,
+			DiscoveryUrl: discoveryUrl,
+		})
+	} else {
+		for _, raw := range utils.GoogleApiList {
+			hostname := strings.Split(raw, "/")[0]
+			cleanName := strings.Split(hostname, ".")[0]
+			services = append(services, utils.Service{
+				CleanName:    cleanName,
+				DiscoveryUrl: "https://" + raw,
+			})
+		}
+	}
+	return services
+}
+
+func startInteractiveDisplay(keys []string, totalServices int, globalReferrer string) (chan utils.ScanUpdate, chan string, chan struct{}) {
+	updateCh := make(chan utils.ScanUpdate, *workerCount*len(keys))
+	logCh := make(chan string, len(keys)*3)
+	updateDone := make(chan struct{})
+
+	go func() {
+		totalRem := totalServices * len(keys)
+		totalFound := 0
+
+		for updateCh != nil || logCh != nil {
+			select {
+			case update, ok := <-updateCh:
+				if !ok {
+					updateCh = nil
+					continue
+				}
+
+				totalRem--
+				if update.WasFound {
+					totalFound++
+				}
+
+				scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, update.ItemCleanName))
+			case msg, ok := <-logCh:
+				if !ok {
+					logCh = nil
+					continue
+				}
+				fmt.Printf("\x1b[2K\r%s\n", msg)
+			}
+		}
+		close(updateDone)
+	}()
+
+	return updateCh, logCh, updateDone
 }

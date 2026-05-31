@@ -126,8 +126,7 @@ type ElapsedCombo struct {
 
 type ScanUpdate struct {
 	Key           string
-	CurrentFound  int
-	CurrentRem    int
+	WasFound      bool
 	ItemCleanName string
 }
 
@@ -143,11 +142,8 @@ func ScanServices(target TargetKey, gapiServices []Service, workerCount int, tim
 	var scanGroup errgroup.Group
 	scanGroup.SetLimit(workerCount)
 
-	rem := len(gapiServices)
-
 	var foundMutex sync.Mutex
 	foundServices := make([]string, 0)
-	foundCount := 0
 
 	var failMutex sync.Mutex
 	failCount := 0
@@ -159,11 +155,12 @@ func ScanServices(target TargetKey, gapiServices []Service, workerCount int, tim
 				start = time.Now()
 			}
 
+			wasFound := false
 			if valid, err := TestKeyServicePair(target, item.DiscoveryUrl, useGet); valid {
 				foundMutex.Lock()
-				foundCount++
 				foundServices = append(foundServices, item.CleanName)
 				foundMutex.Unlock()
+				wasFound = true
 			} else if err != nil {
 				log.Printf("Error testing discovery endpoint %s: %v", item.CleanName, err)
 				failMutex.Lock()
@@ -183,18 +180,11 @@ func ScanServices(target TargetKey, gapiServices []Service, workerCount int, tim
 				maxTimeMutex.Unlock()
 			}
 
-			foundMutex.Lock()
-			currentRem := rem - 1
-			rem = currentRem
-			currentFound := foundCount
-			foundMutex.Unlock()
-
 			if updateCh != nil {
 				select {
 				case updateCh <- ScanUpdate{
 					Key:           target.Raw,
-					CurrentFound:  currentFound,
-					CurrentRem:    currentRem,
+					WasFound:      wasFound,
 					ItemCleanName: item.CleanName,
 				}:
 				default:
