@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -328,170 +329,169 @@ func main() {
 		log.Println("Scan complete!")
 	}
 
-	if *outputFormat == "json" || *outputFormat == "yaml" {
-		// I really need to see if i could clean up my output format logic :/
+	var outputData []byte
+	var err error
 
-		var structuredResults []StructuredOutput
-
-		for _, res := range results {
-			out := StructuredOutput{
-				Key:          res.Key,
-				Valid:        res.Valid,
-				ProjectId:    res.ProjectId,
-				Brand:        res.Brand,
-				FailCount:    res.FailCount,
-				Services:     []string{},
-				P4SAServices: res.P4SAServices,
-			}
-
-			if !res.Valid && res.InvalidReason != nil {
-				out.InvalidReason = res.InvalidReason.Error()
-			}
-
-			var sDetails []ServiceDetail
-
-			for _, service := range res.FoundServices {
-				serviceName := service + ".googleapis.com"
-				out.Services = append(out.Services, serviceName)
-
-				if showTitle || showDesc {
-					meta, hasMeta := utils.ApiMetadata[service]
-					detail := ServiceDetail{Name: serviceName}
-
-					if hasMeta {
-						if showTitle {
-							detail.Title = meta.Title
-						}
-						if showDesc {
-							detail.Description = meta.Summary // insane level of nesting I think something's wrong here, or i can use more guard clauses thruu my code
-						}
-					}
-
-					sDetails = append(sDetails, detail)
-				}
-			}
-
-			if len(sDetails) > 0 {
-				out.ServiceDetails = sDetails
-			}
-
-			var inferredDetails []ServiceDetail
-			for _, saSvc := range res.P4SAServices {
-				detail := ServiceDetail{Name: saSvc}
-				if showTitle || showDesc {
-					if name, exists := utils.SANames[saSvc]; exists {
-						detail.Title = name
-					}
-				}
-				inferredDetails = append(inferredDetails, detail)
-			}
-
-			if len(inferredDetails) > 0 {
-				out.InferredServiceDetails = inferredDetails
-			}
-
-			structuredResults = append(structuredResults, out)
-		}
-
-		if *outputFormat == "json" {
-			jsonData, err := json.Marshal(structuredResults)
-
-			if err != nil {
-				log.Fatalf("Error marshaling JSON: %v", err)
-			}
-
-			fmt.Println(string(jsonData))
-		} else {
-			yamlData, err := yaml.Marshal(structuredResults)
-
-			if err != nil {
-				log.Fatalf("Error marshaling YAML: %v", err) // i do wonder if i can maintain a more clean app state and the final result output can be a handler for the final output. would be much cleaner, i already put in so much work for a good app state for this to work
-			}
-			// wait actually why dont i move it? the app state seems to have everything to begin with, i think it was just misguided optimization cope. there are better things to focus on for opt than this. DX matters when we have this insanely monolithic main go
-			fmt.Println(string(yamlData))
-		}
+	if *outputFormat == "json" {
+		outputData, err = json.MarshalIndent(marshalStructured(results, showTitle, showDesc), "", "  ")
+	} else if *outputFormat == "yaml" {
+		outputData, err = yaml.Marshal(marshalStructured(results, showTitle, showDesc))
 	} else {
+		outputData = marshalText(results, keys, *targetApi, *timingEnabled, showTitle, showDesc)
+	}
 
-		if *targetApi != "" {
-			fmt.Printf("\nTARGET: %s\n", *targetApi)
+	if err != nil {
+		log.Fatalf("Error marshaling output: %v", err)
+	}
+
+	fmt.Println(string(outputData))
+
+	utils.KeyLogFile.Close()
+}
+
+func marshalStructured(results []KeyResult, showTitle bool, showDesc bool) []StructuredOutput {
+	var structuredResults []StructuredOutput
+
+	for _, res := range results {
+		out := StructuredOutput{
+			Key:          res.Key,
+			Valid:        res.Valid,
+			ProjectId:    res.ProjectId,
+			Brand:        res.Brand,
+			FailCount:    res.FailCount,
+			Services:     []string{},
+			P4SAServices: res.P4SAServices,
 		}
 
-		for _, res := range results {
-			if *targetApi != "" {
-				status := "❌"
-				if len(res.FoundServices) > 0 {
-					status = "✅"
-				}
-				fmt.Printf("%s : %s\n", res.Key, status)
-				continue
-			}
+		if !res.Valid && res.InvalidReason != nil {
+			out.InvalidReason = res.InvalidReason.Error()
+		}
 
-			if len(keys) > 1 {
-				fmt.Printf("\n---%s---\n", res.Key)
-			}
-			if !res.Valid {
-				log.Printf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.", res.Key, res.InvalidReason)
-				continue
-			}
+		var sDetails []ServiceDetail
+		for _, service := range res.FoundServices {
+			serviceName := service + ".googleapis.com"
+			out.Services = append(out.Services, serviceName)
 
-			if res.Brand != nil {
-				log.Printf("\nOAuth Client Screen Details")
-				if displayName, ok := res.Brand["displayName"]; ok && displayName != "" {
-					log.Printf(" - App Name: %v", displayName)
-				}
-				if supportEmail, ok := res.Brand["supportEmail"]; ok && supportEmail != "" {
-					log.Printf(" - Project Admin / Support Email: %v", supportEmail)
-				}
-				if homePageUrl, ok := res.Brand["homePageUrl"]; ok && homePageUrl != "" {
-					log.Printf(" - Homepage: %v", homePageUrl)
-				}
-			}
-
-			log.Printf("\nAPIs available to this API key with project ID %s:", res.ProjectId)
-
-			for _, service := range res.FoundServices {
-
-				baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
+			if showTitle || showDesc {
 				meta, hasMeta := utils.ApiMetadata[service]
-
-				details := ""
+				detail := ServiceDetail{Name: serviceName}
 				if hasMeta {
-					if showTitle && meta.Title != "" { // this made perfect sense when i wrote it but i dont like it because my code is littered with "" and " - "
-						details += meta.Title
+					if showTitle {
+						detail.Title = meta.Title
 					}
-					if showDesc && meta.Summary != "" {
-						if details != "" {
-							details += " - "
-						}
-						details += meta.Summary
+					if showDesc {
+						detail.Description = meta.Summary // insane level of nesting I think something's wrong here, or i can use more guard clauses thruu my code
 					}
 				}
-				if details != "" {
-					log.Printf("%s\n   ^-- %s", baseMsg, details)
+				sDetails = append(sDetails, detail)
+			}
+		}
+
+		if len(sDetails) > 0 {
+			out.ServiceDetails = sDetails
+		}
+
+		var inferredDetails []ServiceDetail
+		for _, saSvc := range res.P4SAServices {
+			detail := ServiceDetail{Name: saSvc}
+			if showTitle || showDesc {
+				if name, exists := utils.SANames[saSvc]; exists {
+					detail.Title = name
+				}
+			}
+			inferredDetails = append(inferredDetails, detail)
+		}
+
+		if len(inferredDetails) > 0 {
+			out.InferredServiceDetails = inferredDetails
+		}
+
+		structuredResults = append(structuredResults, out)
+	}
+	return structuredResults
+}
+
+func marshalText(results []KeyResult, keys []string, targetApi string, timingEnabled bool, showTitle bool, showDesc bool) []byte {
+	var buf bytes.Buffer
+
+	if targetApi != "" {
+		buf.WriteString(fmt.Sprintf("\nTARGET: %s\n", targetApi))
+	}
+
+	for _, res := range results {
+		if targetApi != "" {
+			status := "❌"
+			if len(res.FoundServices) > 0 {
+				status = "✅"
+			}
+			buf.WriteString(fmt.Sprintf("%s : %s\n", res.Key, status))
+			continue
+		}
+
+		if len(keys) > 1 {
+			buf.WriteString(fmt.Sprintf("\n---%s---\n", res.Key))
+		}
+		if !res.Valid {
+			buf.WriteString(fmt.Sprintf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.\n", res.Key, res.InvalidReason))
+			continue
+		}
+
+		if res.Brand != nil {
+			buf.WriteString("\nOAuth Client Screen Details\n")
+			if displayName, ok := res.Brand["displayName"]; ok && displayName != "" {
+				buf.WriteString(fmt.Sprintf(" - App Name: %v\n", displayName))
+			}
+			if supportEmail, ok := res.Brand["supportEmail"]; ok && supportEmail != "" {
+				buf.WriteString(fmt.Sprintf(" - Project Admin / Support Email: %v\n", supportEmail))
+			}
+			if homePageUrl, ok := res.Brand["homePageUrl"]; ok && homePageUrl != "" {
+				buf.WriteString(fmt.Sprintf(" - Homepage: %v\n", homePageUrl))
+			}
+		}
+
+		buf.WriteString(fmt.Sprintf("\nAPIs available to this API key with project ID %s:\n", res.ProjectId))
+
+		for _, service := range res.FoundServices {
+			baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
+			meta, hasMeta := utils.ApiMetadata[service]
+
+			details := ""
+			if hasMeta {
+				if showTitle && meta.Title != "" {
+					details += meta.Title
+				}
+				if showDesc && meta.Summary != "" {
+					if details != "" {
+						details += " - "
+					}
+					details += meta.Summary
+				}
+			}
+			if details != "" {
+				buf.WriteString(fmt.Sprintf("%s\n   ^-- %s\n", baseMsg, details))
+			} else {
+				buf.WriteString(fmt.Sprintf("%s\n", baseMsg))
+			}
+		}
+
+		if len(res.P4SAServices) > 0 {
+			buf.WriteString("\n[Additional Recon] Inferred Services via Service Accounts:\n")
+			for _, saSvc := range res.P4SAServices {
+				if name, exists := utils.SANames[saSvc]; exists {
+					buf.WriteString(fmt.Sprintf(" - %s (%s)\n", saSvc, name))
 				} else {
-					log.Printf(baseMsg)
+					buf.WriteString(fmt.Sprintf(" - %s\n", saSvc))
 				}
 			}
+			buf.WriteString("\n")
+		}
 
-			if len(res.P4SAServices) > 0 {
-				log.Printf("\n[Additional Recon] Inferred Services via Service Accounts:")
-				for _, saSvc := range res.P4SAServices {
-					if name, exists := utils.SANames[saSvc]; exists {
-						log.Printf(" - %s (%s)", saSvc, name)
-					} else {
-						log.Printf(" - %s", saSvc)
-					}
-				}
-				log.Printf("")
-			}
+		buf.WriteString(fmt.Sprintf("All discovery endpoint tests completed with %d failures.\n", res.FailCount))
 
-			log.Printf("All discovery endpoint tests completed with %d failures.", res.FailCount)
-
-			if *timingEnabled {
-				log.Printf("Longest running service - %v\n\n\n", res.MaxTime)
-			}
+		if timingEnabled {
+			buf.WriteString(fmt.Sprintf("Longest running service - %v\n\n\n", res.MaxTime))
 		}
 	}
 
-	utils.KeyLogFile.Close()
+	return buf.Bytes()
 }
