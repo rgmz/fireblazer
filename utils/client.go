@@ -17,9 +17,14 @@ import (
 
 var KeyLogFile os.File
 
+// TODO: experiment with quic-go params https://quic-go.net/docs/quic/flowcontrol/#configuring-limits
+// If we're consistently sending 439 endpoint discovery reqs and expecting all those responses all the time, we might be able to tweak it a little...
+// But at this stage it's lowk a gamble ?
+
 var StoredResolvedAddr *net.UDPAddr
 
 var GetClient = sync.OnceValue(func() *http.Client {
+	// TODO: Buildtime / runtime flags to enable snooping. I want a dev branch one day that has all sorts of logging eventually but idw pollute the code yet
 	// KeyLogFile, _ := os.Create("ssl_keys.log") // If you want to read the traffic and debug issues with Wireshark, uncomment this.
 
 	return &http.Client{
@@ -150,7 +155,7 @@ func ReqHeaderOnly(req http.Request, apiKey string, useActualResolvedName bool) 
 	}
 
 	stream, err := conn.OpenRequestStream(ctx)
-	if err != nil {
+	if err != nil { // i think this handling is really hacky mannnnn like i ran into some unreproducible errors where it fails. I need to test on diff network speeds and see if the address gets changed by google if it takes too long
 		h3Mutex.Lock()
 		var destAddr string
 		if useActualResolvedName {

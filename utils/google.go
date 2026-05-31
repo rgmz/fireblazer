@@ -61,7 +61,7 @@ const keyCheckEndpoint = "https://www.googleapis.com/identitytoolkit/v3/relyingp
 
 func TestKeyValidity(apiKey string) (bool, *ProjectDetails, error) {
 	sharedClient := GetClient()
-	req, _ := http.NewRequest("GET", AppendAPIKeyToURL(keyCheckEndpoint, apiKey), nil)
+	req, _ := http.NewRequest("GET", AppendAPIKeyToURL(keyCheckEndpoint, apiKey), nil) // why is this not done with the headers again - do they get stripped by the head req stuff?
 	resp, err := ReqWithBackoff(req, sharedClient)
 
 	if err != nil {

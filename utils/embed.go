@@ -7,6 +7,7 @@ import (
 
 // I named this embed.go but didnt really think it would be so central
 // maybe I'd have a better per-json initializer and actually do something with metadata.go? i only kept it for that reason LMAO, i'm stuck deciding what to do and which one is better for DX
+// TODO: decide where it should all go and if embed.go should just be centralized init (maybe with a better name like load_defs or something)
 
 //go:embed data/apis.json
 var rawApisJSON []byte

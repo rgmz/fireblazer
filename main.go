@@ -16,6 +16,17 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// TODO: IAM stuff
+// TODO: Print out stuff on the Pin thing and quickly wipe it like "If you can see this, your terminal size is too small or you're viewing it on a terminal that doesn't like interactive modes. Use -outputFormat=text for a better experience :)"
+// TODO: Optimize further
+// TODO: See if i can pre-process the JSON and bake the struct into the binary. Seems excess, but might work out
+// TODO: Firebase full enumeration
+// TODO: Blaze:
+//	 		blaze output messages
+//				flag to disable blaze entirely for individual scans
+//				clarify blaze usage better and more transparently
+//				clarification for dangerouslySkipVerification - this stops the -blaze from working !!
+
 var key = flag.String("apiKey", "", "API key to scan. Can also be your first positional arg.")
 var referrer = flag.String("referrer", "", "Set the referrer (Referer:) header for when an API key is restricted to a website.")
 var dangerouslySkipVerification = flag.Bool("dangerouslySkipVerification", false, "Skip API key verification")
@@ -65,7 +76,7 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 		}
 	} else if strings.HasPrefix(raw, "xandroid:") {
 		parts := strings.SplitN(raw, ":", 4)
-		if len(parts) >= 4 {
+		if len(parts) >= 4 { // wait why am i handling this when im using splitn specifically to not deal with it i can fix this
 			tk.Key = parts[1]
 			tk.AndroidPkg = parts[2]
 			tk.AndroidCert = parts[3]
@@ -168,7 +179,7 @@ func main() {
 		hostname := strings.Split(*targetApi, "/")[0]
 		cleanName := strings.Split(hostname, ".")[0]
 
-		if cleanName == "www" {
+		if cleanName == "www" { // yuck 1
 			parts := strings.Split(*targetApi, "/")
 			if len(parts) >= 5 && parts[1] == "discovery" {
 				cleanName = parts[4]
@@ -189,7 +200,7 @@ func main() {
 			hostname := strings.Split(raw, "/")[0]
 			cleanName := strings.Split(hostname, ".")[0]
 
-			if cleanName == "www" {
+			if cleanName == "www" { // yuck 1 - i dont need to handle them differently now that i decoupled the discovery rest format from the code, left this in without realizing i can kill it too
 				parts := strings.Split(raw, "/")
 				if len(parts) >= 5 && parts[1] == "discovery" {
 					cleanName = parts[4]
@@ -227,7 +238,7 @@ func main() {
 	var logCh chan string
 	var updateDone chan struct{}
 
-	if isInteractive {
+	if isInteractive { // I feel this interactive display thing kinda deserves its own function because holy indents
 		defer cancel()
 
 		updateCh = make(chan utils.ScanUpdate, *workerCount*len(keys))
@@ -261,6 +272,8 @@ func main() {
 					for _, f := range totalFoundMap {
 						totalFound += f
 					}
+
+					// i feel i should handle more of the interactive segment here. like at the very least, the "remaining" section should be managed in main.go, i feel anyone looking at this would be confused
 
 					scanPin.UpdateMessage(fmt.Sprintf("Keys %d | Found %d | Rem %d | Scanning %s", len(keys), totalFound, totalRem, update.ItemCleanName))
 				case msg, ok := <-logCh:
@@ -350,7 +363,7 @@ func main() {
 							detail.Title = meta.Title
 						}
 						if showDesc {
-							detail.Description = meta.Summary
+							detail.Description = meta.Summary // insane level of nesting I think something's wrong here, or i can use more guard clauses thruu my code
 						}
 					}
 
@@ -392,9 +405,9 @@ func main() {
 			yamlData, err := yaml.Marshal(structuredResults)
 
 			if err != nil {
-				log.Fatalf("Error marshaling YAML: %v", err)
+				log.Fatalf("Error marshaling YAML: %v", err) // i do wonder if i can maintain a more clean app state and the final result output can be a handler for the final output. would be much cleaner, i already put in so much work for a good app state for this to work
 			}
-
+			// wait actually why dont i move it? the app state seems to have everything to begin with, i think it was just misguided optimization cope. there are better things to focus on for opt than this. DX matters when we have this insanely monolithic main go
 			fmt.Println(string(yamlData))
 		}
 	} else {
@@ -443,7 +456,7 @@ func main() {
 
 				details := ""
 				if hasMeta {
-					if showTitle && meta.Title != "" {
+					if showTitle && meta.Title != "" { // this made perfect sense when i wrote it but i dont like it because my code is littered with "" and " - "
 						details += meta.Title
 					}
 					if showDesc && meta.Summary != "" {

@@ -131,6 +131,8 @@ type ScanUpdate struct {
 	ItemCleanName string
 }
 
+// This function is maybe my finest work, but the decrement thing might be better off for interactive mode handled in main.go?
+// Either way, all functioons should strive to be as clear-cut like this. Does its thing and thats it.
 func ScanServices(target TargetKey, gapiServices []Service, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate, useGet bool) ([]string, int, *ElapsedCombo) {
 	var maxTimeMutex sync.Mutex
 	maxTime := &ElapsedCombo{
