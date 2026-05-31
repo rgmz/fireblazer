@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/textproto"
 	"net/url"
-	"slices"
 	"sync"
 	"time"
 
@@ -132,7 +131,7 @@ type ScanUpdate struct {
 	ItemCleanName string
 }
 
-func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string, falsePos []string, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate, useGet bool) ([]string, int, *ElapsedCombo) {
+func ScanServices(target TargetKey, gapiServices []Service, workerCount int, timingEnabled bool, updateCh chan<- ScanUpdate, useGet bool) ([]string, int, *ElapsedCombo) {
 	var maxTimeMutex sync.Mutex
 	maxTime := &ElapsedCombo{
 		ServiceClean: "",
@@ -152,10 +151,6 @@ func ScanServices(target TargetKey, gapiServices []Service, blacklisted []string
 	failCount := 0
 
 	for _, item := range gapiServices {
-		if slices.Contains(slices.Concat(blacklisted, falsePos), item.CleanName) {
-			continue
-		}
-
 		scanGroup.Go(func() error {
 			var start time.Time
 			if timingEnabled {

@@ -1,0 +1,1942 @@
+{
+    "abusiveexperiencereport": {
+        "Title": "Abusive Experience Report API",
+        "Summary": "Views Abusive Experience Report data, and gets a list of sites that have a significant number of abusive experiences."
+    },
+    "acceleratedmobilepageurl": {
+        "Title": "Accelerated Mobile Pages (AMP) URL API",
+        "Summary": "Retrieves the list of AMP URLs (and equivalent AMP Cache URLs) for a given list of public URL(s). "
+    },
+    "accessapproval": {
+        "Title": "Access Approval API",
+        "Summary": "An API for controlling access to data by Google personnel."
+    },
+    "actions": {
+        "Title": "Actions API",
+        "Summary": "Google Actions API allows developer to register and manage their actions on Google Cloud Platform."
+    },
+    "addressvalidation": {
+        "Title": "Address Validation API",
+        "Summary": "The Address Validation API allows developers to verify the accuracy of addresses. Given an address, it returns information about the correctness of the components of the parsed address, a geocode, and a verdict on the deliverability of the parsed address."
+    },
+    "adexchangebuyer": {
+        "Title": "Ad Exchange Buyer API II",
+        "Summary": "Access the latest features for managing Authorized Buyers accounts, Real-Time Bidding configurations and auction metrics, and Marketplace programmatic deals."
+    },
+    "adexchangeseller": {
+        "Title": "Ad Exchange Seller API",
+        "Summary": "The Ad Exchange Seller API enables developers to manage their Ad Exchange     accounts."
+    },
+    "adexperiencereport": {
+        "Title": "Ad Experience Report API",
+        "Summary": "Views Ad Experience Report data, and gets a list of sites that have a significant number of annoying ads."
+    },
+    "admanager": {
+        "Title": "Google Ad Manager API",
+        "Summary": "Manage your Ad Manager inventory, run reports and more."
+    },
+    "admin": {
+        "Title": "Admin SDK API",
+        "Summary": "Admin SDK lets administrators of enterprise domains to      view and manage resources like user, groups etc. It also provides      audit and usage reports of domain."
+    },
+    "admob": {
+        "Title": "AdMob API",
+        "Summary": "The AdMob API allows publishers to programmatically get information about their AdMob account. "
+    },
+    "adsdatahub": {
+        "Title": "Ads Data Hub API",
+        "Summary": "API for executing Ads Data Hub queries."
+    },
+    "adsense": {
+        "Title": "AdSense Management API",
+        "Summary": "The AdSense Management API allows publishers to access their inventory and     run earnings and performance reports."
+    },
+    "adsenseplatform": {
+        "Title": "AdSense Platform API",
+        "Summary": ""
+    },
+    "advisorynotifications": {
+        "Title": "Advisory Notifications API",
+        "Summary": "An API for accessing Advisory Notifications in Google Cloud"
+    },
+    "aerialview": {
+        "Title": "Aerial View API",
+        "Summary": "The Maps Aerial View API."
+    },
+    "aiplatform": {
+        "Title": "Agent Platform API",
+        "Summary": "Build, scale, govern, and optimize sophisticated agents and models."
+    },
+    "airquality": {
+        "Title": "Air Quality API",
+        "Summary": "The Air Quality API."
+    },
+    "alertcenter": {
+        "Title": "Google Workspace Alert Center API",
+        "Summary": "Manages alerts on issues affecting your domain. Note: The current version of this API (v1beta1) is available to all Google Workspace customers. "
+    },
+    "alloydb": {
+        "Title": "AlloyDB API",
+        "Summary": "AlloyDB for PostgreSQL is an open source-compatible database service that provides a powerful option for migrating, modernizing, or building commercial-grade applications. It offers full compatibility with standard PostgreSQL, and is more than 4x faster for transactional workloads and up to 100x faster for analytical queries than standard PostgreSQL in our performance tests. AlloyDB for PostgreSQL offers a 99.99 percent availability SLA inclusive of maintenance. <br><br> AlloyDB is optimized for the most demanding use cases, allowing you to build new applications that require high transaction throughput, large database sizes, or multiple read resources; scale existing PostgreSQL workloads with no application changes; and modernize legacy proprietary databases. "
+    },
+    "analytics": {
+        "Title": "Google Analytics API",
+        "Summary": "The Analytics API provides access to Analytics configuration and report     data."
+    },
+    "analyticsadmin": {
+        "Title": "Google Analytics Admin API",
+        "Summary": "Manage properties in Google Analytics.  Warning: Creating multiple Customer Applications, Accounts, or Projects to simulate or act as a single Customer Application, Account, or Project (respectively) or to circumvent Service-specific usage limits or quotas is a direct violation of Google Cloud Platform Terms of Service as well as Google APIs Terms of Service. These actions can result in immediate termination of your GCP project(s) without any warning."
+    },
+    "analyticsdata": {
+        "Title": "Google Analytics Data API",
+        "Summary": "Accesses report data in Google Analytics. Warning: Creating multiple Customer Applications, Accounts, or Projects to simulate or act as a single Customer Application, Account, or Project (respectively) or to circumvent Service-specific usage limits or quotas is a direct violation of Google Cloud Platform Terms of Service as well as Google APIs Terms of Service. These actions can result in immediate termination of your GCP project(s) without any warning. "
+    },
+    "analyticshub": {
+        "Title": "Analytics Hub API",
+        "Summary": "Exchange data and analytics assets securely and efficiently."
+    },
+    "androiddeviceprovisioning": {
+        "Title": "Android Device Provisioning Partner API",
+        "Summary": "Automates Android zero-touch enrollment for device resellers, customers, and EMMs."
+    },
+    "androidenterprise": {
+        "Title": "Google Play EMM API",
+        "Summary": "Manages the deployment of apps to Android Enterprise devices."
+    },
+    "androidmanagement": {
+        "Title": "Android Management API",
+        "Summary": "The Android Management API provides remote enterprise management of Android devices and apps."
+    },
+    "androidovertheair": {
+        "Title": "Android Over the Air API",
+        "Summary": "Android Over The Air (OTA) updates provide the infrastructure used by the Android partner portal for managing device system updates."
+    },
+    "anthos": {
+        "Title": "Anthos API",
+        "Summary": "Anthos is a managed hybrid cloud solution"
+    },
+    "anthosaudit": {
+        "Title": "Anthos Audit API",
+        "Summary": "Anthos is a managed hybrid cloud solution"
+    },
+    "anthosconfigmanagement": {
+        "Title": "Anthos Config Management API",
+        "Summary": "Anthos Config Management"
+    },
+    "anthosgke": {
+        "Title": "Anthos GKE API",
+        "Summary": "Anthos is a managed hybrid cloud solution"
+    },
+    "anthosidentityservice": {
+        "Title": "Anthos Identity Service",
+        "Summary": "Anthos Identity Service"
+    },
+    "anthospolicycontroller": {
+        "Title": "Anthos Policy Controller API",
+        "Summary": "Anthos Policy Controller"
+    },
+    "apigateway": {
+        "Title": "API Gateway API",
+        "Summary": ""
+    },
+    "apigee": {
+        "Title": "Apigee API",
+        "Summary": "Use the Apigee API to programmatically develop and manage APIs with a set of RESTful operations. Develop and secure API proxies, deploy and undeploy API proxy revisions, monitor APIs, configure environments, manage users, and more.  Note: This product is available as a free trial for a time period of 60 days."
+    },
+    "apigeeconnect": {
+        "Title": "Apigee Connect API",
+        "Summary": ""
+    },
+    "apigeeregistry": {
+        "Title": "Apigee Registry API",
+        "Summary": ""
+    },
+    "apihub": {
+        "Title": "API hub API",
+        "Summary": ""
+    },
+    "apikeys": {
+        "Title": "API Keys API",
+        "Summary": "Manages the API keys associated with developer projects."
+    },
+    "apim": {
+        "Title": "API Management API",
+        "Summary": "Enables users to discover shadow APIs in existing Google Cloud infrastructure."
+    },
+    "appdevelopmentexperience": {
+        "Title": "App Development Experience API",
+        "Summary": "App Development Experience"
+    },
+    "appengine": {
+        "Title": "App Engine Admin API",
+        "Summary": "Provisions and manages developers' App Engine applications."
+    },
+    "appengineflex": {
+        "Title": "App Engine Flexible Environment",
+        "Summary": "This service enables App Engine's Flexible Environment, which gives you the benefits of App Engine's managed services and the flexibility to run any software you need."
+    },
+    "appenginereporting": {
+        "Title": "App Engine",
+        "Summary": "Google App Engine Reporting Service"
+    },
+    "apphub": {
+        "Title": "App Hub API",
+        "Summary": "App Hub lets you build, operate, and manage applications on Google Cloud."
+    },
+    "appoptimize": {
+        "Title": "App Optimize API",
+        "Summary": "The App Optimize API provides developers and platform teams with tools to monitor, analyze, and improve the performance and cost-efficiency of their cloud applications."
+    },
+    "appsmarket": {
+        "Title": "Google Workspace Marketplace API",
+        "Summary": "Lets your Google Workspace Marketplace applications integrate with Google's installtion and licensing services. "
+    },
+    "appsmarket-component": {
+        "Title": "Google Workspace Marketplace SDK",
+        "Summary": "A toolkit for integrating web applications with Google Workspace."
+    },
+    "apptopology": {
+        "Title": "App Topology API",
+        "Summary": ""
+    },
+    "arcore": {
+        "Title": "ARCore API",
+        "Summary": "This service provides the necessary cloud backing for certain features of the ARCore SDK for Android and iOS. See the ARCore developer website for details. "
+    },
+    "area120tables": {
+        "Title": "Area120 Tables API",
+        "Summary": ""
+    },
+    "areainsights": {
+        "Title": "Places Aggregate API",
+        "Summary": "Places Aggregate API."
+    },
+    "artifactregistry": {
+        "Title": "Artifact Registry API",
+        "Summary": "Store and manage build artifacts in a scalable and integrated service built on Google infrastructure."
+    },
+    "assuredoss": {
+        "Title": "Assured OSS API",
+        "Summary": ""
+    },
+    "assuredworkloads": {
+        "Title": "Assured Workloads API",
+        "Summary": ""
+    },
+    "auditmanager": {
+        "Title": "Audit Manager API",
+        "Summary": ""
+    },
+    "authorizedbuyersmarketplace": {
+        "Title": "Authorized Buyers Marketplace API",
+        "Summary": "The Authorized Buyers Marketplace API lets buyers programmatically discover inventory; propose, retrieve and negotiate deals with publishers."
+    },
+    "automl": {
+        "Title": "Cloud AutoML API",
+        "Summary": "Train high-quality custom machine learning models with minimum effort and machine learning expertise."
+    },
+    "automotivemaps": {
+        "Title": "",
+        "Summary": ""
+    },
+    "autoscaling": {
+        "Title": "Cloud Autoscaling API",
+        "Summary": "An API for the Cloud Autoscaling for consuming autoscaling signals. "
+    },
+    "backupdr": {
+        "Title": "Backup and DR Service API",
+        "Summary": ""
+    },
+    "baremetalsolution": {
+        "Title": "Bare Metal Solution API",
+        "Summary": "Provides ways to manage Bare Metal Solution hardware installed in a regional extension located near a Google Cloud data center."
+    },
+    "batch": {
+        "Title": "Batch API",
+        "Summary": "An API to manage the running of Batch resources on Google Cloud Platform."
+    },
+    "beyondcorp": {
+        "Title": "BeyondCorp API",
+        "Summary": "Chrome Enterprise Premium is a secure enterprise browsing solution that provides secure access to applications and resources, and offers integrated threat and data protection. It adds an extra layer of security to safeguard your Chrome browser environment, including Data Loss Prevention (DLP), real-time URL and file scanning, and Context-Aware Access for SaaS and web apps."
+    },
+    "biglake": {
+        "Title": "BigLake API",
+        "Summary": "The BigLake API provides access to BigLake Metastore, a serverless, fully managed, and highly available metastore for open-source data that can be used for querying Apache Iceberg tables in BigQuery."
+    },
+    "bigquery": {
+        "Title": "BigQuery API",
+        "Summary": "A data platform for customers to create, manage, share and query data."
+    },
+    "bigqueryconnection": {
+        "Title": "BigQuery Connection API",
+        "Summary": "Allows users to manage BigQuery connections to external data sources."
+    },
+    "bigquerydatapolicy": {
+        "Title": "BigQuery Data Policy API",
+        "Summary": "Allows users to manage BigQuery data policies."
+    },
+    "bigquerydatatransfer": {
+        "Title": "BigQuery Data Transfer API",
+        "Summary": "Schedule queries or transfer external data from SaaS applications to Google BigQuery on a regular basis."
+    },
+    "bigquerymigration": {
+        "Title": "BigQuery Migration API",
+        "Summary": "The migration service, exposing apis for migration jobs operations, and agent management."
+    },
+    "bigqueryreservation": {
+        "Title": "BigQuery Reservation API",
+        "Summary": "A service to modify your BigQuery reservations."
+    },
+    "bigquerystorage": {
+        "Title": "BigQuery Storage API",
+        "Summary": ""
+    },
+    "bigqueryunified": {
+        "Title": "BigQuery Unified API",
+        "Summary": "Allows users to enable all BigQuery dependencies for data streaming, scheduling and notebooks."
+    },
+    "bigtable": {
+        "Title": "Cloud Bigtable API",
+        "Summary": "API for reading and writing the contents of Bigtable tables associated with a Google Cloud project."
+    },
+    "bigtableadmin": {
+        "Title": "Cloud Bigtable Admin API",
+        "Summary": "Administer your Cloud Bigtable tables and instances."
+    },
+    "bigtabletableadmin": {
+        "Title": "Cloud Bigtable Table Admin API",
+        "Summary": ""
+    },
+    "billingbudgets": {
+        "Title": "Cloud Billing Budget API",
+        "Summary": "The Cloud Billing Budget API stores Cloud Billing budgets, which define a budget plan and the rules to execute as spend is tracked against that plan."
+    },
+    "binaryauthorization": {
+        "Title": "Binary Authorization API",
+        "Summary": "The management interface for Binary Authorization, a service that provides policy-based deployment validation and control for images deployed to Google Kubernetes Engine (GKE), Anthos Service Mesh, Anthos Clusters, and Cloud Run. "
+    },
+    "blockchain": {
+        "Title": "Blockchain API",
+        "Summary": "blockchain.googleapis.com API."
+    },
+    "blockchainnodeengine": {
+        "Title": "Blockchain Node Engine API",
+        "Summary": ""
+    },
+    "blogger": {
+        "Title": "Blogger API",
+        "Summary": "The Blogger API provides access to posts, comments and pages of a     Blogger blog."
+    },
+    "books": {
+        "Title": "Books API",
+        "Summary": "The Google Books API allows clients to access the Google Books repository."
+    },
+    "caldav": {
+        "Title": "CalDAV API",
+        "Summary": "The CalDAV API lets you manage your Google calendars and events."
+    },
+    "calendar-json": {
+        "Title": "Google Calendar API",
+        "Summary": "The Google Calendar API lets you manage your calendars and events."
+    },
+    "capacityplanner": {
+        "Title": "Capacity Planner API",
+        "Summary": "Provides programmatic access to Capacity Planner features."
+    },
+    "carddav": {
+        "Title": "Google Contacts CardDAV API",
+        "Summary": "An API to synchronize contacts."
+    },
+    "certificatemanager": {
+        "Title": "Certificate Manager API",
+        "Summary": ""
+    },
+    "chat": {
+        "Title": "Google Chat API",
+        "Summary": "The Google Chat API lets you build Chat apps to integrate your services with Google Chat and manage Chat resources such as spaces, members, and messages."
+    },
+    "checks": {
+        "Title": "Checks API",
+        "Summary": "The Checks API contains powerful and easy-to-use privacy and compliance APIs that interact with the Checks product and its underlying technology."
+    },
+    "chromedevicetoken": {
+        "Title": "Chrome Device Token API",
+        "Summary": ""
+    },
+    "chromemanagement": {
+        "Title": "Chrome Management API",
+        "Summary": "The Chrome Management API is a suite of services that allows Chrome administrators to view, manage and gain insights on their Chrome OS and Chrome Browser devices."
+    },
+    "chromepolicy": {
+        "Title": "Chrome Policy API",
+        "Summary": "The Chrome Policy API is a suite of services that allows Chrome administrators to control the policies applied to their managed Chrome OS devices and Chrome browsers."
+    },
+    "chromeuxreport": {
+        "Title": "Chrome UX Report API",
+        "Summary": "The Chrome UX Report API lets you view real user experience data for millions of websites. "
+    },
+    "chromewebstore": {
+        "Title": "Chrome Web Store API",
+        "Summary": "The Chrome Web Store API provides access to data about apps and extensions, as well as developer tools for managing them."
+    },
+    "chronicle": {
+        "Title": "Chronicle API",
+        "Summary": "The Google Cloud Security Operations API (Chronicle API) provides endpoints that help analysts investigate and mitigate security threats throughout their lifecycle."
+    },
+    "civicinfo": {
+        "Title": "Google Civic Information API",
+        "Summary": "Provides polling places, early vote locations, contest data, election officials, and government representatives for U.S. residential addresses."
+    },
+    "classroom": {
+        "Title": "Google Classroom API",
+        "Summary": "Manages classes, rosters, and invitations in Google Classroom."
+    },
+    "cloud": {
+        "Title": "Service Metadata API",
+        "Summary": "This API provides static metadata about Google Cloud Platform. Currently, it only provides basic information about Google Cloud locations, such as zones, regions, and countries."
+    },
+    "cloudaicompanion": {
+        "Title": "Gemini for Google Cloud API",
+        "Summary": "The AI-powered assistant for Google Cloud. "
+    },
+    "cloudapiregistry": {
+        "Title": "Cloud API Registry API",
+        "Summary": ""
+    },
+    "cloudapis": {
+        "Title": "Google Cloud APIs",
+        "Summary": "This is a meta service for Google Cloud APIs for convenience. Enabling this service enables all commonly used Google Cloud APIs for the project. By default, it is enabled for all projects created through Google Cloud Console and Google Cloud SDK, and should be manually enabled for all other projects that intend to use Google Cloud APIs. Note: disabling this service has no effect on other services. "
+    },
+    "cloudasset": {
+        "Title": "Cloud Asset API",
+        "Summary": "The Cloud Asset API manages the history and inventory of Google Cloud resources."
+    },
+    "cloudbilling": {
+        "Title": "Cloud Billing API",
+        "Summary": "Allows developers to manage billing for their Google Cloud Platform projects     programmatically."
+    },
+    "cloudbuild": {
+        "Title": "Cloud Build API",
+        "Summary": "Creates and manages builds on Google Cloud Platform."
+    },
+    "cloudchannel": {
+        "Title": "Cloud Channel API",
+        "Summary": "The Cloud Channel API enables Google Cloud partners to have a single unified resale platform and APIs across all of Google Cloud including GCP, Workspace, Maps and Chrome."
+    },
+    "cloudcommerceconsumerprocurement": {
+        "Title": "Cloud Commerce Consumer Procurement API",
+        "Summary": "Enables consumers to procure products served by Cloud Marketplace platform"
+    },
+    "cloudcommerceprocurement": {
+        "Title": "Cloud Commerce Partner Procurement API",
+        "Summary": "Partner API for the Cloud Commerce Procurement Service."
+    },
+    "cloudcontrolspartner": {
+        "Title": "Cloud Controls Partner API",
+        "Summary": "Provides insights about your customers and their Assured Workloads based on your Sovereign Controls by Partners offering."
+    },
+    "clouddeploy": {
+        "Title": "Cloud Deploy API",
+        "Summary": ""
+    },
+    "clouderrorreporting": {
+        "Title": "Error Reporting API",
+        "Summary": "Groups and counts similar errors from cloud services and applications, reports new errors, and provides access to error groups and their associated errors. "
+    },
+    "cloudfunctions": {
+        "Title": "Cloud Functions API",
+        "Summary": "Manages lightweight user-provided functions executed in response to events."
+    },
+    "cloudidentity": {
+        "Title": "Cloud Identity API",
+        "Summary": "API for provisioning and managing identity resources."
+    },
+    "cloudkms": {
+        "Title": "Cloud Key Management Service (KMS) API",
+        "Summary": "Manages keys and performs cryptographic operations in a central cloud service, for direct use by other cloud resources and applications. "
+    },
+    "cloudlatencytest": {
+        "Title": "Cloud Network Performance Monitoring API",
+        "Summary": "A Test API to report latency data."
+    },
+    "cloudlocationfinder": {
+        "Title": "Cloud Location Finder API",
+        "Summary": ""
+    },
+    "cloudoptimization": {
+        "Title": "Cloud Optimization API",
+        "Summary": "Cloud Optimization API provides a portfolio of solvers to address common optimization use cases starting with optimal route planning for vehicle fleets."
+    },
+    "cloudprivatecatalog": {
+        "Title": "Cloud Private Catalog API",
+        "Summary": "Enable cloud users to discover private catalogs and products in their organizations."
+    },
+    "cloudprofiler": {
+        "Title": "Cloud Profiler API",
+        "Summary": "Manages continuous profiling information."
+    },
+    "cloudquotas": {
+        "Title": "Cloud Quotas API",
+        "Summary": "Cloud Quotas API provides Google Cloud service consumers with management and observability for resource usage, quotas, and restrictions of the services they consume."
+    },
+    "cloudresourcemanager": {
+        "Title": "Cloud Resource Manager API",
+        "Summary": "Creates, reads, and updates metadata for Google Cloud Platform resource containers."
+    },
+    "cloudscheduler": {
+        "Title": "Cloud Scheduler API",
+        "Summary": "Creates and manages jobs run on a regular recurring schedule."
+    },
+    "cloudsearch": {
+        "Title": "Cloud Search API",
+        "Summary": "Cloud Search provides cloud-based search capabilities over Google Workspace data.  The Cloud Search API allows indexing of non-Google Workspace data into Cloud Search."
+    },
+    "cloudsecuritycompliance": {
+        "Title": "Cloud Security Compliance API",
+        "Summary": ""
+    },
+    "cloudshell": {
+        "Title": "Cloud Shell API",
+        "Summary": "Allows users to start, configure, and connect to interactive shell sessions running in the cloud. "
+    },
+    "cloudsupport": {
+        "Title": "Google Cloud Support API",
+        "Summary": "Manages Google Cloud technical support cases for Customer Care support offerings. "
+    },
+    "cloudtasks": {
+        "Title": "Cloud Tasks API",
+        "Summary": "Manages the execution of large numbers of distributed requests."
+    },
+    "cloudtrace": {
+        "Title": "Cloud Trace API",
+        "Summary": "Sends application trace data to Cloud Trace for viewing. Trace data is collected for all App Engine applications by default. Trace data from other applications can be provided using this API. This library is used to interact with the Cloud Trace API directly. If you are looking to instrument your application for Cloud Trace, we recommend using OpenTelemetry. "
+    },
+    "cloudvideosearch": {
+        "Title": "Video Search API",
+        "Summary": "Video Content Manage Service provides capability of managing annotations (user generated or ML generated), via operations including Add, Update, Delete, Export, etc. Video Search Service provides capability of searching video segments managed in Video Content Manage Service."
+    },
+    "composer": {
+        "Title": "Cloud Composer API",
+        "Summary": "Manages Apache Airflow environments on Google Cloud Platform."
+    },
+    "compute": {
+        "Title": "Compute Engine API",
+        "Summary": "Creates and runs virtual machines on Google Cloud Platform. "
+    },
+    "confidentialcomputing": {
+        "Title": "Confidential Computing API",
+        "Summary": "Attestation verifier for Confidential Space."
+    },
+    "config": {
+        "Title": "Infrastructure Manager API",
+        "Summary": "Creates and manages Google Cloud Platform resources and infrastructure."
+    },
+    "configdelivery": {
+        "Title": "Config Delivery API",
+        "Summary": "ConfigDelivery service manages the deployment of Kubernetes configuration to a fleet of Kubernetes clusters. "
+    },
+    "connectgateway": {
+        "Title": "Connect Gateway API",
+        "Summary": "The Connect Gateway service allows connectivity from external parties to connected Kubernetes clusters. "
+    },
+    "connectors": {
+        "Title": "Connectors API",
+        "Summary": "Enables users to create and manage connections to Google Cloud services and third-party business applications using the Connectors interface."
+    },
+    "contactcenteraiplatform": {
+        "Title": "Contact Center AI Platform API",
+        "Summary": ""
+    },
+    "contactcenterinsights": {
+        "Title": "Contact Center AI Insights API",
+        "Summary": ""
+    },
+    "contacts": {
+        "Title": "Contacts API",
+        "Summary": "The Google Contacts API lets you manage your contacts."
+    },
+    "container": {
+        "Title": "Kubernetes Engine API",
+        "Summary": "Builds and manages container-based applications, powered by the open source Kubernetes technology."
+    },
+    "containeranalysis": {
+        "Title": "Container Analysis API",
+        "Summary": "This API is a prerequisite for leveraging Artifact Analysis scanning capabilities in Artifact Registry.  In addition, the Container Analysis API is an implementation of the Grafeas API, which enables storing, querying, and retrieval of critical metadata about all of your software artifacts."
+    },
+    "containerfilesystem": {
+        "Title": "Container File System API",
+        "Summary": "Stream images stored in Artifact Registry to GKE "
+    },
+    "containerregistry": {
+        "Title": "Container Registry API",
+        "Summary": "Google Container Registry provides secure, private Docker image storage on Google Cloud Platform.  Our API follows the Docker Registry API specification, so we are fully compatible with the Docker CLI client, as well as standard tooling using the Docker Registry API."
+    },
+    "containerscanning": {
+        "Title": "Container Scanning API",
+        "Summary": "A service to scan containers for vulnerabilities."
+    },
+    "containersecurity": {
+        "Title": "Container Security API",
+        "Summary": "Highlights security-related insights into running Google Kubernetes Engine (GKE) clusters."
+    },
+    "contentwarehouse": {
+        "Title": "Document AI Warehouse API",
+        "Summary": ""
+    },
+    "contrails": {
+        "Title": "Contrails API",
+        "Summary": "contrails.googleapis.com API."
+    },
+    "copresence": {
+        "Title": "Nearby Messages API",
+        "Summary": "Api for exchanging messages with nearby devices."
+    },
+    "css": {
+        "Title": "CSS API",
+        "Summary": "Programmatically manage your Comparison Shopping Service (CSS) account data at scale."
+    },
+    "customsearch": {
+        "Title": "Custom Search API",
+        "Summary": "Searches over a website or collection of websites"
+    },
+    "datacatalog": {
+        "Title": "Google Cloud Data Catalog API",
+        "Summary": "A fully managed and highly scalable data discovery and metadata management service. "
+    },
+    "dataconnectors": {
+        "Title": "Data Connectors API",
+        "Summary": ""
+    },
+    "dataflow": {
+        "Title": "Dataflow API",
+        "Summary": "Manages Google Cloud Dataflow projects on Google Cloud Platform."
+    },
+    "dataform": {
+        "Title": "Dataform API",
+        "Summary": "Service to develop, version control, and operationalize SQL pipelines in BigQuery."
+    },
+    "datafusion": {
+        "Title": "Cloud Data Fusion API",
+        "Summary": "Cloud Data Fusion is a fully-managed, cloud native, enterprise data integration service for     quickly building and managing data pipelines. It provides a graphical interface to increase     time efficiency and reduce complexity, and allows business users, developers, and data     scientists to easily and reliably build scalable data integration solutions to cleanse,     prepare, blend, transfer and transform data without having to wrestle with infrastructure."
+    },
+    "datalabeling": {
+        "Title": "Data Labeling API",
+        "Summary": "Public API for Google Cloud AI Data Labeling Service."
+    },
+    "datalineage": {
+        "Title": "Data Lineage API",
+        "Summary": ""
+    },
+    "datamanager": {
+        "Title": "Data Manager API",
+        "Summary": "A unified ingestion API for data partners, agencies and advertisers to connect first-party data across Google advertising products."
+    },
+    "datamigration": {
+        "Title": "Database Migration API",
+        "Summary": "Manage Cloud Database Migration Service resources on Google Cloud Platform."
+    },
+    "datapipelines": {
+        "Title": "Data pipelines API",
+        "Summary": "Data Pipelines provides an interface for creating, updating, and managing recurring Data Analytics jobs."
+    },
+    "dataplex": {
+        "Title": "Cloud Dataplex API",
+        "Summary": "A unified, intelligent governance solution for data and AI assets."
+    },
+    "dataportability": {
+        "Title": "Data Portability API",
+        "Summary": "The Data Portability API lets you build applications that request authorization from a user to move a copy of data from Google services into your application. This enables data portability and facilitates switching services."
+    },
+    "dataproc": {
+        "Title": "Cloud Dataproc API",
+        "Summary": "Manages Hadoop-based clusters and jobs on Google Cloud Platform."
+    },
+    "dataproc-control": {
+        "Title": "Cloud Dataproc Control API",
+        "Summary": "Manages internal resources for Google Cloud Dataproc."
+    },
+    "dataprocrm": {
+        "Title": "Dataproc Resource Manager API",
+        "Summary": "dataprocrm.googleapis.com API"
+    },
+    "datastore": {
+        "Title": "Cloud Datastore API",
+        "Summary": "Accesses the schemaless NoSQL database to provide fully managed, robust, scalable storage for your application. "
+    },
+    "datastream": {
+        "Title": "Datastream API",
+        "Summary": ""
+    },
+    "datastudio": {
+        "Title": "Data Studio API",
+        "Summary": "Allows programmatic viewing and editing of Data Studio assets."
+    },
+    "deploymentmanager": {
+        "Title": "Cloud Deployment Manager V2 API",
+        "Summary": "The Google Cloud Deployment Manager v2 API provides services for configuring, deploying, and viewing Google Cloud services and APIs via templates which specify deployments of Cloud resources."
+    },
+    "designcenter": {
+        "Title": "Design Center API",
+        "Summary": "Design and share deployable application architectures."
+    },
+    "developerconnect": {
+        "Title": "Developer Connect API",
+        "Summary": "Connect third-party source code management to Google"
+    },
+    "devicestreaming": {
+        "Title": "Device Streaming API",
+        "Summary": "The Cloud API for device streaming usage."
+    },
+    "dfareporting": {
+        "Title": "Campaign Manager 360 API",
+        "Summary": "Build applications to efficiently manage large or complex trafficking, reporting, and attribution workflows for Campaign Manager 360."
+    },
+    "dialogflow": {
+        "Title": "Dialogflow API",
+        "Summary": "Builds conversational interfaces (for example, chatbots, and voice-powered apps and devices)."
+    },
+    "digitalassetlinks": {
+        "Title": "Digital Asset Links API",
+        "Summary": "Discovers relationships between online assets such as websites or mobile apps."
+    },
+    "discovery": {
+        "Title": "API Discovery Service",
+        "Summary": "Google API Discovery Service allows service consumers to list the discovery metadata of all public APIs managed by the API Platform."
+    },
+    "discoveryengine": {
+        "Title": "Discovery Engine API",
+        "Summary": "Discovery Engine API."
+    },
+    "displayvideo": {
+        "Title": "Display & Video 360 API",
+        "Summary": "Display & Video 360 API allows users to automate complex Display & Video 360 workflows, such as creating insertion orders and setting targeting options for individual line items."
+    },
+    "distance-matrix-backend": {
+        "Title": "Distance Matrix API",
+        "Summary": "Access travel distance and time for a matrix of origins and destinations     with the Distance Matrix API. The information returned is based     on the recommended route between start and end points and consists of rows     containing duration and distance values for each pair."
+    },
+    "dlp": {
+        "Title": "Sensitive Data Protection (DLP)",
+        "Summary": "Discover and protect your sensitive data. A fully managed service designed to help you discover, classify, and protect your valuable data assets with ease."
+    },
+    "dns": {
+        "Title": "Cloud DNS API",
+        "Summary": ""
+    },
+    "docs": {
+        "Title": "Google Docs API",
+        "Summary": "Reads and writes Google Docs documents."
+    },
+    "documentai": {
+        "Title": "Cloud Document AI API",
+        "Summary": "Service to parse structured information from unstructured or semi-structured documents using state-of-the-art Google AI such as natural language, computer vision, translation, and AutoML."
+    },
+    "domains": {
+        "Title": "Cloud Domains API",
+        "Summary": "Enables management and configuration of domain names."
+    },
+    "doubleclickbidmanager": {
+        "Title": "DoubleClick Bid Manager API",
+        "Summary": "DoubleClick Bid Manager API allows users to manage and create campaigns and reports."
+    },
+    "doubleclicksearch": {
+        "Title": "Search Ads 360 API",
+        "Summary": "The Search Ads 360 API allows developers to automate uploading conversions and downloading reports from Search Ads 360."
+    },
+    "driveactivity": {
+        "Title": "Drive Activity API",
+        "Summary": "Provides a historical view of activity in Google Drive."
+    },
+    "drivelabels": {
+        "Title": "Drive Labels API",
+        "Summary": "An API for managing Drive Labels"
+    },
+    "earthengine": {
+        "Title": "Google Earth Engine API",
+        "Summary": "Earth Engine is a platform for geospatial data storage, analysis, and visualization. "
+    },
+    "edgecache": {
+        "Title": "Global Edge Cache Service",
+        "Summary": ""
+    },
+    "edgecontainer": {
+        "Title": "Distributed Cloud Edge Container API",
+        "Summary": ""
+    },
+    "edgenetwork": {
+        "Title": "Distributed Cloud Edge Network API",
+        "Summary": "Network management API for Distributed Cloud Edge."
+    },
+    "elevation-backend": {
+        "Title": "Maps Elevation API",
+        "Summary": "Query all locations on the surface of earth, including depth locations on     the ocean floor (which return negative values), for elevation data with the     Maps Elevation API. Sampled requests are available for elevation data     along paths, allowing elevation change calculation along routes."
+    },
+    "embeddedassistant": {
+        "Title": "Google Assistant API",
+        "Summary": "Google Assistant API"
+    },
+    "enterpriseknowledgegraph": {
+        "Title": "Enterprise Knowledge Graph API",
+        "Summary": ""
+    },
+    "enterprisepurchasing": {
+        "Title": "Enterprise Purchasing API",
+        "Summary": ""
+    },
+    "essentialcontacts": {
+        "Title": "Essential Contacts API",
+        "Summary": ""
+    },
+    "eventarc": {
+        "Title": "Eventarc API",
+        "Summary": "Build event-driven applications on Google Cloud Platform."
+    },
+    "eventarcpublishing": {
+        "Title": "Eventarc Publishing API",
+        "Summary": "Processes events generated by an event provider and delivers them to a subscriber."
+    },
+    "factchecktools": {
+        "Title": "Fact Check Tools API",
+        "Summary": ""
+    },
+    "fcm": {
+        "Title": "Firebase Cloud Messaging API",
+        "Summary": "FCM send API that provides a cross-platform messaging solution to reliably deliver messages."
+    },
+    "fcmdata": {
+        "Title": "Firebase Cloud Messaging Data API",
+        "Summary": "Provides additional information about Firebase Cloud Messaging (FCM) message sends and deliveries."
+    },
+    "fcmregistrations": {
+        "Title": "FCM Registration API",
+        "Summary": ""
+    },
+    "file": {
+        "Title": "Cloud Filestore API",
+        "Summary": "The Cloud Filestore API is used for creating and managing cloud file servers."
+    },
+    "firebase": {
+        "Title": "Firebase Management API",
+        "Summary": "The Firebase Management API enables programmatic setup and management of Firebase projects, including a project's Firebase resources and Firebase apps."
+    },
+    "firebaseappcheck": {
+        "Title": "Firebase App Check API",
+        "Summary": "Firebase App Check works alongside other Firebase services to help protect your backend resources from abuse, such as billing fraud or phishing."
+    },
+    "firebaseappdistribution": {
+        "Title": "Firebase App Distribution API",
+        "Summary": ""
+    },
+    "firebaseapphosting": {
+        "Title": "Firebase App Hosting API",
+        "Summary": "Firebase App Hosting streamlines the development and deployment of dynamic Next.js and Angular applications, offering built-in framework support, GitHub integration, and integration with other Firebase products. You can use this API to intervene in the Firebase App Hosting build process and add custom functionality not supported in our default Console & CLI flows, including triggering builds from external CI/CD workflows or deploying from pre-built container images. "
+    },
+    "firebaseapptesters": {
+        "Title": "Firebase App Testers API",
+        "Summary": ""
+    },
+    "firebasecrashlytics": {
+        "Title": "Firebase Crashlytics API",
+        "Summary": "This service provides an API for mobile app developers to request deletion of user's crash reports."
+    },
+    "firebasedatabase": {
+        "Title": "Firebase Realtime Database Management API",
+        "Summary": "The Firebase Realtime Database API enables programmatic provisioning and management of Realtime Database instances."
+    },
+    "firebasedataconnect": {
+        "Title": "Firebase Data Connect API",
+        "Summary": "Firebase SQL Connect is a relational database service for mobile and web apps that lets you build and scale using a fully-managed PostgreSQL database powered by Cloud SQL. The REST API lets developers manage the connections to their database, change the schema of their database, and query the database."
+    },
+    "firebasedynamiclinks": {
+        "Title": "Firebase Dynamic Links API",
+        "Summary": "Programmatically creates and manages Firebase Dynamic Links."
+    },
+    "firebaseextensions": {
+        "Title": "Firebase Extensions API",
+        "Summary": ""
+    },
+    "firebaseextensionspublisher": {
+        "Title": "Firebase Extensions Publisher API",
+        "Summary": "firebaseextensionspublisher.googleapis.com API."
+    },
+    "firebasehosting": {
+        "Title": "Firebase Hosting API",
+        "Summary": "The Firebase Hosting REST API enables programmatic and customizable management and deployments to your Firebase-hosted sites. Use this REST API to create and manage channels and sites as well as to deploy new or updated hosting configurations and content files."
+    },
+    "firebaseinappmessaging": {
+        "Title": "Firebase In-App Messaging API",
+        "Summary": "Publicly accessible APIs that allows firebase in-app messaging SDKs/Clients to communicate with servers for fetching message definitions. "
+    },
+    "firebaseinstallations": {
+        "Title": "Firebase Installations API",
+        "Summary": ""
+    },
+    "firebaseml": {
+        "Title": "Firebase ML API",
+        "Summary": "Access custom machine learning models hosted via Firebase ML."
+    },
+    "firebaseremoteconfig": {
+        "Title": "Firebase Remote Config API",
+        "Summary": "The Firebase Remote Config API lets developers change the behavior and appearance of their apps without requiring users to download an app update. It is an alternative to, but can be used in tandem with, the Firebase console at https://console.firebase.google.com."
+    },
+    "firebaseremoteconfigrealtime": {
+        "Title": "Firebase Remote Config Realtime API",
+        "Summary": "The Firebase Remote Config Realtime API allows devices to receive signals indicating that their evaluated Remote Config values may have changed."
+    },
+    "firebaserules": {
+        "Title": "Firebase Rules API",
+        "Summary": "Creates and manages rules that determine when a Firebase Rules-enabled service should permit a request. "
+    },
+    "firebasestorage": {
+        "Title": "Cloud Storage for Firebase API",
+        "Summary": "The Cloud Storage for Firebase API enables programmatic management of Cloud Storage buckets for use in Firebase projects"
+    },
+    "firebasevertexai": {
+        "Title": "Firebase AI Logic API",
+        "Summary": "The Firebase AI Logic API provides programmatic access for creating, testing, and managing server prompt templates."
+    },
+    "firestore": {
+        "Title": "Cloud Firestore API",
+        "Summary": "Accesses the NoSQL document database built for automatic scaling, high performance, and ease of application development. "
+    },
+    "firestorekeyvisualizer": {
+        "Title": "Firestore Key Visualizer API",
+        "Summary": "View your database traffic patterns in Firestore Key Visualizer."
+    },
+    "firewallinsights": {
+        "Title": "Firewall Insights API",
+        "Summary": "A service to provide insights to user firewall configurations."
+    },
+    "fitness": {
+        "Title": "Fitness API",
+        "Summary": "The Fitness API for managing users' fitness tracking data."
+    },
+    "forms": {
+        "Title": "Google Forms API",
+        "Summary": "Reads and writes Google Forms and responses."
+    },
+    "games": {
+        "Title": "Google Play Games Services API",
+        "Summary": "The Google Play Games Service allows developers to enhance games with social leaderboards,     achievements, game state, sign-in with Google, and more."
+    },
+    "gamesconfiguration": {
+        "Title": "Google Play Games Services Publishing API",
+        "Summary": "The Google Play Game Services Publishing API allows developers to configure their games in Game Services."
+    },
+    "gamesmanagement": {
+        "Title": "Google Play Games Services Management API",
+        "Summary": "The Google Play Games Management API allows developers to manage resources from the Google      Play Game service."
+    },
+    "gdchardwaremanagement": {
+        "Title": "GDC Hardware Management API",
+        "Summary": ""
+    },
+    "gdmscience": {
+        "Title": "Google DeepMind Science API",
+        "Summary": "Collection of APIs for Google DeepMind science projects."
+    },
+    "geminicloudassist": {
+        "Title": "Gemini Cloud Assist API",
+        "Summary": "The AI-powered assistant for Google Cloud. "
+    },
+    "geminicodeassistmanagement": {
+        "Title": "Gemini Code Assist Management API",
+        "Summary": ""
+    },
+    "geminidataanalytics": {
+        "Title": "Data Analytics API with Gemini",
+        "Summary": "The Gemini Data Analytics API enables developers to build intelligent data analytics applications. Leverage AI-powered chat interfaces to allow users to interact with and analyze structured data using natural language."
+    },
+    "generativelanguage": {
+        "Title": "Gemini API",
+        "Summary": "The Gemini API allows developers to build generative AI applications using Gemini models. Gemini is our most capable model, built from the ground up to be multimodal. It can generalize and seamlessly understand, operate across, and combine different types of information including language, images, audio, video, and code. You can use the Gemini API for use cases like reasoning across text and images, content generation, dialogue agents, summarization and classification systems, and more."
+    },
+    "geocoding-backend": {
+        "Title": "Geocoding API",
+        "Summary": "Convert addresses into geographic coordinates (geocoding), which you can use     to place markers or position the map. This API also allows you to convert     geographic coordinates into an address (reverse geocoding)."
+    },
+    "geolocation": {
+        "Title": "Geolocation API",
+        "Summary": "Find a location and accuracy radius based on information from things like     cell towers and WiFi access points that a mobile client can detect with the     Geolocation API. This is primarily used where GPS is not     possible or appropriate."
+    },
+    "gkebackup": {
+        "Title": "Backup for GKE API",
+        "Summary": "Backup for GKE is a managed Kubernetes workload backup and restore service for GKE clusters."
+    },
+    "gkeconnect": {
+        "Title": "GKE Connect API",
+        "Summary": "The GKE Connect service allows connectivity between Google and managed K8s clusters."
+    },
+    "gkedataplanev2": {
+        "Title": "GKE Dataplane V2 API",
+        "Summary": "GKE Dataplane V2 API."
+    },
+    "gkehub": {
+        "Title": "GKE Hub API",
+        "Summary": ""
+    },
+    "gkemulticloud": {
+        "Title": "GKE Multi-Cloud API",
+        "Summary": " GKE Multi-Cloud provides a way to manage Kubernetes clusters that run on AWS and Azure infrastructure using the GKE Multi-Cloud API.  Combined with Connect, you can manage Kubernetes clusters on Google Cloud, AWS, and Azure from the Google Cloud Console.  When you create a cluster with GKE Multi-Cloud, Google creates the resources needed and brings up a cluster on your behalf.  You can deploy workloads with the GKE Multi-Cloud API or the gcloud and kubectl command-line tools."
+    },
+    "gkeonprem": {
+        "Title": "GKE On-Prem API",
+        "Summary": ""
+    },
+    "gkerecommender": {
+        "Title": "GKE Recommender API",
+        "Summary": "GKE Recommender API"
+    },
+    "gmail": {
+        "Title": "Gmail API",
+        "Summary": "The Gmail API lets you view and manage Gmail mailbox data like     threads, messages, and labels."
+    },
+    "gmailpostmastertools": {
+        "Title": "Gmail Postmaster Tools API",
+        "Summary": "The Postmaster Tools API is a RESTful API that provides programmatic access to email traffic metrics (like spam reports, delivery errors etc) otherwise available through the Gmail Postmaster Tools UI currently."
+    },
+    "googleads": {
+        "Title": "Google Ads API",
+        "Summary": "Manage your Google Ads accounts, campaigns, and reports with this API."
+    },
+    "groupsmigration": {
+        "Title": "Groups Migration API",
+        "Summary": "The Groups Migration API allows domain administrators to archive     emails into Google groups."
+    },
+    "groupssettings": {
+        "Title": "Groups Settings API",
+        "Summary": "The Groups Settings API allows domain administrators to view and manage     access levels and advanced settings for a group."
+    },
+    "gsuiteaddons": {
+        "Title": "Google Workspace add-ons API",
+        "Summary": ""
+    },
+    "healthcare": {
+        "Title": "Cloud Healthcare API",
+        "Summary": "Manage, store, and access healthcare data in Google Cloud Platform."
+    },
+    "home": {
+        "Title": "Home API",
+        "Summary": "The Home API enables developers to build reliable and secure experiences for controlling and automating smart home devices."
+    },
+    "homegraph": {
+        "Title": "HomeGraph API",
+        "Summary": ""
+    },
+    "hypercomputecluster": {
+        "Title": "Cluster Director API",
+        "Summary": "The Cluster Director API allows you to deploy, manage, and monitor clusters that run AI, ML, or HPC workloads."
+    },
+    "iam": {
+        "Title": "Identity and Access Management (IAM) API",
+        "Summary": "Manages identity and access control for Google Cloud resources, including the creation of service accounts, which you can use to authenticate to Google and make API calls. Enabling this API also enables the IAM Service Account Credentials API (iamcredentials.googleapis.com). However, disabling this API doesn't disable the IAM Service Account Credentials API. "
+    },
+    "iamcredentials": {
+        "Title": "IAM Service Account Credentials API",
+        "Summary": "Creates short-lived credentials for impersonating IAM service accounts. Disabling this API also disables the IAM API (iam.googleapis.com). However, enabling this API doesn't enable the IAM API. "
+    },
+    "iap": {
+        "Title": "Cloud Identity-Aware Proxy API",
+        "Summary": "Controls access to cloud applications running on Google Cloud Platform."
+    },
+    "identitytoolkit": {
+        "Title": "Identity Toolkit API",
+        "Summary": "The Google Identity Toolkit API lets you use open standards to verify a     user's identity."
+    },
+    "ids": {
+        "Title": "Cloud IDS API",
+        "Summary": "Cloud IDS (Cloud Intrusion Detection System) detects malware, spyware, command-and-control attacks, and other network-based threats. Its security efficacy is industry leading, built with Palo Alto Networks technologies. When you use this product, your organization name and consumption levels will be shared with Palo Alto Networks."
+    },
+    "indexing": {
+        "Title": "Web Search Indexing API",
+        "Summary": "Notifies Google Web Search when your web pages change."
+    },
+    "integrations": {
+        "Title": "Application Integration API",
+        "Summary": ""
+    },
+    "jobs": {
+        "Title": "Cloud Talent Solution API",
+        "Summary": "Cloud Talent Solution provides the capability to create, read, update, and delete job postings, as well as search jobs based on keywords and filters. "
+    },
+    "jules": {
+        "Title": "Jules API",
+        "Summary": "Programmatically create and access your asynchronous coding tasks."
+    },
+    "keep": {
+        "Title": "Google Keep API",
+        "Summary": "The Google Keep API is used in an enterprise environment to manage Google Keep content and resolve issues identified by cloud security software."
+    },
+    "kgsearch": {
+        "Title": "Knowledge Graph Search API",
+        "Summary": "Searches the Google Knowledge Graph for entities."
+    },
+    "kmsinventory": {
+        "Title": "KMS Inventory API",
+        "Summary": ""
+    },
+    "krmapihosting": {
+        "Title": "KRM API Hosting API",
+        "Summary": ""
+    },
+    "kubernetesmetadata": {
+        "Title": "Kubernetes Metadata API",
+        "Summary": "kubernetesmetadata.googleapis.com API."
+    },
+    "language": {
+        "Title": "Cloud Natural Language API",
+        "Summary": "Provides natural language understanding technologies, such as sentiment analysis, entity recognition, entity sentiment analysis, and other text annotations, to developers."
+    },
+    "libraryagent": {
+        "Title": "Library Agent API",
+        "Summary": "A simple Google Example Library API."
+    },
+    "licensemanager": {
+        "Title": "License Manager API",
+        "Summary": "License Manager is a tool to manage and track third-party licenses on Google Cloud."
+    },
+    "licensing": {
+        "Title": "Enterprise License Manager API",
+        "Summary": "The Google Enterprise License Manager API lets you manage Google Workspace and related licenses for all users of a customer that you manage."
+    },
+    "listallowedkids": {
+        "Title": "List Allowed Kids API",
+        "Summary": "listallowedkids.googleapis.com API."
+    },
+    "livestream": {
+        "Title": "Live Stream API",
+        "Summary": ""
+    },
+    "localservices": {
+        "Title": "Local Services API",
+        "Summary": ""
+    },
+    "logging": {
+        "Title": "Cloud Logging API",
+        "Summary": "Writes log entries and manages your Cloud Logging configuration."
+    },
+    "looker": {
+        "Title": "Looker (Google Cloud core) API",
+        "Summary": ""
+    },
+    "lustre": {
+        "Title": "Google Cloud Managed Lustre API",
+        "Summary": ""
+    },
+    "maintenance": {
+        "Title": "Maintenance API",
+        "Summary": "The Maintenance API provides a centralized view of planned disruptive maintenance events across supported Google Cloud products. It offers users visibility into upcoming, ongoing, and completed maintenance, along with controls to manage certain maintenance activities, such as maintenance windows, rescheduling, and on-demand updates."
+    },
+    "managedflink": {
+        "Title": "BigQuery Engine for Apache Flink API",
+        "Summary": "Manages your jobs and deployment resources for BigQuery Engine for Apache Flink. "
+    },
+    "managedidentities": {
+        "Title": "Managed Service for Microsoft Active Directory API",
+        "Summary": "The Managed Service for Microsoft Active Directory API is used for managing a highly available, hardened service running Microsoft Active Directory (AD)."
+    },
+    "managedkafka": {
+        "Title": "Managed Service for Apache Kafka API",
+        "Summary": "Manage Apache Kafka clusters and resources. "
+    },
+    "manufacturers": {
+        "Title": "Manufacturer Center API",
+        "Summary": "Public API for managing Manufacturer Center related data."
+    },
+    "mapmanagement": {
+        "Title": "Map Management API",
+        "Summary": "The Map Management API is a RESTful service that accepts HTTP requests for map styling data through a variety of methods. It returns formatted configuration data about map styling resources so that you can programmatically manage your Cloud-based map styles."
+    },
+    "maps-android-backend": {
+        "Title": "Maps SDK for Android",
+        "Summary": "Add maps based on Google Maps data to your Android application with the     Maps SDK for Android. The SDK automatically handles access to Google Maps     servers, map display and response to user gestures such as clicks and drags."
+    },
+    "maps-backend": {
+        "Title": "Maps JavaScript API",
+        "Summary": "Accessing local data and maps built from the same data sources as Google     Maps, build and style a map onto your website using the Maps     JavaScript API.  Multiple libraries are available and services such as     geocoding, directions, Street View and more to customize your maps to fit     your needs."
+    },
+    "maps-embed-backend": {
+        "Title": "Maps Embed API",
+        "Summary": "Place an interactive map or Street View panorama on your site with a simple     HTTP request using the Maps Embed API. Set the Embed API URL as the     src attribute of an iframe to easily embed the map in your webpage or blog."
+    },
+    "maps-ios-backend": {
+        "Title": "Maps SDK for iOS",
+        "Summary": "Add maps based on Google Maps data to your iOS application with the     Maps SDK for iOS. The SDK automatically handles access to the Google Maps     servers, map display and response to user gestures such as clicks and drags."
+    },
+    "mapsandroid": {
+        "Title": "Maps 3D SDK for Android",
+        "Summary": "Maps 3D SDK for Android"
+    },
+    "mapsbooking": {
+        "Title": "Google Maps Booking API",
+        "Summary": "Scheduling aggregators call this API to notify us of appointment updates, and update their inventories including merchants, services, and availability."
+    },
+    "mapsgrounding": {
+        "Title": "Maps Grounding API",
+        "Summary": "Maps Grounding API."
+    },
+    "mapsios": {
+        "Title": "Maps 3D SDK for iOS",
+        "Summary": "Maps 3D SDK for iOS"
+    },
+    "mapsplatformdatasets": {
+        "Title": "Maps Platform Datasets API",
+        "Summary": "mapsplatformdatasets.googleapis.com API."
+    },
+    "mapstools": {
+        "Title": "Maps Grounding Lite API",
+        "Summary": "mapstools.googleapis.com API."
+    },
+    "marketingplatformadmin": {
+        "Title": "Google Marketing Platform Admin API",
+        "Summary": "The Google Marketing Platform Admin API allows for programmatic access to the Google Marketing Platform configuration data. You can use the Google Marketing Platform Admin API to manage links between your Google Marketing Platform organization and Google Analytics accounts, and to set the service level of your GA4 properties."
+    },
+    "meet": {
+        "Title": "Google Meet API",
+        "Summary": "Create and manage meetings in Google Meet."
+    },
+    "memcache": {
+        "Title": "Cloud Memorystore for Memcached API",
+        "Summary": "Google Cloud Memorystore for Memcached API is used for creating and managing Memcached instances in GCP."
+    },
+    "memorystore": {
+        "Title": "Memorystore API",
+        "Summary": ""
+    },
+    "merchantapi": {
+        "Title": "Merchant API",
+        "Summary": "Programmatically manage your Merchant Center Accounts."
+    },
+    "mesh": {
+        "Title": "Mesh API",
+        "Summary": "Anthos Service Mesh is the fully managed service mesh for your complex microservices architectures."
+    },
+    "meshconfig": {
+        "Title": "Mesh Configuration API",
+        "Summary": "Anthos Service Mesh uses the Mesh Configuration API to relay configuration data from your mesh to Google Cloud. Additionally, enabling the Mesh Configuration API allows you to access the Anthos Service Mesh pages in the Cloud Console and to use the Anthos Service Mesh certificate authority (Mesh CA)."
+    },
+    "meshtelemetry": {
+        "Title": "Mesh Telemetry API",
+        "Summary": ""
+    },
+    "metastore": {
+        "Title": "Dataproc Metastore API",
+        "Summary": "The Dataproc Metastore API is used to manage the lifecycle and configuration of metastore services."
+    },
+    "microservices": {
+        "Title": "Microservices API",
+        "Summary": "Manages microservices features, such as observability for gRPC workloads."
+    },
+    "migrate": {
+        "Title": "Google Workspace Migrate API",
+        "Summary": ""
+    },
+    "migrationcenter": {
+        "Title": "Migration Center API",
+        "Summary": "A unified platform that helps you accelerate your end-to-end cloud journey from your current on-premises or cloud environments to Google Cloud."
+    },
+    "ml": {
+        "Title": "AI Platform Training & Prediction API",
+        "Summary": "An API to enable creating and using machine learning models."
+    },
+    "mlkit": {
+        "Title": "ML Kit API",
+        "Summary": "Access custom machine learning models hosted via ML Kit."
+    },
+    "mobilecrashreporting": {
+        "Title": "Mobile Crash Reporting API",
+        "Summary": "Mobile Crash Reporting API."
+    },
+    "modelarmor": {
+        "Title": "Model Armor API",
+        "Summary": "Model Armor helps you protect against risks like prompt injection, harmful content, and data leakage in generative AI applications by letting you define policies that filter user prompts and model responses."
+    },
+    "monitoring": {
+        "Title": "Cloud Monitoring API",
+        "Summary": "Manages your Cloud Monitoring data and configurations. "
+    },
+    "moviesanywhere": {
+        "Title": "Play Movies Anywhere API",
+        "Summary": "Movies Anywhere API"
+    },
+    "multiclusteringress": {
+        "Title": "Multi Cluster Ingress API",
+        "Summary": "Multi Cluster Ingress"
+    },
+    "multiclusterservicediscovery": {
+        "Title": "Multi-Cluster Service Discovery API",
+        "Summary": "Multi-Cluster Service Discovery"
+    },
+    "mybusinessverifications": {
+        "Title": "My Business Verifications API",
+        "Summary": "The My Business Verifications API provides an interface for taking verifications related actions for locations."
+    },
+    "navigationsdk": {
+        "Title": "Navigation SDK",
+        "Summary": "Provide a navigation user experience. Presents a user interface to a driver that takes them through the route, providing a map, turn card guidance, and more. "
+    },
+    "netapp": {
+        "Title": "NetApp API",
+        "Summary": "Google Cloud NetApp Volumes is a fully-managed, cloud-based data storage service that provides advanced data management capabilities and highly scalable performance with global availability."
+    },
+    "networkactions": {
+        "Title": "Network Actions Service",
+        "Summary": ""
+    },
+    "networkconnectivity": {
+        "Title": "Network Connectivity API",
+        "Summary": "This API enables connectivity with and between Google Cloud resources."
+    },
+    "networkmanagement": {
+        "Title": "Network Management API",
+        "Summary": "The Network Management API provides a collection of network performance monitoring and diagnostic capabilities."
+    },
+    "networksecurity": {
+        "Title": "Network Security API",
+        "Summary": ""
+    },
+    "networkservices": {
+        "Title": "Network Services API",
+        "Summary": ""
+    },
+    "networksubscriptions": {
+        "Title": "Network Subscriptions",
+        "Summary": ""
+    },
+    "networktopology": {
+        "Title": "Network Topology API",
+        "Summary": "Network Topology Service"
+    },
+    "notebooks": {
+        "Title": "Notebooks API",
+        "Summary": "Notebooks API is used to manage notebook resources in Google Cloud."
+    },
+    "notebooksecurityscanner": {
+        "Title": "Notebook Security Scanner API",
+        "Summary": "Notebook Security Scanner"
+    },
+    "observability": {
+        "Title": "Observability API",
+        "Summary": "Provides functionality for configuring the observability scope, which controls the log, metric, and trace data that you can view."
+    },
+    "ondemandscanning": {
+        "Title": "On-Demand Scanning API",
+        "Summary": "A service to scan container images for vulnerabilities."
+    },
+    "opsconfigmonitoring": {
+        "Title": "Config Monitoring for Ops API",
+        "Summary": "Config Monitoring for Ops API collects, aggregates and indexes resource configuration and operational metadata of resources and services in GCP, including the status and relations, and makes it actionable to enable rich, out of the box monitoring for Cloud."
+    },
+    "optimization": {
+        "Title": "Operations Research API",
+        "Summary": "The Operations Research API aims to solve high-level operations research problems using linear programming, mixed integer programming, constraint programming and more. It provides optimization solutions for specific problems to external users through an API call."
+    },
+    "oracledatabase": {
+        "Title": "Oracle Database@Google Cloud API",
+        "Summary": "The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases."
+    },
+    "orgpolicy": {
+        "Title": "Organization Policy API",
+        "Summary": "The Organization Policy API allows users to configure governance rules on their Google Cloud resources across the resource hierarchy."
+    },
+    "osconfig": {
+        "Title": "OS Config API",
+        "Summary": "OS management tools that can be used for patch management, patch compliance, and configuration management on VM instances."
+    },
+    "oslogin": {
+        "Title": "Cloud OS Login API",
+        "Summary": "You can use OS Login to manage access to your VM instances using IAM roles."
+    },
+    "pagespeedonline": {
+        "Title": "PageSpeed Insights API",
+        "Summary": "The PageSpeed Insights API lets you analyze the performance of your website with a simple API.  It offers tailored suggestions for how you can optimize your site, and lets you easily integrate PageSpeed Insights analysis into your development tools and workflow. "
+    },
+    "parallelstore": {
+        "Title": "Parallelstore API",
+        "Summary": ""
+    },
+    "parametermanager": {
+        "Title": "Parameter Manager API",
+        "Summary": "Parameter Manager is a single source of truth to store, access and manage the lifecycle of your workload parameters. Parameter Manager aims to make management of sensitive application parameters effortless for customers without diminishing focus on security."
+    },
+    "partnerdev-mapsbooking": {
+        "Title": "Google Maps Booking API (Dev)",
+        "Summary": "Scheduling aggregators call this API to notify us of appointment updates, and update their inventories including merchants, services, and availability."
+    },
+    "partners-json": {
+        "Title": "Google Partners API",
+        "Summary": "Lets advertisers search certified companies and create contact leads with them, and also audits the usage of clients."
+    },
+    "paymentsresellersubscription": {
+        "Title": "Payments Reseller Subscription API",
+        "Summary": ""
+    },
+    "people": {
+        "Title": "People API",
+        "Summary": "Provides access to information about profiles and contacts."
+    },
+    "performanceparameters": {
+        "Title": "Android Performance Parameters API",
+        "Summary": ""
+    },
+    "photoslibrary": {
+        "Title": "Photos Library API",
+        "Summary": "Manage photos, videos, and albums created by your app in Google Photos "
+    },
+    "photospicker": {
+        "Title": "Google Photos Picker API",
+        "Summary": "View photos you select from your Google Photos library. "
+    },
+    "picker": {
+        "Title": "Google Picker API",
+        "Summary": "Google Picker API enables users to select photos, videos, maps and documents stored in Google servers."
+    },
+    "places": {
+        "Title": "Places API (New)",
+        "Summary": ""
+    },
+    "places-backend": {
+        "Title": "Places API",
+        "Summary": "Find detailed information about places across a wide range of categories.     Backed by the same database used by Google Maps and Google+, the     Places API features about 100 million businesses and points of     interest that are updated frequently through owner-verified listings and     user-moderated contributions. Key features include autocomplete, search,     place picker, photos and add place."
+    },
+    "placewidgets": {
+        "Title": "Places UI Kit",
+        "Summary": "The Places UI Kit."
+    },
+    "playcustomapp": {
+        "Title": "Google Play Custom App Publishing API",
+        "Summary": "API to create and publish custom Android apps"
+    },
+    "playdeveloperreporting": {
+        "Title": "Google Play Developer Reporting API",
+        "Summary": ""
+    },
+    "playgrouping": {
+        "Title": "Google Play Grouping API",
+        "Summary": "playgrouping.googleapis.com API."
+    },
+    "playintegrity": {
+        "Title": "Google Play Integrity API",
+        "Summary": "The Play Integrity API helps you check that you're interacting with your genuine app on a genuine Android device powered by Google Play services. The Play Integrity API has replaced SafetyNet Attestation and Android Device Verification."
+    },
+    "plus": {
+        "Title": "Google+ API",
+        "Summary": "The Google+ API enables developers to build on top of the Google+ platform."
+    },
+    "plusdomains": {
+        "Title": "Google+ Domains API",
+        "Summary": "The Google+ Domains API enables developers to build on top of the Google+ platform for Google Apps domains."
+    },
+    "plushangouts": {
+        "Title": "Google+ Hangouts API",
+        "Summary": "Important: The Google+ API for Hangouts is no longer supported. Apps will continue to function until April 25, 2017."
+    },
+    "policyanalyzer": {
+        "Title": "Policy Analyzer API",
+        "Summary": ""
+    },
+    "policyremediator": {
+        "Title": "Policy Remediator API",
+        "Summary": "policyremediator.googleapis.com API."
+    },
+    "policyremediatormanager": {
+        "Title": "Policy Remediator Manager API",
+        "Summary": "Policy Remediator Manager provides APIs for BeyondCorp Enterprise admins to list, set and update Remediation Policies and Association Bidings for their project/org/folder."
+    },
+    "policysimulator": {
+        "Title": "Policy Simulator API",
+        "Summary": " Policy Simulator is a collection of endpoints for creating, running, and viewing a [Replay][google.cloud.policysimulator.v1.Replay]. A `Replay` is a type of simulation that lets you see how your members' access to resources might change if you changed your IAM policy.  During a `Replay`, Policy Simulator re-evaluates, or replays, past access attempts under both the current policy and your proposed policy, and compares those results to determine how your members' access might change under the proposed policy."
+    },
+    "policytroubleshooter": {
+        "Title": "Policy Troubleshooter API",
+        "Summary": ""
+    },
+    "pollen": {
+        "Title": "Pollen API",
+        "Summary": "The Pollen API. "
+    },
+    "ppissuer": {
+        "Title": "Privacy Pass Issuer API",
+        "Summary": "Privacy Pass Issuer API"
+    },
+    "privateca": {
+        "Title": "Certificate Authority API",
+        "Summary": "The Certificate Authority Service API is a highly-available, scalable service that enables you to simplify and automate the management of private certificate authorities (CAs) while staying in control of your private keys. "
+    },
+    "privilegedaccessmanager": {
+        "Title": "Privileged Access Manager API",
+        "Summary": "Privileged Access Manager (PAM) helps you to follow least privilege best practice to mitigate risks tied to privileged access misuse and abuse. You can shift from always-on standing privileges to on-demand access using time-bound and approval-based access elevations. IAM administrators specifically can use PAM to create entitlements that can grant temporary access to a specific resource scope. Requesters can explore eligible entitlements and request the access needed for their task, and approvers are notified when approvals require their attention. Streamlined workflows facilitated using PAM support several use cases, including the following:    * Emergency access for incident responders    * Time-boxed access for developers for critical deployment or maintenance    * Temporary access for operators for data ingestion and audits    * Temporary access to service accounts for automated tasks "
+    },
+    "prod-tt-sasportal": {
+        "Title": "SAS Portal API (Testing)",
+        "Summary": ""
+    },
+    "programmablesearchelement": {
+        "Title": "Programmable Search Element Paid API",
+        "Summary": "Used for quota management and billing of Programmable Search Element queries"
+    },
+    "progressiverollout": {
+        "Title": "Progressive Rollout API",
+        "Summary": ""
+    },
+    "publicca": {
+        "Title": "Public Certificate Authority API",
+        "Summary": "The Public Certificate Authority API may be used to create and manage ACME external account binding keys associated with Google Trust Services' publicly trusted certificate authority. "
+    },
+    "pubsub": {
+        "Title": "Cloud Pub/Sub API",
+        "Summary": "Provides reliable, many-to-many, asynchronous messaging between applications. "
+    },
+    "pubsublite": {
+        "Title": "Pub/Sub Lite API",
+        "Summary": ""
+    },
+    "rapidmigrationassessment": {
+        "Title": "Rapid Migration Assessment API",
+        "Summary": "The Rapid Migration Assessment service is our first-party migration assessment and planning tool."
+    },
+    "readerrevenuesubscriptionlinking": {
+        "Title": "Reader Revenue Subscription Linking API",
+        "Summary": "readerrevenuesubscriptionlinking.googleapis.com API."
+    },
+    "realtime": {
+        "Title": "Realtime API",
+        "Summary": "The Google Realtime API makes it easy to build realtime collaboration into your application. Note that use of the Realtime API is subject to per-document quotas and rate limits not reflected in the API Manager."
+    },
+    "realtimebidding": {
+        "Title": "Real-time Bidding API",
+        "Summary": "Allows external bidders to manage their RTB integration with Google. This includes managing bidder endpoints, QPS quotas, configuring what ad inventory to receive with pretargeting, submitting creatives for verification, and accessing creative metadata such as approval status."
+    },
+    "recaptchaenterprise": {
+        "Title": "reCAPTCHA Enterprise API",
+        "Summary": "Help protect your website from fraudulent activity, spam, and abuse without creating friction."
+    },
+    "recommendationengine": {
+        "Title": "Recommendations AI (Beta)",
+        "Summary": "Note that we now highly recommend new customers to use Retail API, which incorporates the GA version of the Recommendations AI funtionalities. To enable Retail API, please visit https://console.cloud.google.com/apis/library/retail.googleapis.com. The Recommendations AI service enables customers to build end-to-end personalized recommendation systems without requiring a high level of expertise in machine learning, recommendation system, or Google Cloud."
+    },
+    "recommender": {
+        "Title": "Recommender API",
+        "Summary": ""
+    },
+    "redis": {
+        "Title": "Google Cloud Memorystore for Redis API",
+        "Summary": "Creates and manages Redis instances on the Google Cloud Platform."
+    },
+    "regionlookup": {
+        "Title": "Region Lookup API (Experimental)",
+        "Summary": "The Region Lookup API."
+    },
+    "remotebuildexecution": {
+        "Title": "Remote Build Execution API",
+        "Summary": "Supplies a Remote Execution API service for tools such as bazel."
+    },
+    "replicapool": {
+        "Title": "Compute Engine Instance Group Manager API",
+        "Summary": "The Google Compute Engine Instance Group Manager API provides services for creating and managing groups of Compute Engine Instances."
+    },
+    "replicapoolupdater": {
+        "Title": "Compute Engine Instance Group Updater API",
+        "Summary": "The Google Compute Engine Instance Group Updater API provides services for updating groups of Compute Engine Instances."
+    },
+    "reseller": {
+        "Title": "Google Workspace Reseller API",
+        "Summary": "Perform common functions that are available on the Channel Services console at scale, like placing orders and viewing customer information"
+    },
+    "resourceviews": {
+        "Title": "Compute Engine Instance Groups API",
+        "Summary": "Google Compute Engine Instance Groups API provides services for grouping together cloud instances for other cloud APIs."
+    },
+    "retail": {
+        "Title": "Vertex AI Search for commerce API",
+        "Summary": "Vertex AI Search for commerce API is made up of Retail Search, Browse and Recommendations. These discovery AI solutions help you implement personalized search, browse and recommendations, based on machine learning models, across your websites and mobile applications."
+    },
+    "risc": {
+        "Title": "RISC API",
+        "Summary": ""
+    },
+    "roads": {
+        "Title": "Roads API",
+        "Summary": "Fetch Google roads using a viewport, road ID, or latitude/longitude coordinates."
+    },
+    "routeoptimization": {
+        "Title": "Route Optimization API",
+        "Summary": "The Route Optimization API assigns tasks and routes to a vehicle fleet, optimizing against the objectives and constraints that you supply for your transportation goals."
+    },
+    "routes": {
+        "Title": "Routes API",
+        "Summary": "routes.googleapis.com API."
+    },
+    "run": {
+        "Title": "Cloud Run Admin API",
+        "Summary": "Deploy and manage user provided container images that scale automatically based on incoming requests. The Cloud Run Admin API v1 follows the Knative Serving API specification, while v2 is aligned with Google Cloud AIP-based API standards, as described in https://google.aip.dev/."
+    },
+    "runapps": {
+        "Title": "Serverless Integrations API",
+        "Summary": "API for managing Cloud Run Integrations."
+    },
+    "runtimeconfig": {
+        "Title": "Cloud Runtime Configuration API",
+        "Summary": "The Runtime Configurator allows you to dynamically configure and expose variables through Google Cloud Platform. In addition, you can also set Watchers and Waiters that will watch for changes to your data and return based on certain conditions."
+    },
+    "saasservicemgmt": {
+        "Title": "App Lifecycle Manager API",
+        "Summary": "Model, deploy, and operate your SaaS at scale. "
+    },
+    "safebrowsing": {
+        "Title": "Safe Browsing API",
+        "Summary": "Enables client applications to check web resources (most commonly URLs) against Google-generated lists of unsafe web resources. The Safe Browsing APIs are for non-commercial use only. If you need to use APIs to detect malicious URLs for commercial purposes \\u2013 meaning \\u201cfor sale or revenue-generating purposes\\u201d \\u2013 please refer to the Web Risk API."
+    },
+    "safebrowsing-json": {
+        "Title": "Safe Browsing API (Legacy)",
+        "Summary": "The Safe Browsing API (v3 and earlier) is an experimental API that allows client applications to check URLs against Google's constantly-updated blacklists of suspected phishing and malware pages. Your client application can use the API to download an encrypted table for local, client-side lookups of URLs."
+    },
+    "salesforceshopping": {
+        "Title": "Google Shopping for Salesforce API",
+        "Summary": "Google Shopping for Salesforce API"
+    },
+    "sasportal": {
+        "Title": "SAS Portal API",
+        "Summary": ""
+    },
+    "script": {
+        "Title": "Apps Script API",
+        "Summary": "Manages and executes Google Apps Script projects. "
+    },
+    "searchads360": {
+        "Title": "Search Ads 360 Reporting API",
+        "Summary": "The Search Ads 360 API allows developers to automate downloading reports from Search Ads 360."
+    },
+    "searchconsole": {
+        "Title": "Google Search Console API",
+        "Summary": "The Search Console API provides access to both Search Console data (verified users only) and to public information on an URL basis (anyone)"
+    },
+    "searchresearcherresults": {
+        "Title": "Search Researcher Results API",
+        "Summary": "searchresearcherresults.googleapis.com API."
+    },
+    "secretmanager": {
+        "Title": "Secret Manager API",
+        "Summary": "Stores sensitive data such as API keys, passwords, and certificates. Provides convenience while improving security. "
+    },
+    "securesourcemanager": {
+        "Title": "Secure Source Manager API",
+        "Summary": "Regionally deployed, single-tenant managed source code repository hosted on Google Cloud."
+    },
+    "securetoken": {
+        "Title": "Token Service API",
+        "Summary": "The Token Service API lets you exchange an ID token or a refresh token for an access token and a refresh token, which you can use to securely call your own APIs."
+    },
+    "securitycenter": {
+        "Title": "Security Command Center API",
+        "Summary": "Security Command Center API provides access to temporal views of assets and findings within an organization."
+    },
+    "securitycentermanagement": {
+        "Title": "Security Center Management API",
+        "Summary": "Management API for Security Command Center, a built-in security and risk management solution for Google Cloud. Use this API to programmatically update the settings and configuration of Security Command Center. "
+    },
+    "securityposture": {
+        "Title": "Security Posture API",
+        "Summary": "Defines, assesses, and monitors the overall status of your security in Google Cloud. You can use security postures to evaluate your current cloud security against defined benchmarks and help maintain the level of security that your organization requires. "
+    },
+    "serviceconsumermanagement": {
+        "Title": "Service Consumer Management API",
+        "Summary": "Manages the service consumers of a Service Infrastructure service."
+    },
+    "servicecontrol": {
+        "Title": "Service Control API",
+        "Summary": "Provides admission control and telemetry reporting for services integrated with Service Infrastructure. "
+    },
+    "servicedirectory": {
+        "Title": "Service Directory API",
+        "Summary": "Service Directory is a platform for discovering, publishing, and connecting services. "
+    },
+    "servicehealth": {
+        "Title": "Service Health API",
+        "Summary": "Personalized Service Health helps you gain visibility into disruptive events impacting Google Cloud products. "
+    },
+    "servicemanagement": {
+        "Title": "Service Management API",
+        "Summary": "Google Service Management allows service producers to publish their services on Google Cloud Platform so that they can be discovered and used by service consumers."
+    },
+    "servicenetworking": {
+        "Title": "Service Networking API",
+        "Summary": "Provides automatic management of network configurations necessary for certain services."
+    },
+    "serviceusage": {
+        "Title": "Service Usage API",
+        "Summary": "Enables services that service consumers want to use on Google Cloud Platform, lists the available or enabled services, or disables services that service consumers no longer use."
+    },
+    "sheets": {
+        "Title": "Google Sheets API",
+        "Summary": "Reads and writes Google Sheets."
+    },
+    "shoppingcontent": {
+        "Title": "Content API for Shopping",
+        "Summary": "This API is deprecated. Please use Merchant API instead: https://developers.google.com/merchant/api. "
+    },
+    "siteverification": {
+        "Title": "Site Verification API",
+        "Summary": "The Google Site Verification API lets applications automate the process of managing ownership records for websites and domains."
+    },
+    "slides": {
+        "Title": "Google Slides API",
+        "Summary": "Reads and writes Google Slides presentations."
+    },
+    "smartdevicemanagement": {
+        "Title": "Smart Device Management API",
+        "Summary": "Allow select enterprise partners to access, control, and manage Google and Nest devices programmatically."
+    },
+    "solar": {
+        "Title": "Solar API",
+        "Summary": "Solar API."
+    },
+    "spanner": {
+        "Title": "Cloud Spanner API",
+        "Summary": "Cloud Spanner is a managed, mission-critical, globally consistent and scalable relational database service."
+    },
+    "speech": {
+        "Title": "Cloud Speech-to-Text API",
+        "Summary": "Converts audio to text by applying powerful neural network models."
+    },
+    "sql-component": {
+        "Title": "Cloud SQL",
+        "Summary": "Google Cloud SQL is a hosted and fully managed relational database service     on Google's infrastructure."
+    },
+    "sqladmin": {
+        "Title": "Cloud SQL Admin API",
+        "Summary": "Cloud SQL Admin API"
+    },
+    "stackdriver": {
+        "Title": "Stackdriver API",
+        "Summary": "Used by Google Cloud\\u2019s operations suite to collect signals across Google Cloud internal and external apps, platforms, and services."
+    },
+    "static-maps-backend": {
+        "Title": "Maps Static API",
+        "Summary": "Place a Google Maps image on your webpage without requiring JavaScript or     any dynamic page loading with the Maps Static API. This service     creates your map based on URL parameters sent through a standard HTTP     request and returns the map as an image."
+    },
+    "stitch": {
+        "Title": "Stitch API",
+        "Summary": "Stitch API allows developers to build AI-powered UIs with text, images, and code."
+    },
+    "storage": {
+        "Title": "Cloud Storage API",
+        "Summary": "Lets you store and retrieve potentially-large, immutable data objects."
+    },
+    "storage-api": {
+        "Title": "Google Cloud Storage JSON API",
+        "Summary": "Lets you store and retrieve potentially-large, immutable data objects."
+    },
+    "storage-component": {
+        "Title": "Cloud Storage",
+        "Summary": "Google Cloud Storage is a RESTful service for storing and accessing your data on Google's     infrastructure."
+    },
+    "storagebatchoperations": {
+        "Title": "Storage Batch Operations API",
+        "Summary": ""
+    },
+    "storageinsights": {
+        "Title": "Storage Insights API",
+        "Summary": "Provides insights capability on Google Cloud Storage"
+    },
+    "storagetransfer": {
+        "Title": "Storage Transfer API",
+        "Summary": "Transfers data from external data sources to a Google Cloud Storage bucket or between Google Cloud Storage buckets. "
+    },
+    "stream": {
+        "Title": "Immersive Stream for XR API",
+        "Summary": ""
+    },
+    "street-view-image-backend": {
+        "Title": "Street View Static API",
+        "Summary": "Embed a static (non-interactive) Street View panorama or thumbnail into your     web page, without the use of JavaScript, using the Street View     API. The viewport is defined with URL parameters sent through a standard     HTTP request, and is returned as a static image."
+    },
+    "streetviewpublish": {
+        "Title": "Street View Publish API",
+        "Summary": "Publishes 360 photos to Google Maps, along with position, orientation, and connectivity metadata. Apps can offer an interface for positioning, connecting, and uploading user-generated Street View images. "
+    },
+    "sts": {
+        "Title": "Security Token Service API",
+        "Summary": "The Security Token Service exchanges Google or third-party credentials for a short-lived access token to Google Cloud resources."
+    },
+    "subscribewithgoogle": {
+        "Title": "Subscribe with Google Publication API",
+        "Summary": "The Subscribe with Google Publication APIs enable a publisher to fetch information related to their SwG subscriptions, including the entitlement status of users who are requesting publisher content, the publications owned by the publisher, the entitlements plans of their SwG readers, the readers' profile information and purchase order information."
+    },
+    "subscribewithgoogledeveloper": {
+        "Title": "Subscribe with Google Developer API",
+        "Summary": "This API controls access to Subscribe with Google (SwG) developer tools. These tools are part of the the Subscribe with Google product, and allow publishers to debug their integration with SwG client and APIs."
+    },
+    "tagmanager": {
+        "Title": "Tag Manager API",
+        "Summary": "This API allows clients to access and modify container and tag      configuration."
+    },
+    "tasks": {
+        "Title": "Google Tasks API",
+        "Summary": "The Google Tasks API lets you manage your tasks and task lists."
+    },
+    "telemetry": {
+        "Title": "Telemetry API",
+        "Summary": "An API that accepts telemetry data in the OpenTelemetry standard. Written data can be accessed by the corresponding Google Cloud product."
+    },
+    "testing": {
+        "Title": "Cloud Testing API",
+        "Summary": "Allows developers to run automated tests for their mobile applications on Google infrastructure."
+    },
+    "texttospeech": {
+        "Title": "Cloud Text-to-Speech API",
+        "Summary": "Synthesizes natural-sounding speech by applying powerful neural network models."
+    },
+    "tile": {
+        "Title": "Map Tiles API",
+        "Summary": "An API providing access to Google Maps tiles."
+    },
+    "timeseriesinsights": {
+        "Title": "Timeseries Insights API",
+        "Summary": "Provides a Timeseries Insights service which operates over time series data. Users can perform time series spike, trend, and anomaly detection. With a straightforward API and easy to understand results, the service makes it simple to gather insights from large amounts of time series data (e.g. monitoring datasets) and integrate these insights in their applications. "
+    },
+    "timezone-backend": {
+        "Title": "Time Zone API",
+        "Summary": "The Time Zone API provides the time zone for a location on the earth,     as well as that location's time offset from UTC."
+    },
+    "toolresults": {
+        "Title": "Cloud Tool Results API",
+        "Summary": "API to publish and access results from developer tools."
+    },
+    "tpu": {
+        "Title": "Cloud TPU API",
+        "Summary": "TPU API provides customers with access to Google TPU technology."
+    },
+    "trafficdirector": {
+        "Title": "Traffic Director API",
+        "Summary": ""
+    },
+    "transferappliance": {
+        "Title": "Transfer Appliance API",
+        "Summary": ""
+    },
+    "translate": {
+        "Title": "Cloud Translation API",
+        "Summary": "Integrates text translation into your website or application."
+    },
+    "translationhub": {
+        "Title": "Translation Hub API",
+        "Summary": "Translation Hub is a self-service document translation service for organizations that translate a large volume of documents into many different languages."
+    },
+    "travelimpactmodel": {
+        "Title": "Travel Impact Model API",
+        "Summary": "Travel Impact Model API lets you query travel carbon emission estimates."
+    },
+    "travelpartnerprices": {
+        "Title": "Travel Partner Prices API",
+        "Summary": "The Travel Partner Prices API provides a RESTful interface for managing price data of Hotel and Vacation Rental properties on Google."
+    },
+    "usercontext": {
+        "Title": "Awareness API",
+        "Summary": "Awareness Api is a unified context platform that enables apps to become contextual."
+    },
+    "vault": {
+        "Title": "Google Vault API",
+        "Summary": "Retention and eDiscovery for Google Workspace.   To work with Vault resources, the account must have the [required Vault privileges](https://support.google.com/vault/answer/2799699) and access to the matter. To access a matter, the account must have created the matter, have the matter shared with them, or have the **View All Matters** privilege. For example, to download an export, an account needs the **Manage Exports** privilege and the matter shared with them. "
+    },
+    "vectorsearch": {
+        "Title": "Vector Search API",
+        "Summary": "The Vector Search API provides a fully-managed, highly performant, and scalable vector database designed to power next-generation search, recommendation, and generative AI applications. It allows you to store, index, and query your data and its corresponding vector embeddings through a simple, intuitive interface. With Vector Search, you can define custom schemas for your data, insert objects with associated metadata, automatically generate embeddings from your data, and perform fast approximate nearest neighbor (ANN) searches to find semantically similar items at scale."
+    },
+    "verifiedaccess": {
+        "Title": "Chrome Verified Access API",
+        "Summary": "API for Verified Access chrome extension to provide credential verification for chrome devices connecting to an enterprise network"
+    },
+    "versionhistory": {
+        "Title": "versionhistory.googleapis.com API",
+        "Summary": "Version History API - Prod"
+    },
+    "videointelligence": {
+        "Title": "Cloud Video Intelligence API",
+        "Summary": "Detects objects, explicit content, and scene changes in videos. It also specifies the region for annotation and transcribes speech to text. Supports both asynchronous API and streaming API."
+    },
+    "vision": {
+        "Title": "Cloud Vision API",
+        "Summary": "Integrates Google Vision features, including image labeling, face, logo, and landmark detection, optical character recognition (OCR), and detection of explicit content, into applications."
+    },
+    "visionai": {
+        "Title": "Vision AI API",
+        "Summary": ""
+    },
+    "vmmigration": {
+        "Title": "VM Migration API",
+        "Summary": "Use the Migrate to Virtual Machines API to programmatically migrate workloads. "
+    },
+    "vmwareengine": {
+        "Title": "VMware Engine API",
+        "Summary": "The Google VMware Engine API lets you programmatically manage VMware environments."
+    },
+    "vpcaccess": {
+        "Title": "Serverless VPC Access API",
+        "Summary": "API for managing VPC access connectors."
+    },
+    "walletobjects": {
+        "Title": "Google Wallet API",
+        "Summary": "API for issuers to save and manage Google Wallet Objects."
+    },
+    "weather": {
+        "Title": "Weather API",
+        "Summary": "weather.googleapis.com API."
+    },
+    "webfonts": {
+        "Title": "Web Fonts Developer API",
+        "Summary": "The Google Web Fonts Developer API lets you retrieve information about web fonts served     by Google."
+    },
+    "webrisk": {
+        "Title": "Web Risk API",
+        "Summary": ""
+    },
+    "websecurityscanner": {
+        "Title": "Web Security Scanner API",
+        "Summary": "Scans your Compute and App Engine apps for common web vulnerabilities."
+    },
+    "workflowexecutions": {
+        "Title": "Workflow Executions API",
+        "Summary": "Execute workflows created with Workflows API."
+    },
+    "workflows": {
+        "Title": "Workflows API",
+        "Summary": "Manage workflow definitions. To execute workflows and manage executions, see the Workflows Executions API."
+    },
+    "workloadcertificate": {
+        "Title": "Workload Certificate API",
+        "Summary": "workloadcertificate.googleapis.com API."
+    },
+    "workloadmanager": {
+        "Title": "Workload Manager API",
+        "Summary": "Workload Manager is a service that provides tooling for enterprise workloads to automate the deployment and validation of your workloads against best practices and recommendations."
+    },
+    "workspaceevents": {
+        "Title": "Google Workspace Events API",
+        "Summary": "The Google Workspace Events API lets you subscribe to events and manage change notifications across Google Workspace applications."
+    },
+    "workstations": {
+        "Title": "Cloud Workstations API",
+        "Summary": "Allows administrators to create managed developer environments in the cloud. "
+    },
+    "youtube": {
+        "Title": "YouTube Data API v3",
+        "Summary": "The YouTube Data API v3 is an API that provides access to YouTube data, such as videos, playlists, and channels."
+    },
+    "youtubeanalytics": {
+        "Title": "YouTube Analytics API",
+        "Summary": "Retrieves your YouTube Analytics data."
+    },
+    "youtubeembeddedplayer": {
+        "Title": "YouTube Embedded Player API",
+        "Summary": "Verify permissions for applications and sites using the YouTube Embedded Player."
+    },
+    "youtubeoembed": {
+        "Title": "YouTube oEmbed API",
+        "Summary": ""
+    },
+    "youtubereporting": {
+        "Title": "YouTube Reporting API",
+        "Summary": "Schedules reporting jobs containing your YouTube Analytics data and downloads the resulting bulk data reports in the form of CSV files."
+    }
+}

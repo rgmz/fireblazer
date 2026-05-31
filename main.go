@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"slices"
 	"strings"
 	"sync"
 
@@ -82,7 +81,7 @@ func parseTargetKey(raw string, globalRef string) utils.TargetKey {
 	return tk
 }
 
-func processKey(target utils.TargetKey, gapiServices []utils.Service, blacklisted []string, falsePos []string, updateCh chan utils.ScanUpdate, logCh chan string, useGet bool) KeyResult {
+func processKey(target utils.TargetKey, gapiServices []utils.Service, updateCh chan utils.ScanUpdate, logCh chan string, useGet bool) KeyResult {
 	res := KeyResult{Key: target.Raw}
 	if *dangerouslySkipVerification {
 		if isInteractive && logCh != nil {
@@ -106,7 +105,7 @@ func processKey(target utils.TargetKey, gapiServices []utils.Service, blackliste
 		res.Valid = true
 	}
 
-	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, blacklisted, falsePos, *workerCount, *timingEnabled, updateCh, useGet)
+	foundServices, failCount, maxTime := utils.ScanServices(target, gapiServices, *workerCount, *timingEnabled, updateCh, useGet)
 	res.FoundServices = foundServices
 	res.FailCount = failCount
 	res.MaxTime = maxTime
@@ -122,15 +121,16 @@ type ServiceDetail struct {
 }
 
 type StructuredOutput struct {
-	Key            string                 `json:"key" yaml:"key"`
-	Valid          bool                   `json:"valid" yaml:"valid"`
-	InvalidReason  string                 `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
-	ProjectId      string                 `json:"project_id,omitempty" yaml:"project_id,omitempty"`
-	Brand          map[string]interface{} `json:"brand,omitempty" yaml:"brand,omitempty"`
-	Services       []string               `json:"services" yaml:"services"`
-	ServiceDetails []ServiceDetail        `json:"service_details,omitempty" yaml:"service_details,omitempty"`
-	P4SAServices   []string               `json:"inferred_services,omitempty" yaml:"inferred_services,omitempty"`
-	FailCount      int                    `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
+	Key                    string                 `json:"key" yaml:"key"`
+	Valid                  bool                   `json:"valid" yaml:"valid"`
+	InvalidReason          string                 `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
+	ProjectId              string                 `json:"project_id,omitempty" yaml:"project_id,omitempty"`
+	Brand                  map[string]interface{} `json:"brand,omitempty" yaml:"brand,omitempty"`
+	Services               []string               `json:"services" yaml:"services"`
+	ServiceDetails         []ServiceDetail        `json:"service_details,omitempty" yaml:"service_details,omitempty"`
+	P4SAServices           []string               `json:"inferred_services,omitempty" yaml:"inferred_services,omitempty"`
+	InferredServiceDetails []ServiceDetail        `json:"inferred_service_details,omitempty" yaml:"inferred_service_details,omitempty"`
+	FailCount              int                    `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
 }
 
 func main() {
@@ -162,17 +162,6 @@ func main() {
 	if isInteractive {
 		cancel = scanPin.Start(context.Background())
 	}
-
-	falsePos := []string{
-		"digitalassetlinks",
-		"oauth2",
-		"servicecontrol",
-		"storage",
-	}
-
-	//  those don't work / hang the program - all that hang are deprecated anyways, so it's blank for now
-	blacklisted := []string{}
-
 	gapiServices := make([]utils.Service, 0)
 
 	if *targetApi != "" {
@@ -230,7 +219,7 @@ func main() {
 		if *targetApi != "" {
 			log.Printf("Using single target API: %s", *targetApi)
 		} else {
-			log.Printf("Successfully loaded %d discovery endpoints from hardcoded list.", len(gapiServices))
+			log.Printf("Successfully loaded %d discovery endpoints from built-in program list.", len(gapiServices))
 		}
 	}
 
@@ -294,7 +283,7 @@ func main() {
 		go func(i int, rawKey string) {
 			defer wg.Done()
 			target := parseTargetKey(rawKey, *referrer)
-			res := processKey(target, gapiServices, blacklisted, falsePos, updateCh, logCh, *targetApi != "")
+			res := processKey(target, gapiServices, updateCh, logCh, *targetApi != "")
 
 			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
 				brand, err := utils.GetBrandIdentity(res.ProjectId)
@@ -345,34 +334,47 @@ func main() {
 			if !res.Valid && res.InvalidReason != nil {
 				out.InvalidReason = res.InvalidReason.Error()
 			}
-			// TODO: MOVE FALSE POSITIVE DETECTION HIGHER UP
+
 			var sDetails []ServiceDetail
 
 			for _, service := range res.FoundServices {
-				if !slices.Contains(falsePos, service) {
-					serviceName := service + ".googleapis.com"
-					out.Services = append(out.Services, serviceName)
+				serviceName := service + ".googleapis.com"
+				out.Services = append(out.Services, serviceName)
 
-					if showTitle || showDesc {
-						meta, hasMeta := utils.ApiMetadata[service]
-						detail := ServiceDetail{Name: serviceName}
+				if showTitle || showDesc {
+					meta, hasMeta := utils.ApiMetadata[service]
+					detail := ServiceDetail{Name: serviceName}
 
-						if hasMeta {
-							if showTitle {
-								detail.Title = meta.Title
-							}
-							if showDesc {
-								detail.Description = meta.Summary
-							}
+					if hasMeta {
+						if showTitle {
+							detail.Title = meta.Title
 						}
-
-						sDetails = append(sDetails, detail)
+						if showDesc {
+							detail.Description = meta.Summary
+						}
 					}
+
+					sDetails = append(sDetails, detail)
 				}
 			}
 
 			if len(sDetails) > 0 {
 				out.ServiceDetails = sDetails
+			}
+
+			var inferredDetails []ServiceDetail
+			for _, saSvc := range res.P4SAServices {
+				detail := ServiceDetail{Name: saSvc}
+				if showTitle || showDesc {
+					if name, exists := utils.SANames[saSvc]; exists {
+						detail.Title = name
+					}
+				}
+				inferredDetails = append(inferredDetails, detail)
+			}
+
+			if len(inferredDetails) > 0 {
+				out.InferredServiceDetails = inferredDetails
 			}
 
 			structuredResults = append(structuredResults, out)
@@ -435,9 +437,6 @@ func main() {
 			log.Printf("\nAPIs available to this API key with project ID %s:", res.ProjectId)
 
 			for _, service := range res.FoundServices {
-				if slices.Contains(falsePos, service) {
-					continue
-				}
 
 				baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
 				meta, hasMeta := utils.ApiMetadata[service]
@@ -464,7 +463,11 @@ func main() {
 			if len(res.P4SAServices) > 0 {
 				log.Printf("\n[Additional Recon] Inferred Services via Service Accounts:")
 				for _, saSvc := range res.P4SAServices {
-					log.Printf(" - %s", saSvc)
+					if name, exists := utils.SANames[saSvc]; exists {
+						log.Printf(" - %s (%s)", saSvc, name)
+					} else {
+						log.Printf(" - %s", saSvc)
+					}
 				}
 				log.Printf("")
 			}
