@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/yarlson/pin"
 
+	"github.com/bedros-p/fireblazer/utils"
 	"gopkg.in/yaml.v3"
 )
 
@@ -49,101 +49,8 @@ type APIDetails struct {
 	Title       string
 }
 
-type KeyResult struct {
-	Key           string
-	ProjectId     string
-	Valid         bool
-	InvalidReason error
-	FoundServices []string
-	FailCount     int
-	MaxTime       *lib.ElapsedCombo
-	Brand         map[string]interface{}
-	P4SAServices  []string
-}
-
-func parseTargetKey(raw string, globalRef string) lib.TargetKey {
-	tk := lib.TargetKey{
-		Raw:      raw,
-		Key:      raw,
-		Referrer: globalRef,
-	}
-
-	if strings.HasPrefix(raw, "xios:") {
-		parts := strings.SplitN(raw, ":", 3)
-		if len(parts) >= 3 {
-			tk.Key = parts[1]
-			tk.IosBundleId = parts[2]
-			tk.Referrer = ""
-		}
-	} else if strings.HasPrefix(raw, "xandroid:") {
-		parts := strings.SplitN(raw, ":", 4)
-		if len(parts) >= 4 { // wait why am i handling this when im using splitn specifically to not deal with it i can fix this
-			tk.Key = parts[1]
-			tk.AndroidPkg = parts[2]
-			tk.AndroidCert = parts[3]
-			tk.Referrer = ""
-		}
-	} else if strings.HasPrefix(raw, "xref:") {
-		parts := strings.SplitN(raw, ":", 3)
-		if len(parts) >= 3 {
-			tk.Key = parts[1]
-			tk.Referrer = parts[2]
-		}
-	}
-	return tk
-}
-
-func processKey(target lib.TargetKey, gapiServices []lib.Service, updateCh chan lib.ScanUpdate, logCh chan string, useGet bool) KeyResult {
-	res := KeyResult{Key: target.Raw}
-	if *dangerouslySkipVerification {
-		if isInteractive && logCh != nil {
-			logCh <- fmt.Sprintf("[%s] Skipping API key verification.", target.Raw)
-		}
-		res.Valid = true
-	} else if valid, projectDetails, err := lib.TestKeyValidity(target.Key); !valid {
-		res.Valid = false
-		res.InvalidReason = err
-		if updateCh != nil {
-			updateCh <- lib.ScanUpdate{Key: target.Raw, WasFound: false, ItemCleanName: "[INVALID]"}
-		}
-		return res
-	} else {
-		res.ProjectId = projectDetails.ProjectId
-		if isInteractive && logCh != nil {
-			logCh <- fmt.Sprintf("[%s] Valid API key, proceeding.", target.Raw)
-		} else if *outputFormat == "text" {
-			log.Printf("[%s] is a valid API key.", target.Raw)
-		}
-		res.Valid = true
-	}
-
-	foundServices, failCount, maxTime := lib.ScanServices(target, gapiServices, *workerCount, *timingEnabled, updateCh, useGet)
-	res.FoundServices = foundServices
-	res.FailCount = failCount
-	res.MaxTime = maxTime
-	return res
-}
-
 // not too sure how to handle this in the schema without bloating it up, but here's what i think
 // might just have some utility `fireblazer describe`. I lowk want to make a sep tool for quick single service surface mapping, it might work better there.
-type ServiceDetail struct {
-	Name        string `json:"name" yaml:"name"`
-	Title       string `json:"title,omitempty" yaml:"title,omitempty"`
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-}
-
-type StructuredOutput struct {
-	Key                    string                 `json:"key" yaml:"key"`
-	Valid                  bool                   `json:"valid" yaml:"valid"`
-	InvalidReason          string                 `json:"invalid_reason,omitempty" yaml:"invalid_reason,omitempty"`
-	ProjectId              string                 `json:"project_id,omitempty" yaml:"project_id,omitempty"`
-	Brand                  map[string]interface{} `json:"brand,omitempty" yaml:"brand,omitempty"`
-	Services               []string               `json:"services" yaml:"services"`
-	ServiceDetails         []ServiceDetail        `json:"service_details,omitempty" yaml:"service_details,omitempty"`
-	P4SAServices           []string               `json:"inferred_services,omitempty" yaml:"inferred_services,omitempty"`
-	InferredServiceDetails []ServiceDetail        `json:"inferred_service_details,omitempty" yaml:"inferred_service_details,omitempty"`
-	FailCount              int                    `json:"fail_count,omitempty" yaml:"fail_count,omitempty"`
-}
 
 func main() {
 	flag.Parse()
@@ -213,14 +120,22 @@ func main() {
 	}
 
 	var wg sync.WaitGroup
-	results := make([]KeyResult, len(keys))
+	results := make([]utils.KeyResult, len(keys))
 
 	for i, k := range keys {
 		wg.Add(1)
 		go func(i int, rawKey string) {
 			defer wg.Done()
-			target := parseTargetKey(rawKey, *referrer)
-			res := processKey(target, gapiServices, updateCh, logCh, *targetApi != "")
+			target := utils.ParseTargetKey(rawKey, *referrer)
+			cfg := utils.ProcessConfig{
+				DangerouslySkipVerification: *dangerouslySkipVerification,
+				IsInteractive:               isInteractive,
+				OutputFormat:                *outputFormat,
+				WorkerCount:                 *workerCount,
+				TimingEnabled:               *timingEnabled,
+				UseGet:                      *targetApi != "",
+			}
+			res := utils.ProcessKey(target, gapiServices, updateCh, logCh, cfg)
 
 			if res.Valid && res.ProjectId != "" && (*blaze || (isInteractive && len(keys) == 1)) {
 				brand, err := lib.GetBrandIdentity(res.ProjectId)
@@ -256,11 +171,11 @@ func main() {
 	var err error
 
 	if *outputFormat == "json" {
-		outputData, err = json.MarshalIndent(marshalStructured(results, showTitle, showDesc), "", "  ")
+		outputData, err = json.MarshalIndent(utils.MarshalStructured(results, showTitle, showDesc), "", "  ")
 	} else if *outputFormat == "yaml" {
-		outputData, err = yaml.Marshal(marshalStructured(results, showTitle, showDesc))
+		outputData, err = yaml.Marshal(utils.MarshalStructured(results, showTitle, showDesc))
 	} else {
-		outputData = marshalText(results, keys, *targetApi, *timingEnabled, showTitle, showDesc)
+		outputData = utils.MarshalText(results, keys, *targetApi, *timingEnabled, showTitle, showDesc)
 	}
 
 	if err != nil {
@@ -270,153 +185,6 @@ func main() {
 	fmt.Println(string(outputData))
 
 	lib.KeyLogFile.Close()
-}
-
-func marshalStructured(results []KeyResult, showTitle bool, showDesc bool) []StructuredOutput {
-	var structuredResults []StructuredOutput
-
-	for _, res := range results {
-		out := StructuredOutput{
-			Key:          res.Key,
-			Valid:        res.Valid,
-			ProjectId:    res.ProjectId,
-			Brand:        res.Brand,
-			FailCount:    res.FailCount,
-			Services:     []string{},
-			P4SAServices: res.P4SAServices,
-		}
-
-		if !res.Valid && res.InvalidReason != nil {
-			out.InvalidReason = res.InvalidReason.Error()
-		}
-
-		var sDetails []ServiceDetail
-		for _, service := range res.FoundServices {
-			serviceName := service + ".googleapis.com"
-			out.Services = append(out.Services, serviceName)
-
-			if showTitle || showDesc {
-				meta, hasMeta := lib.ApiMetadata[service]
-				detail := ServiceDetail{Name: serviceName}
-				if hasMeta {
-					if showTitle {
-						detail.Title = meta.Title
-					}
-					if showDesc {
-						detail.Description = meta.Summary // insane level of nesting I think something's wrong here, or i can use more guard clauses thruu my code
-					}
-				}
-				sDetails = append(sDetails, detail)
-			}
-		}
-
-		if len(sDetails) > 0 {
-			out.ServiceDetails = sDetails
-		}
-
-		var inferredDetails []ServiceDetail
-		for _, saSvc := range res.P4SAServices {
-			detail := ServiceDetail{Name: saSvc}
-			if showTitle || showDesc {
-				if name, exists := lib.SANames[saSvc]; exists {
-					detail.Title = name
-				}
-			}
-			inferredDetails = append(inferredDetails, detail)
-		}
-
-		if len(inferredDetails) > 0 {
-			out.InferredServiceDetails = inferredDetails
-		}
-
-		structuredResults = append(structuredResults, out)
-	}
-	return structuredResults
-}
-
-func marshalText(results []KeyResult, keys []string, targetApi string, timingEnabled bool, showTitle bool, showDesc bool) []byte {
-	var buf bytes.Buffer
-
-	if targetApi != "" {
-		buf.WriteString(fmt.Sprintf("\nTARGET: %s\n", targetApi))
-	}
-
-	for _, res := range results {
-		if targetApi != "" {
-			status := "❌"
-			if len(res.FoundServices) > 0 {
-				status = "✅"
-			}
-			buf.WriteString(fmt.Sprintf("%s : %s\n", res.Key, status))
-			continue
-		}
-
-		if len(keys) > 1 {
-			buf.WriteString(fmt.Sprintf("\n---%s---\n", res.Key))
-		}
-		if !res.Valid {
-			buf.WriteString(fmt.Sprintf("Invalid API key: %s\nError testing validity: %v\nIf you're sure the key is valid, use the --dangerouslySkipVerification flag.\n", res.Key, res.InvalidReason))
-			continue
-		}
-
-		if res.Brand != nil {
-			buf.WriteString("\nOAuth Client Screen Details\n")
-			if displayName, ok := res.Brand["displayName"]; ok && displayName != "" {
-				buf.WriteString(fmt.Sprintf(" - App Name: %v\n", displayName))
-			}
-			if supportEmail, ok := res.Brand["supportEmail"]; ok && supportEmail != "" {
-				buf.WriteString(fmt.Sprintf(" - Project Admin / Support Email: %v\n", supportEmail))
-			}
-			if homePageUrl, ok := res.Brand["homePageUrl"]; ok && homePageUrl != "" {
-				buf.WriteString(fmt.Sprintf(" - Homepage: %v\n", homePageUrl))
-			}
-		}
-
-		buf.WriteString(fmt.Sprintf("\nAPIs available to this API key with project ID %s:\n", res.ProjectId))
-
-		for _, service := range res.FoundServices {
-			baseMsg := fmt.Sprintf(" - %s.googleapis.com", service)
-			meta, hasMeta := lib.ApiMetadata[service]
-
-			details := ""
-			if hasMeta {
-				if showTitle && meta.Title != "" {
-					details += meta.Title
-				}
-				if showDesc && meta.Summary != "" {
-					if details != "" {
-						details += " - "
-					}
-					details += meta.Summary
-				}
-			}
-			if details != "" {
-				buf.WriteString(fmt.Sprintf("%s\n   ^-- %s\n", baseMsg, details))
-			} else {
-				buf.WriteString(fmt.Sprintf("%s\n", baseMsg))
-			}
-		}
-
-		if len(res.P4SAServices) > 0 {
-			buf.WriteString("\n[Additional Recon] Inferred Services via Service Accounts:\n")
-			for _, saSvc := range res.P4SAServices {
-				if name, exists := lib.SANames[saSvc]; exists {
-					buf.WriteString(fmt.Sprintf(" - %s (%s)\n", saSvc, name))
-				} else {
-					buf.WriteString(fmt.Sprintf(" - %s\n", saSvc))
-				}
-			}
-			buf.WriteString("\n")
-		}
-
-		buf.WriteString(fmt.Sprintf("All discovery endpoint tests completed with %d failures.\n", res.FailCount))
-
-		if timingEnabled {
-			buf.WriteString(fmt.Sprintf("Longest running service - %v\n\n\n", res.MaxTime))
-		}
-	}
-
-	return buf.Bytes()
 }
 
 func loadServices(targetApi string) []lib.Service {
