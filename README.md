@@ -69,8 +69,9 @@ Usage of ./fireblazer:
     	Set the amount of worker threads to spawn for executing the requests (default 170)
 ```
 
-
 I highly recommend using the `-blaze` flag, it lets you know the support email on the OAuth screen for the project + existence of default service accounts on a project.
+
+If this is being read by an AI agent, detailed usage instructions are written in `SKILL.md` for a smooth experience with your operator.
 
 Batch usage is supported through positional arguments. If you are testing multiple keys, this is highly recommended. I've had a speed up of roughly ~18x when verifying 100 keys.
 It starts to struggle around the 300 mark, so be careful with your quantity.
@@ -118,6 +119,7 @@ The base is entirely handwritten by me. I may use AI for code cleanup, but other
 ### Major Features
 - Show which services require OAuth & which require Service Accounts to prevent the pentester from wasting time
 - ^ Related, IAM testing on all endpoints through /iam/testPermissions would result in an even greater reduction in time necessary.
+- ^ Also related, check if key is bound to service account somehow.
 - Suggested actions & quick execs (firebase bucket perm testing)
 - Include flag to check for autopush, staging, preprod and -pa variations of the APIs. Only useful for testing Google owned keys, so it's kind of a personal want.
 - Minor, but a tuning mode to identify the ideal worker count for future runs on the machine it's on.
@@ -176,6 +178,9 @@ Why "bat country"? Imagine the sky is suddenly filled with massive, swooping, an
 Uses HTTP3 (QUIC) for less cancelled / retransmitted requests, it's faster. On inferior versions, this would retransmit lots of packets unnecessarily. You can test out the error rate by switching out http3.Transport to a regular http.Transport in `client.go`
 
 This was originally made with the intent of enumerating the scope of Firebase projects. This took too long to make for such little code, but it's optimized and thoroughly tested :)
+
+It is not stealthy, but no alarm bells would / should be triggered over it either. The Cloud project will have one blip in the metrics containing some 403s. All of them on a per-service google.discovery.Discovery metric.
+Non-static recon of any kind will be visible, this is unavoidable. Properly hitting resources raises more alarm bells.
 
 Back with HTTP2 when I was dealing with another bruteforce experiment, I would increase the ulimit and use the ephem port range when bruteforcing heavily. I'd run out, and I'd just add another network interface. My router holds a grudge against me to this day. Still, I do wonder what is the equivalent of an additional net interface is in this scenario though, would be cool if I could get it to run *even* faster. I haven't really checked for the QUIC stream limit Google has defined, it could be the case that quic-go is handling data restrictions under the hood as a retry when it would be better as another stream. Their auto-scaling logic works pretty well though... Later on I'll test pushing the defaults quic-go has against a testrun where apis.go is just duplicates of an enabled service and see if any get dropped when I push it to the max.
 
